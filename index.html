@@ -125,6 +125,21 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .stat{background:var(--surface);padding:12px 10px;text-align:center}
 .stat b{display:block;font-size:22px;font-variant-numeric:tabular-nums;line-height:1.25}
 .stat span{font-size:11px;color:var(--muted)}
+.progwrap{padding:15px 16px;display:flex;flex-direction:column;gap:10px}
+.prow{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.plabel{font-size:12px;letter-spacing:.1em;color:var(--muted);font-weight:700}
+.pnum{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.pbar{display:flex;height:9px;border-radius:5px;overflow:hidden;background:var(--line)}
+.pbar .seg{display:block;height:100%;transition:width .4s}
+.seg.known{background:var(--accent)} .seg.doing{background:var(--warn)}
+.plegend{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.plegend span{display:inline-flex;align-items:center;gap:5px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot.known{background:var(--accent)} .dot.doing{background:var(--warn)} .dot.master{background:var(--ok)}
+.badge{display:inline-block;margin-left:7px;min-width:20px;padding:1px 6px;border-radius:9px;
+  background:var(--warn);color:#fff;font-size:11px;font-weight:700;vertical-align:1px;
+  font-variant-numeric:tabular-nums}
 .modes{display:flex;flex-direction:column;gap:9px}
 .mode{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--surface);
   border:1px solid var(--line);border-radius:12px;padding:14px 15px;box-shadow:var(--shadow)}
@@ -143,7 +158,10 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .scene .bar2{width:5px;align-self:stretch;min-height:34px;border-radius:3px;background:var(--sc)}
 .scene .b{flex:1;min-width:0}
 .scene .b strong{display:block;font-size:15px}
-.scene .b em{display:block;font-style:normal;font-family:var(--jp);font-size:12px;color:var(--muted);margin-top:1px}
+.scene .b em{display:block;font-style:normal;font-family:var(--zh);font-size:11.5px;color:var(--muted);
+  margin-top:2px;font-variant-numeric:tabular-nums}
+.smini{display:block;height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:6px;max-width:190px}
+.smini i{display:block;height:100%;background:var(--sc);border-radius:2px;transition:width .4s}
 .scene .cnt{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 .scene[aria-pressed="true"]{border-color:var(--sc);background:var(--surface-2)}
 .scene .tick{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
@@ -156,6 +174,14 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
   font-variant-numeric:tabular-nums}
 .prog .track{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
 .prog .fill{height:100%;background:var(--scene);transition:width .25s}
+.prog .lvl{font-weight:700;font-size:11.5px;white-space:nowrap}
+.row2{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.lvlup{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px;padding:10px 13px;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:10px;font-size:12.5px}
+.lvlup b{font-size:13px}
+.pips{display:inline-flex;gap:3px}
+.pip{width:7px;height:7px;border-radius:50%;background:var(--line);display:block}
+.arrow{color:var(--muted)}
 
 .stage{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
   box-shadow:var(--shadow);padding:22px 18px;display:flex;flex-direction:column;
@@ -222,8 +248,16 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .bub.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:5px}
 .bub.me .z{color:var(--accent-ink);opacity:.8}
 .bub.me.wrong{background:var(--bad)}
-.bub .spk{background:none;border:0;padding:4px 0 0;color:var(--muted);display:inline-flex;align-items:center;gap:5px;font-size:12px}
-.bub.them .spk svg{width:14px;height:14px}
+.bact{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.bub .spk{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;
+  padding:5px 11px;color:var(--muted);display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600}
+.bub.me .spk{background:rgba(255,255,255,.18);border-color:transparent;color:var(--accent-ink)}
+.bub .spk svg{width:13px;height:13px}
+.qrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 0 9px;flex-wrap:wrap}
+.hintbtn{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;
+  padding:7px 14px;font-size:12px;font-weight:600;color:var(--muted);flex:none}
+.hintbtn:hover{color:var(--fg);border-color:var(--muted)}
+.ozh{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
 .scenesetup{font-family:var(--zh);font-size:13.5px;color:var(--muted);text-align:center;
   padding:9px 12px;background:var(--surface-2);border-radius:10px;line-height:1.6}
 
@@ -254,7 +288,16 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .vrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);
   border-radius:10px;background:var(--surface-2)}
 .vrow.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
-.vrow .vn{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vrow .vn{flex:1;min-width:0;font-size:13px;overflow:hidden}
+.vrow .vn>span.vq{display:block}
+.vq{font-size:10.5px;font-weight:700;color:var(--muted);margin-top:2px;letter-spacing:.02em}
+.vq.net{color:var(--ok)}
+.wiz{display:flex;flex-direction:column;gap:11px;padding:14px;border:1px solid var(--accent);
+  border-radius:12px;background:var(--surface-2)}
+.wtop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px}
+.wtop .vq{margin:0}
+.wsample{font-family:var(--jp);font-size:21px;line-height:2;text-align:center}
+.wask{font-family:var(--zh);font-size:13px;color:var(--muted);text-align:center}
 .vrow .tag{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 6px;border-radius:5px;
   background:var(--ok);color:#fff;flex:none}
 .vrow button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:8px;
@@ -924,36 +967,135 @@ var SVG = {
 };
 
 /* ══════════ 設定與進度（localStorage best-effort） ══════════ */
-var DEF = { display:'kanji', rate:0.85, voice:'', count:15, hands:false, model:true, pace:3.2, strict:false };
-var S = {}, P = {};
+var DEF = { display:'kanji', rate:0.8, voice:'', count:15, hands:false, model:true,
+            pace:3.2, strict:false, dlgZh:false, voiceOK:0, pitch:1, roles:true };
+var S = {}, P = {}, ST = {};
 function load(k,fb){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):fb; }catch(e){ return fb; } }
 function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 (function(){ var s=load('jp_set',{})||{}; for(var k in DEF) S[k]=(k in s)?s[k]:DEF[k];
-  P = load('jp_prog',{})||{}; })();
+  P = load('jp_prog',{})||{};
+  ST = load('jp_stats',null) || {days:{},streak:0,last:''};
+  if(!ST.days) ST.days={}; })();
 function saveSet(){ save('jp_set',S); }
 function saveProg(){ save('jp_prog',P); }
-function rec(id){ return P[id]||(P[id]={box:0,seen:0,wrong:0}); }
-function mark(id,good){ var r=rec(id); r.seen++; if(good){ r.box=Math.min(5,r.box+1); }
-  else { r.box=0; r.wrong++; } saveProg(); }
-function learned(){ var n=0; for(var k in P) if(P[k].box>=4) n++; return n; }
-function dueList(){ var a=[]; for(var k in P){ if(BY_ID[k] && P[k].box<4 && P[k].wrong>0) a.push(BY_ID[k]); }
-  a.sort(function(x,y){ return (P[x.i].box-P[y.i].box) || (P[y.i].wrong-P[x.i].wrong); }); return a; }
+function saveStats(){ save('jp_stats',ST); }
+
+/* 熟練度 0–5：0 未學 ／ 1–2 學習中 ／ 3–4 已學會 ／ 5 已精通 */
+var LVL = ['未學','學習中','學習中','已學會','已學會','已精通'];
+var LVLC = ['var(--muted)','var(--warn)','var(--warn)','var(--accent)','var(--accent)','var(--ok)'];
+function pips(n){
+  var s='', i;
+  for(i=1;i<=5;i++) s += '<i class="pip"'+(i<=n?' style="background:'+LVLC[n]+'"':'')+'></i>';
+  return s;
+}
+function rec(id){ return P[id]||(P[id]={box:0,seen:0,wrong:0,right:0}); }
+function boxOf(id){ var r=P[id]; return r?r.box:0; }
+function dayKey(d){ d=d||new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function countDay(){
+  var t=dayKey();
+  if(ST.last!==t){
+    var ys=dayKey(new Date(Date.now()-86400000));
+    ST.streak = (ST.last===ys) ? (ST.streak||0)+1 : 1;
+    ST.last=t;
+  }
+  ST.days[t]=(ST.days[t]||0)+1;
+  saveStats();
+}
+/* 答錯只退一級，不歸零——一次失誤不該抹掉之前累積的進度 */
+function mark(id,good){
+  var r=rec(id), before=r.box;
+  r.seen++;
+  if(good){ r.right=(r.right||0)+1; r.box=Math.min(5,r.box+1); }
+  else { r.wrong++; r.box=Math.max(0,r.box-1); }
+  countDay(); saveProg();
+  return { before:before, after:r.box, levelUp: (r.box>=3 && before<3) };
+}
+function tally(filter){
+  var t={total:0,started:0,known:0,master:0};
+  ITEMS.forEach(function(x){
+    if(filter && !filter(x)) return;
+    t.total++;
+    var r=P[x.i], b=r?r.box:0;
+    /* 碰過就算「學習中」。只看熟練度的話，答錯一次的句子會從進度條上消失，
+       練了半天卻什麼都沒長，那正是最打擊信心的地方。 */
+    if(r && r.seen) t.started++;
+    if(b>=3) t.known++;
+    if(b>=5) t.master++;
+  });
+  return t;
+}
+function todayCount(){ return ST.days[dayKey()]||0; }
+function dueList(){
+  var a=[]; ITEMS.forEach(function(x){ var r=P[x.i];
+    if(r && r.seen && r.box<3 && r.wrong>0) a.push(x); });
+  a.sort(function(x,y){ return (P[x.i].box-P[y.i].box) || (P[y.i].wrong-P[x.i].wrong); });
+  return a;
+}
+/* 驗收測驗：已學會但還沒精通的句子 */
+function checkList(){
+  var a=[]; ITEMS.forEach(function(x){ var b=boxOf(x.i); if(b>=3&&b<5) a.push(x); });
+  return shuffle(a);
+}
+function poolOf(sel, mode){
+  var pool = ITEMS.filter(function(x){ return sel[x.s]; });
+  if(mode==='produce'||mode==='speak') pool = pool.filter(function(x){ return x.t!=='c'; });
+  return pool;
+}
+/* 每一輪優先給沒學過的句子，混入少量複習，所以可以一直接著學下去 */
+function buildBatch(sel, mode, n){
+  var pool = poolOf(sel, mode), fresh=[], learning=[], ripe=[];
+  pool.forEach(function(x){
+    var r=P[x.i];
+    if(!r || !r.seen) fresh.push(x);
+    else if(r.box<3) learning.push(x);
+    else if(r.box<5) ripe.push(x);
+  });
+  /* 複習先挑最接近「學會」的那幾句——把快到手的先收掉，進度才看得到動。
+     反過來永遠先挑最弱的，會變成每句都卡在低級不上不下。 */
+  learning.sort(function(a,b){ return boxOf(b.i)-boxOf(a.i); });
+  ripe = shuffle(ripe);
+  var want = (!n || n<1) ? pool.length : Math.min(n, pool.length);
+  var out = fresh.slice(0, Math.max(1, Math.round(want*0.4)));
+  out = out.concat(learning.slice(0, Math.max(0, Math.round(want*0.6))));
+  out = out.concat(ripe.slice(0, Math.max(0, want-out.length)));
+  if(out.length<want) out = out.concat(fresh.slice(out.length, want));
+  if(out.length<want) out = out.concat(learning.slice(0, want-out.length));
+  if(out.length<want) out = out.concat(shuffle(pool).slice(0, want-out.length));
+  var seen={}, uniq=[];
+  out.forEach(function(x){ if(!seen[x.i]){ seen[x.i]=1; uniq.push(x); } });
+  return shuffle(uniq.slice(0, want));
+}
+function freshLeft(sel, mode){
+  var n=0; poolOf(sel,mode).forEach(function(x){ var r=P[x.i]; if(!r||!r.seen) n++; });
+  return n;
+}
 
 /* ══════════ 語音朗讀 ══════════ */
-var synth = window.speechSynthesis, voicesJa = [], theVoice = null, primed = false;
+var synth = window.speechSynthesis, voicesJa = [], theVoice = null, altVoice = null, primed = false;
 var TTS_OK = !!synth && typeof window.SpeechSynthesisUtterance === 'function';
+/* 同一支手機上「網路語音」和「本機語音」差距非常大：本機是壓縮過的小模型，
+   聽起來就是機器人；網路語音是神經模型，接近真人。排序時大幅優先網路語音。 */
+function isNetVoice(v){
+  var n=(v.name||'')+' '+(v.voiceURI||'');
+  if(/-network\b|#network|network$/i.test(n)) return true;
+  if(/-local\b|#local|local$|compact/i.test(n)) return false;
+  return v.localService === false;
+}
 function rankVoice(v){
   var n=(v.name||'')+' '+(v.voiceURI||''), sc=0, i,
   good=[[/Nanami/i,100],[/Kyoko/i,97],[/O\s*-?\s*ren/i,92],[/Keita/i,90],[/Google[^|]*(日本語|Japanese)/i,88],
         [/Otoya/i,80],[/Hattori/i,78],[/Sayaka/i,76],[/Mizuki/i,74],[/Takumi/i,72],
         [/Ayumi/i,70],[/Haruka/i,70],[/Ichiro/i,66]];
   for(i=0;i<good.length;i++) if(good[i][0].test(n)) sc=Math.max(sc,good[i][1]);
-  if(/Natural|Neural|Premium|Enhanced/i.test(n)) sc+=30;
-  if(/eSpeak|espeak|compact|Compact|Android Speech/i.test(n)) sc-=70;
   if(sc===0) sc=40;
-  if(v.localService===false) sc+=4;
+  if(/Natural|Neural|Premium|Enhanced/i.test(n)) sc+=40;
+  if(isNetVoice(v)) sc+=60;                       /* 最關鍵的一項 */
+  if(/-local\b|#local|compact/i.test(n)) sc-=35;
+  if(/eSpeak|espeak|Android Speech|Pico/i.test(n)) sc-=90;
   return sc;
 }
+function voiceTag(v){ return isNetVoice(v) ? '網路・自然' : '本機・較機械'; }
 function loadVoices(){
   if(!TTS_OK) return;
   var all=[]; try{ all=synth.getVoices()||[]; }catch(e){ all=[]; }
@@ -962,6 +1104,16 @@ function loadVoices(){
   var want=null,i;
   if(S.voice) for(i=0;i<voicesJa.length;i++) if(voicesJa[i].voiceURI===S.voice) want=voicesJa[i];
   theVoice = want || voicesJa[0] || null;
+  /* 對話模式讓店員和你用不同的聲音，兩個角色才分得開 */
+  altVoice = null;
+  if(theVoice){
+    var stem = function(v){ return String(v.name||'').replace(/[^A-Za-z\u3040-\u30ff\u4e00-\u9fff]/g,'').slice(0,8); };
+    for(i=0;i<voicesJa.length;i++){
+      if(voicesJa[i].voiceURI!==theVoice.voiceURI && stem(voicesJa[i])!==stem(theVoice)){ altVoice=voicesJa[i]; break; }
+    }
+    if(!altVoice) for(i=0;i<voicesJa.length;i++)
+      if(voicesJa[i].voiceURI!==theVoice.voiceURI){ altVoice=voicesJa[i]; break; }
+  }
 }
 if(TTS_OK){
   loadVoices();
@@ -976,8 +1128,9 @@ function prime(){
 }
 var speakToken = 0;
 function stopSpeak(){ speakToken++; if(TTS_OK){ try{ synth.cancel(); }catch(e){} } }
-function speak(text, rate){
+function speak(text, rate, opt){
   var my = ++speakToken;
+  opt = opt || {};
   return new Promise(function(res){
     if(!TTS_OK || !text){ res(); return; }
     try{ synth.cancel(); }catch(e){}
@@ -986,8 +1139,12 @@ function speak(text, rate){
       var u;
       try{ u = new SpeechSynthesisUtterance(text); }catch(e){ res(); return; }
       u.lang='ja-JP';
-      if(theVoice){ try{ u.voice=theVoice; }catch(e){} }
-      u.rate = rate || S.rate; u.pitch = 1; u.volume = 1;
+      var vv = opt.voice || theVoice;
+      if(vv){ try{ u.voice=vv; }catch(e){} }
+      u.rate = rate || S.rate;
+      /* 音調只開放小幅度：拉太高就會變成變聲器那種聲音 */
+      u.pitch = Math.max(0.7, Math.min(1.45, opt.pitch || S.pitch || 1));
+      u.volume = 1;
       var done=false, fin=function(){ if(done) return; done=true; clearTimeout(wd); res(); };
       u.onend=fin; u.onerror=fin;
       var wd=setTimeout(fin, 1200 + text.length*320);
@@ -995,6 +1152,30 @@ function speak(text, rate){
     }, 55);
   });
 }
+/* 慢速重播：只在標點處斷句，一段一段放慢念、中間留白。
+   刻意不照助詞切 —— 日文沒有詞的空格，「お召し上がり」的「が」、「もらえます」的「も」
+   都不是助詞，硬切會把詞念壞，比念太快更糟。 */
+function chunkJa(text){
+  var s=String(text||''), segs=[], cur='', i;
+  for(i=0;i<s.length;i++){
+    cur += s.charAt(i);
+    if('、。！？'.indexOf(s.charAt(i))>=0){ segs.push(cur); cur=''; }
+  }
+  if(cur) segs.push(cur);
+  return segs.filter(function(x){ return x.replace(/[\s　]/g,''); });
+}
+async function speakSlow(text){
+  var parts = chunkJa(text), rate = Math.max(0.45, S.rate-0.25), i;
+  for(i=0;i<parts.length;i++){
+    await speak(parts[i], rate);
+    var mine = speakToken;
+    if(i < parts.length-1){
+      await sleep(280);
+      if(speakToken !== mine) return;   /* 期間被取消或被新的播放取代 */
+    }
+  }
+}
+
 var actx=null;
 function beep(freq,ms){
   try{
@@ -1191,31 +1372,60 @@ var MODES = [
   {id:'shadow', jp:'流', t:'聽讀跟讀（免持）', d:'手機放桌上自動循環，手不用碰螢幕'},
   {id:'dialog', jp:'会', t:'情境模擬', d:'店員講一句，你選怎麼回，走完整個場景'},
   {id:'pairs',  jp:'較', t:'易混淆對照', d:'差一個字意思差很多的句子，集中練'},
+  {id:'check',  jp:'験', t:'驗收測驗', d:'只考你已經學會的，確認是不是真的記住了'},
   {id:'review', jp:'復', t:'錯題複習', d:'答錯過的句子，照間隔重複排程回來'}
 ];
 function homeScreen(){
   wake(false);
-  var due = dueList().length, done = learned();
+  var t = tally(), due = dueList().length, ready = checkList().length;
+  var pct = Math.round(t.known/t.total*100);
   var h = '<div class="hero"><div class="eyebrow">日本旅行會話</div>'+
-    '<div class="t jp">にほん かいわ れんしゅう</div></div>'+
-    '<div class="stats">'+
-      '<div class="stat"><b>'+ITEMS.length+'</b><span>總句數</span></div>'+
-      '<div class="stat"><b style="color:var(--ok)">'+done+'</b><span>已熟練</span></div>'+
-      '<div class="stat"><b style="color:'+(due?'var(--bad)':'var(--muted)')+'">'+due+'</b><span>待複習</span></div>'+
-    '</div><div class="modes">';
+    '<div class="t jp">にほん かいわ れんしゅう</div></div>';
+
+  h += '<div class="card progwrap">'+
+    '<div class="prow"><span class="plabel">學習進度</span>'+
+      '<span class="pnum">'+t.known+' <span class="muted">/ '+t.total+' 句已學會</span></span></div>'+
+    '<div class="pbar"><i class="seg known" style="width:'+(t.known/t.total*100)+'%"></i>'+
+      '<i class="seg doing" style="width:'+((t.started-t.known)/t.total*100)+'%"></i></div>'+
+    '<div class="plegend"><span><i class="dot known"></i>已學會 '+t.known+'</span>'+
+      '<span><i class="dot doing"></i>學習中 '+(t.started-t.known)+'</span>'+
+      '<span><i class="dot master"></i>已精通 '+t.master+'</span></div>'+
+    '</div>';
+
+  h += '<div class="stats">'+
+      '<div class="stat"><b>'+todayCount()+'</b><span>今天練了幾題</span></div>'+
+      '<div class="stat"><b style="color:'+(ST.streak>0?'var(--ok)':'var(--muted)')+'">'+(ST.streak||0)+'</b><span>連續天數</span></div>'+
+      '<div class="stat"><b style="color:'+(due?'var(--warn)':'var(--muted)')+'">'+due+'</b><span>待複習</span></div>'+
+    '</div>';
+
+  if(t.known===0 && t.started===0){
+    h += '<div class="note zh">從「聽力選擇題」開始最輕鬆。每答對一次，那句話的熟練度就往上一級，'+
+         '到第三級就會算進上面的「已學會」。</div>';
+  } else if(ready>=8){
+    h += '<div class="banner good"><span class="ic">✓</span><div>你有 <b>'+ready+' 句</b>已經學會但還沒驗收過，'+
+         '去跑一次「驗收測驗」就知道是不是真的記住了。</div></div>';
+  }
+
+  h += '<div class="modes">';
   MODES.forEach(function(m,ix){
-    var col = SCENES[ix % SCENES.length].color;
+    var col = SCENES[ix % SCENES.length].color, badge='';
+    if(m.id==='review' && due) badge = '<span class="badge">'+due+'</span>';
+    if(m.id==='check' && ready) badge = '<span class="badge" style="background:var(--ok)">'+ready+'</span>';
     h += '<button class="mode" data-m="'+m.id+'" style="--mc:'+col+'">'+
       '<span class="n jp" style="color:'+col+'">'+m.jp+'</span>'+
-      '<span class="b"><strong>'+esc(m.t)+'</strong><em class="zh">'+esc(m.d)+'</em></span>'+
+      '<span class="b"><strong>'+esc(m.t)+badge+'</strong><em class="zh">'+esc(m.d)+'</em></span>'+
       '<span class="chev">'+SVG.chev+'</span></button>';
   });
   h += '</div>';
   if(!TTS_OK) h += '<div class="banner"><span class="ic">！</span><div>這個瀏覽器不支援語音朗讀，建議改用 Chrome、Edge 或 Safari。</div></div>';
+  else if(!S.voiceOK) h += '<div class="banner" id="vbanner"><span class="ic">♪</span>'+
+    '<div>覺得日文念起來像機器人？<b>按這裡調整語音</b>，大部分手機都能換成接近真人的版本。</div></div>';
   var d = screen(h);
   d.querySelectorAll('.mode').forEach(function(b){
     b.onclick = function(){ prime(); openMode(b.dataset.m); };
   });
+  var vb = d.querySelector('#vbanner');
+  if(vb){ vb.style.cursor='pointer'; vb.onclick=function(){ prime(); openSheet('voice'); }; }
   return d;
 }
 function openMode(m){
@@ -1230,7 +1440,21 @@ function openMode(m){
       d.querySelector('#bk').onclick = back;
       return d;
     }, '錯題複習'); }
-    return startQuiz(due.slice(0,Math.max(S.count,10)), 'mix', '錯題複習', '');
+    return startQuiz(due.slice(0,Math.max(S.count,10)), 'mix', '錯題複習', '', {kind:'review'});
+  }
+  if(m==='check'){
+    var ready = checkList();
+    if(ready.length<4){ return go(function(){
+      var d = screen(
+        '<div class="banner"><span class="ic">！</span><div>驗收測驗要等你先學會一些句子才有東西可以考。'+
+        '目前只有 '+ready.length+' 句到達「已學會」，先去聽力選擇題或情境模擬練幾輪，'+
+        '同一句答對三次就會進到這裡。</div></div>'+
+        '<div class="spacer"></div><button class="btn primary" id="bk">回首頁</button>');
+      d.querySelector('#bk').onclick = back;
+      return d;
+    }, '驗收測驗'); }
+    return startQuiz(ready.slice(0, Math.min(ready.length, Math.max(S.count,10))),
+                     'mix', '驗收測驗', '', {kind:'check'});
   }
   go(function(){ return scenePickScreen(m); }, MODES.filter(function(x){return x.id===m;})[0].t);
 }
@@ -1241,14 +1465,17 @@ function scenePickScreen(mode){
   if(!Object.keys(pickSel).length) SCENES.forEach(function(s){ pickSel[s.id]=true; });
   var h = '<div class="eyebrow">選要練的情境</div><div class="scenes">';
   SCENES.forEach(function(s){
-    var n = ITEMS.filter(function(x){ return x.s===s.id; }).length;
+    var t = tally(function(x){ return x.s===s.id; });
     h += '<button class="scene" data-s="'+s.id+'" aria-pressed="'+(pickSel[s.id]?'true':'false')+
       '" style="--sc:'+s.color+'"><span class="bar2"></span>'+
-      '<span class="b"><strong>'+esc(s.label)+'</strong><em>'+esc(s.jp)+'</em></span>'+
-      '<span class="cnt">'+n+'</span><span class="tick"></span></button>';
+      '<span class="b"><strong>'+esc(s.label)+'</strong>'+
+        '<span class="smini"><i style="width:'+(t.known/t.total*100)+'%"></i></span>'+
+        '<em>'+t.known+' / '+t.total+' 已學會</em></span>'+
+      '<span class="tick"></span></button>';
   });
   h += '</div><div class="row"><button class="btn ghost" id="all">全選</button>'+
        '<button class="btn ghost" id="none">全不選</button></div>'+
+       '<div class="note zh" id="left"></div>'+
        '<div class="spacer"></div>'+
        '<button class="btn primary" id="start">開始練習</button>';
   var d = screen(h);
@@ -1257,6 +1484,12 @@ function scenePickScreen(mode){
       b.setAttribute('aria-pressed', pickSel[b.dataset.s]?'true':'false'); });
     var any = SCENES.some(function(s){ return pickSel[s.id]; });
     d.querySelector('#start').disabled = !any;
+    var note = d.querySelector('#left');
+    if(!any){ note.textContent='至少選一個情境。'; return; }
+    var left = freshLeft(pickSel, mode), tot = poolOf(pickSel, mode).length;
+    note.innerHTML = left
+      ? '選到的情境共 <b>'+tot+'</b> 句，其中 <b>'+left+' 句你還沒練過</b>。每一輪會優先出沒練過的，練完可以直接接下一輪。'
+      : '這些情境的 <b>'+tot+'</b> 句你都練過了，接下來會以複習為主。';
   }
   d.querySelectorAll('.scene').forEach(function(b){
     b.onclick=function(){ pickSel[b.dataset.s]=!pickSel[b.dataset.s]; sync(); }; });
@@ -1264,19 +1497,23 @@ function scenePickScreen(mode){
   d.querySelector('#none').onclick=function(){ SCENES.forEach(function(s){pickSel[s.id]=false;}); sync(); };
   d.querySelector('#start').onclick=function(){
     prime();
-    var pool = ITEMS.filter(function(x){ return pickSel[x.s]; });
-    /* 店員講的話只練聽，不拿來當「你要說的句子」 */
-    if(mode==='produce'||mode==='speak') pool = pool.filter(function(x){ return x.t!=='c'; });
-    pool = shuffle(pool).slice(0, S.count===0 ? pool.length : S.count);
-    if(!pool.length) return;
-    var only = SCENES.filter(function(s){return pickSel[s.id];});
-    var col = only.length===1 ? only[0].color : '';
-    if(mode==='speak') startSpeak(pool, col);
-    else if(mode==='shadow') startShadow(pool, col);
-    else startQuiz(pool, mode, MODES.filter(function(x){return x.id===mode;})[0].t, col);
+    var sel={}; SCENES.forEach(function(s){ if(pickSel[s.id]) sel[s.id]=true; });
+    startRound(sel, mode, 1);
   };
   sync();
   return d;
+}
+/* 一輪結束可以直接開下一輪，每輪都會先給沒練過的句子 */
+function startRound(sel, mode, round){
+  var pool = buildBatch(sel, mode, S.count);
+  if(!pool.length) return;
+  var only = SCENES.filter(function(s){ return sel[s.id]; });
+  var col = only.length===1 ? only[0].color : '';
+  var name = MODES.filter(function(x){ return x.id===mode; })[0].t;
+  var ctx = { sel:sel, mode:mode, round:round||1, kind:'round' };
+  if(mode==='speak') startSpeak(pool, col, ctx);
+  else if(mode==='shadow') startShadow(pool, col, ctx);
+  else startQuiz(pool, mode, name, col, ctx);
 }
 
 /* ══════════ 選擇題 ══════════ */
@@ -1291,20 +1528,22 @@ function makeOptions(item, pool, kind){
   }
   return shuffle(out);
 }
-function startQuiz(pool, mode, title, color){
-  var ix=0, right=0, wrong=[];
+function startQuiz(pool, mode, title, color, ctx){
+  var ix=0, right=0, wrong=[], gained=0;
+  ctx = ctx || {};
   function render(){
     var item = pool[ix];
     var kind = mode==='mix' ? (ix%2 ? 'produce':'listen') : mode;
     var opts = makeOptions(item, pool, kind);
-    var answered=false;
-    var h = '<div class="prog"><span>'+(ix+1)+' / '+pool.length+'</span>'+
+    var answered=false, box=boxOf(item.i);
+    var h = '<div class="prog"><span>'+(ix+1)+' / '+pool.length+
+      (ctx.round>1?'　<b>第 '+ctx.round+' 輪</b>':'')+'</span>'+
       '<span class="track"><i class="fill" style="width:'+(ix/pool.length*100)+'%"></i></span>'+
-      '<span>'+right+' 對</span></div>';
+      '<span class="lvl" style="color:'+LVLC[box]+'">'+LVL[box]+'</span></div>';
     if(kind==='listen'){
       h += '<div class="stage"><div class="ask">聽聽看這句是什麼意思</div>'+
         '<button class="speaker" id="spk" aria-label="播放">'+SVG.speaker+'</button>'+
-        '<button class="replay" id="slow">'+SVG.replay+' 慢速再聽一次</button>'+
+        '<div class="row2"><button class="replay" id="slow">'+SVG.replay+' 放慢・分段再聽一次</button></div>'+
         '<div id="reveal" hidden></div></div>';
     } else {
       h += '<div class="stage"><div class="ask">這句日文怎麼說？</div>'+
@@ -1323,14 +1562,18 @@ function startQuiz(pool, mode, title, color){
       return speak(toKanji(item.j), rate).then(function(){ if(spk) spk.classList.remove('playing'); }); }
     if(kind==='listen'){
       spk.onclick=function(){ play(); };
-      d.querySelector('#slow').onclick=function(){ play(Math.max(0.55,S.rate-0.25)); };
+      d.querySelector('#slow').onclick=function(){
+        if(spk) spk.classList.add('playing');
+        speakSlow(toKanji(item.j)).then(function(){ if(spk) spk.classList.remove('playing'); });
+      };
       setTimeout(function(){ play(); }, 260);
     }
     d.querySelectorAll('.opt').forEach(function(b){
       b.onclick=function(){
         if(answered) return; answered=true;
         var good = b.dataset.i===item.i;
-        mark(item.i, good);
+        var mv = mark(item.i, good);
+        if(mv.levelUp) gained++;
         if(good) right++; else wrong.push(item);
         d.querySelectorAll('.opt').forEach(function(o){
           if(o.dataset.i===item.i) o.classList.add('good');
@@ -1345,12 +1588,19 @@ function startQuiz(pool, mode, title, color){
         var af = d.querySelector('#after'), ah='';
         ah += '<div class="verdict '+(good?'ok':'no')+'"><span class="mk">'+(good?'✓':'✕')+'</span>'+
               (good?'答對了':'正確答案是上面綠色那個')+'</div>';
+        /* 讓每一次作答都看得到熟練度的變化 */
+        ah += '<div class="lvlup"><span class="muted">熟練度</span>'+
+              '<span class="pips">'+pips(mv.before)+'</span><span class="arrow">→</span>'+
+              '<span class="pips">'+pips(mv.after)+'</span>'+
+              '<b style="color:'+LVLC[mv.after]+'">'+LVL[mv.after]+'</b></div>';
+        if(mv.levelUp) ah += '<div class="banner good" style="margin-top:9px"><span class="ic">✓</span>'+
+              '<div>這句算你<b>學會了</b>。再答對兩次就會變成「已精通」。</div></div>';
         if(item.n) ah += '<div class="note zh"><b>用法：</b>'+esc(item.n)+'</div>';
         ah += '<button class="btn primary" id="next" style="margin-top:12px">'+
               (ix+1>=pool.length?'看結果':'下一題')+'</button>';
         af.innerHTML = ah;
         af.querySelector('#next').onclick=function(){
-          ix++; if(ix>=pool.length) showResult(right,pool.length,wrong,title,color);
+          ix++; if(ix>=pool.length) showResult(right,pool.length,wrong,title,color,gained,ctx);
           else replace(render,title,color);
         };
         if(kind!=='listen') play();
@@ -1363,8 +1613,9 @@ function startQuiz(pool, mode, title, color){
 }
 
 /* ══════════ 口說練習 ══════════ */
-function startSpeak(pool, color){
-  var ix=0, great=0, results=[], stopped=false;
+function startSpeak(pool, color, ctx){
+  ctx = ctx || {};
+  var ix=0, great=0, results=[], gained=0, stopped=false;
   function render(){
     stopped = false;                 /* 每題重置，replace() 先呼叫過 autoStop() */
     var item = pool[ix];
@@ -1387,7 +1638,7 @@ function startSpeak(pool, color){
 
     function nextQ(){
       ix++;
-      if(ix>=pool.length){ wake(false); showSpeakResult(great,pool.length,results,color); }
+      if(ix>=pool.length){ wake(false); showSpeakResult(great,pool.length,results,color,gained,ctx); }
       else replace(render,'口說練習',color);
     }
     function finish(res){
@@ -1401,7 +1652,7 @@ function startSpeak(pool, color){
           '<button class="btn ghost" id="retry">再念一次</button>'+
           '<button class="btn primary" id="self">我念對了</button></div>';
         after.querySelector('#retry').onclick=function(){ after.innerHTML=''; run(); };
-        after.querySelector('#self').onclick=function(){ mark(item.i,true); great++;
+        after.querySelector('#self').onclick=function(){ if(mark(item.i,true).levelUp) gained++; great++;
           results.push({item:item,score:1,self:true}); nextQ(); };
         return;
       }
@@ -1410,7 +1661,7 @@ function startSpeak(pool, color){
       meter.style.width = pct+'%';
       meter.style.background = lvl==='great'?'var(--ok)':(lvl==='close'?'var(--warn)':'var(--bad)');
       var okNow = lvl==='great';
-      mark(item.i, okNow);
+      if(mark(item.i, okNow).levelUp) gained++;
       if(okNow) great++;
       results.push({item:item,score:g.score,heard:g.heard});
       var vt = lvl==='great' ? ['ok','✓','完全正確']
@@ -1460,15 +1711,16 @@ function startSpeak(pool, color){
         '而且網址必須是 <b>https</b> 或 <b>localhost</b>。</div></div>'+
         '<button class="btn primary" id="go">用自評模式開始</button>');
       d.querySelector('#go').onclick=function(){ prime(); replace(function(){
-        return startSpeakSelf(pool,color); },'口說練習（自評）',color); };
+        return startSpeakSelf(pool,color,ctx); },'口說練習（自評）',color); };
       return d;
     }, '口說練習', color);
     return;
   }
   go(render, '口說練習', color);
 }
-function startSpeakSelf(pool,color){
-  var ix=0, ok=0, results=[];
+function startSpeakSelf(pool,color,ctx){
+  ctx = ctx || {};
+  var ix=0, ok=0, results=[], gained=0;
   function render(){
     var item=pool[ix];
     var h='<div class="prog"><span>'+(ix+1)+' / '+pool.length+'</span>'+
@@ -1491,9 +1743,10 @@ function startSpeakSelf(pool,color){
       d.querySelector('#after').innerHTML=ah;
       d.querySelector('#show').hidden=true;
       d.querySelector('#no').onclick=function(){ mark(item.i,false); results.push({item:item,score:0}); step(); };
-      d.querySelector('#yes').onclick=function(){ mark(item.i,true); ok++; results.push({item:item,score:1}); step(); };
+      d.querySelector('#yes').onclick=function(){ if(mark(item.i,true).levelUp) gained++;
+        ok++; results.push({item:item,score:1}); step(); };
     };
-    function step(){ ix++; if(ix>=pool.length) showSpeakResult(ok,pool.length,results,color);
+    function step(){ ix++; if(ix>=pool.length) showSpeakResult(ok,pool.length,results,color,gained,ctx);
       else replace(render,'口說練習（自評）',color); }
     return d;
   }
@@ -1501,8 +1754,9 @@ function startSpeakSelf(pool,color){
 }
 
 /* ══════════ 聽讀跟讀（免持） ══════════ */
-function startShadow(pool, color){
-  var ix=0, playing=true, stopped=false;
+function startShadow(pool, color, ctx){
+  ctx = ctx || {};
+  var ix=0, playing=true, stopped=false, gained=0;
   function render(){
     stopped = false;                 /* 每句重置 */
     var item=pool[ix];
@@ -1536,9 +1790,9 @@ function startShadow(pool, color){
       if(stopped||!playing) return;
       await sleep(900);
       if(stopped||!playing) return;
-      mark(item.i,true);
+      if(mark(item.i,true).levelUp) gained++;
       ix++;
-      if(ix>=pool.length){ wake(false); showResult(pool.length,pool.length,[],'聽讀跟讀',color); }
+      if(ix>=pool.length){ wake(false); showResult(pool.length,pool.length,[],'聽讀跟讀',color,gained,ctx); }
       else replace(render,'聽讀跟讀',color);
     }
     autoStop=function(){ stopped=true; };
@@ -1567,6 +1821,12 @@ function dialogPickScreen(){
   });
   return d;
 }
+/* 店員一個聲音、你一個聲音。有兩個日文語音就各用一個，只有一個就用音調區分。 */
+function roleOpt(who){
+  if(!S.roles) return {};
+  if(who==='me') return { voice: altVoice||theVoice, pitch: (S.pitch||1) + (altVoice?0:0.16) };
+  return { voice: theVoice, pitch: S.pitch||1 };
+}
 function startDialog(dg){
   var col = (SC[dg.scene]||{}).color || '';
   var ti=0, right=0, asked=0, log=[];
@@ -1575,17 +1835,34 @@ function startDialog(dg){
       '<div id="area"></div><div class="spacer"></div>';
     var d=screen(h);
     var chat=d.querySelector('#chat'), area=d.querySelector('#area');
-    function bubble(side, j, z, wrong){
+    /* 中文預設蓋住，不然眼睛會直接跳過日文去讀中文，等於沒在練聽 */
+    function bubble(side, j, z, wrong, open){
       var b=document.createElement('div');
       b.className='bub '+(side==='them'?'them':'me')+(wrong?' wrong':'');
-      b.innerHTML='<div class="j">'+jpHTML(j)+'</div><div class="z zh">'+esc(z)+'</div>'+
-        (side==='them'?'<button class="spk">'+SVG.small+' 再聽一次</button>':'');
-      if(side==='them') b.querySelector('.spk').onclick=function(){ speak(toKanji(j)); };
+      var shown = S.dlgZh || !!open;
+      b.innerHTML='<div class="j">'+jpHTML(j)+'</div>'+
+        '<div class="z zh"'+(shown?'':' hidden')+'>'+esc(z)+'</div>'+
+        '<div class="bact">'+
+          (side==='them'?'<button class="spk" data-a="say">'+SVG.small+' 再聽</button>':'')+
+          (shown?'':'<button class="spk" data-a="zh">看中文</button>')+
+        '</div>';
+      b.querySelectorAll('.spk').forEach(function(btn){
+        btn.onclick=function(){
+          if(btn.dataset.a==='say'){ speak(toKanji(j), null, roleOpt(side)); }
+          else { b.querySelector('.z').hidden=false; btn.remove(); }
+        };
+      });
       chat.appendChild(b);
       b.scrollIntoView({block:'nearest',behavior:'smooth'});
       return b;
     }
-    log.forEach(function(L){ bubble(L.side,L.j,L.z,L.wrong); });
+    function revealAll(){
+      chat.querySelectorAll('.bub').forEach(function(b){
+        var z=b.querySelector('.z'); if(z) z.hidden=false;
+        var h=b.querySelector('[data-a="zh"]'); if(h) h.remove();
+      });
+    }
+    log.forEach(function(L){ bubble(L.side,L.j,L.z,L.wrong,L.open); });
     function step(){
       if(ti>=dg.turns.length){
         area.innerHTML='<div class="verdict '+(right===asked?'ok':'mid')+'" style="margin:14px 0">'+
@@ -1600,32 +1877,44 @@ function startDialog(dg){
       if(t.who==='clerk'){
         log.push({side:'them',j:t.j,z:t.z});
         bubble('them',t.j,t.z);
-        speak(toKanji(t.j));
+        speak(toKanji(t.j), null, roleOpt('them'));
         ti++;
         setTimeout(step, 1100);
         return;
       }
       asked++;
       var opts=shuffle(t.opts);
-      var h2='<div class="eyebrow" style="margin:14px 0 9px">'+esc(t.q)+'</div><div class="opts">';
+      var h2='<div class="qrow"><div class="eyebrow">'+esc(t.q)+'</div>'+
+        (S.dlgZh?'':'<button class="hintbtn" id="hint">提示・看中文</button>')+'</div><div class="opts">';
       opts.forEach(function(o,n){
         h2+='<button class="opt" data-n="'+t.opts.indexOf(o)+'"><span class="k">'+(n+1)+'</span>'+
           '<span class="txt"><span class="jp">'+jpHTML(o.j)+'</span>'+
-          '<span class="zh" style="display:block;font-size:12.5px;color:var(--muted);margin-top:3px">'+esc(o.z)+'</span></span></button>';
+          '<span class="ozh zh"'+(S.dlgZh?'':' hidden')+'>'+esc(o.z)+'</span></span></button>';
       });
       h2+='</div><div id="fb"></div>';
       area.innerHTML=h2;
+      var hintBtn = area.querySelector('#hint');
+      if(hintBtn) hintBtn.onclick=function(){
+        area.querySelectorAll('.ozh').forEach(function(z){ z.hidden=false; });
+        revealAll(); hintBtn.remove();
+      };
       area.querySelectorAll('.opt').forEach(function(b){
         b.onclick=function(){
           var o=t.opts[+b.dataset.n], good=!!o.ok;
           if(good) right++;
+          countDay();
           area.querySelectorAll('.opt').forEach(function(x){
             var ox=t.opts[+x.dataset.n];
             if(ox.ok) x.classList.add('good'); else if(x===b) x.classList.add('bad'); else x.classList.add('dim');
           });
-          log.push({side:'me',j:o.j,z:o.z,wrong:!good});
-          bubble('me',o.j,o.z,!good);
-          speak(toKanji(o.j));
+          /* 答完才把所有中文攤開 */
+          area.querySelectorAll('.ozh').forEach(function(z){ z.hidden=false; });
+          if(hintBtn) hintBtn.remove();
+          revealAll();
+          log.forEach(function(L){ L.open=true; });
+          log.push({side:'me',j:o.j,z:o.z,wrong:!good,open:true});
+          bubble('me',o.j,o.z,!good,true);
+          speak(toKanji(o.j), null, roleOpt('me'));
           var corr = t.opts.filter(function(x){return x.ok;})[0];
           var fh='<div class="verdict '+(good?'ok':'no')+'" style="margin-top:12px">'+
             '<span class="mk">'+(good?'✓':'✕')+'</span>'+(good?'這樣回就對了':'這句不太對')+'</div>';
@@ -1720,35 +2009,73 @@ function startPair(p, col){
 }
 
 /* ══════════ 結果 ══════════ */
-function showResult(right,total,wrong,title,color){
+function showResult(right,total,wrong,title,color,gained,ctx){
+  ctx = ctx || {}; gained = gained || 0;
   replace(function(){
     var pct = total? Math.round(right/total*100):0;
+    var t = tally();
     var h='<div class="card score"><div class="pct">'+pct+'%</div>'+
       '<div class="lbl">'+total+' 題中答對 '+right+' 題</div></div>';
+
+    /* 這一輪到底換到了什麼 —— 不是只給一個分數就結束 */
+    if(ctx.kind==='check'){
+      h += '<div class="banner good"><span class="ic">✓</span><div>'+
+        (pct>=80
+          ? '驗收通過。答對的那些句子已經升到<b>已精通</b>，表示你是真的記住了，不是剛好猜對。'
+          : '有幾句還不太穩，已經退回「學習中」排進複習。這很正常，再練一輪就回來了。')+
+        '</div></div>';
+    } else if(gained){
+      h += '<div class="banner good"><span class="ic">✓</span><div>這一輪你<b>新學會 '+gained+' 句</b>。</div></div>';
+    }
+
+    h += '<div class="card progwrap">'+
+      '<div class="prow"><span class="plabel">累計進度</span>'+
+        '<span class="pnum">'+t.known+' <span class="muted">/ '+t.total+' 句已學會</span></span></div>'+
+      '<div class="pbar"><i class="seg known" style="width:'+(t.known/t.total*100)+'%"></i>'+
+        '<i class="seg doing" style="width:'+((t.started-t.known)/t.total*100)+'%"></i></div>'+
+      '<div class="plegend"><span><i class="dot known"></i>已學會 '+t.known+'</span>'+
+        '<span><i class="dot doing"></i>學習中 '+(t.started-t.known)+'</span>'+
+        '<span><i class="dot master"></i>已精通 '+t.master+'</span></div></div>';
+
     if(wrong && wrong.length){
       h+='<div class="eyebrow">這幾句再看一次</div><div class="wronglist">';
-      wrong.forEach(function(w){
+      wrong.slice(0,6).forEach(function(w){
         h+='<div class="wrongrow"><div class="b"><div class="j jp">'+jpHTML(w.j)+'</div>'+
           '<div class="z zh">'+esc(w.z)+'</div></div>'+
           '<button data-i="'+w.i+'">'+SVG.small+'</button></div>';
       });
-      h+='</div><div class="note zh">答錯的句子已經收進「錯題複習」，之後會自動排回來給你練。</div>';
-    } else {
-      h+='<div class="banner good"><span class="ic">✓</span><div>這一輪全對。</div></div>';
+      h+='</div><div class="note zh">'+
+        (wrong.length>6 ? '另外還有 '+(wrong.length-6)+' 句，' : '')+
+        '這些已經收進「錯題複習」，之後會自動排回來給你練，不用自己記。</div>';
     }
-    h+='<div class="spacer"></div><div class="row">'+
-      (wrong && wrong.length ? '<button class="btn ghost" id="again">只練錯的</button>' : '')+
-      '<button class="btn primary" id="home">回首頁</button></div>';
+
+    var left = ctx.sel ? freshLeft(ctx.sel, ctx.mode) : 0;
+    h+='<div class="spacer"></div>';
+    if(ctx.kind==='round'){
+      h += '<div class="note zh" style="margin-bottom:10px">'+
+        (left ? '這些情境還有 <b>'+left+' 句</b>沒練過。' : '這些情境的句子都練過一輪了，接下來會以複習為主。')+
+        '</div><button class="btn primary" id="next">繼續下一輪（第 '+((ctx.round||1)+1)+' 輪）</button>'+
+        '<div class="row" style="margin-top:9px">'+
+        (wrong && wrong.length ? '<button class="btn ghost" id="again">只練錯的</button>' : '')+
+        '<button class="btn ghost" id="home">回首頁</button></div>';
+    } else {
+      h += '<div class="row">'+
+        (wrong && wrong.length ? '<button class="btn ghost" id="again">只練錯的</button>' : '')+
+        '<button class="btn primary" id="home">回首頁</button></div>';
+    }
     var d=screen(h);
     d.querySelectorAll('.wrongrow button').forEach(function(b){
       b.onclick=function(){ speak(toKanji(BY_ID[b.dataset.i].j)); }; });
+    var nx = d.querySelector('#next');
+    if(nx) nx.onclick=function(){ prime(); startRound(ctx.sel, ctx.mode, (ctx.round||1)+1); };
     var ag = d.querySelector('#again');
-    if(ag) ag.onclick=function(){ prime(); startQuiz(shuffle(wrong),'mix',title+'・錯題',color); };
+    if(ag) ag.onclick=function(){ prime(); startQuiz(shuffle(wrong),'mix',title+'・錯題',color,{kind:'retry'}); };
     d.querySelector('#home').onclick=function(){ nav=[{r:homeScreen,t:'日本旅行會話',c:''}]; draw(); };
     return d;
   }, '練習結果', color);
 }
-function showSpeakResult(great,total,results,color){
+function showSpeakResult(great,total,results,color,gained,ctx){
+  ctx = ctx || {}; gained = gained || 0;
   replace(function(){
     var pct= total?Math.round(great/total*100):0;
     var h='<div class="card score"><div class="pct">'+pct+'%</div>'+
@@ -1763,10 +2090,28 @@ function showSpeakResult(great,total,results,color){
       });
       h+='</div>';
     } else h+='<div class="banner good"><span class="ic">✓</span><div>這一輪都念對了。</div></div>';
-    h+='<div class="spacer"></div><button class="btn primary" id="home">回首頁</button>';
+    if(gained) h+='<div class="banner good"><span class="ic">✓</span><div>這一輪你<b>新學會 '+gained+' 句</b>。</div></div>';
+    var t = tally();
+    h += '<div class="card progwrap">'+
+      '<div class="prow"><span class="plabel">累計進度</span>'+
+        '<span class="pnum">'+t.known+' <span class="muted">/ '+t.total+' 句已學會</span></span></div>'+
+      '<div class="pbar"><i class="seg known" style="width:'+(t.known/t.total*100)+'%"></i>'+
+        '<i class="seg doing" style="width:'+((t.started-t.known)/t.total*100)+'%"></i></div></div>';
+    h+='<div class="spacer"></div>';
+    if(ctx.kind==='round'){
+      var left = freshLeft(ctx.sel, ctx.mode);
+      h += '<div class="note zh" style="margin-bottom:10px">'+
+        (left ? '這些情境還有 <b>'+left+' 句</b>沒練過。' : '這些情境都練過一輪了。')+'</div>'+
+        '<button class="btn primary" id="next">繼續下一輪（第 '+((ctx.round||1)+1)+' 輪）</button>'+
+        '<div class="row" style="margin-top:9px"><button class="btn ghost" id="home">回首頁</button></div>';
+    } else {
+      h += '<button class="btn primary" id="home">回首頁</button>';
+    }
     var d=screen(h);
     d.querySelectorAll('.wrongrow button').forEach(function(b){
       b.onclick=function(){ speak(toKanji(BY_ID[b.dataset.i].j)); }; });
+    var nx=d.querySelector('#next');
+    if(nx) nx.onclick=function(){ prime(); startRound(ctx.sel, ctx.mode, (ctx.round||1)+1); };
     d.querySelector('#home').onclick=function(){ nav=[{r:homeScreen,t:'日本旅行會話',c:''}]; draw(); };
     return d;
   },'口說結果',color);
@@ -1777,19 +2122,56 @@ var SHEET=el('sheet'), PANEL=el('sheetPanel');
 el('btnSet').onclick=function(){ prime(); openSheet(); };
 SHEET.onclick=function(e){ if(e.target===SHEET) closeSheet(); };
 function closeSheet(){ SHEET.hidden=true; stopSpeak(); }
-function openSheet(){
+function openSheet(focus){
   loadVoices();
   var env = location.protocol==='https:' || location.hostname==='localhost' || location.hostname==='127.0.0.1';
+  var net = voicesJa.filter(isNetVoice).length;
   var h='<div class="grab"></div><h2>設定</h2>';
+
+  /* 「聽起來像機器人」幾乎都是因為手機用的是本機壓縮語音，而不是網路神經語音 */
+  h+='<div class="set" id="sVoice"><label>日文語音</label>';
+  if(!voicesJa.length){
+    h+='<div class="hint">還沒偵測到日文語音。<br>'+
+       '<b>Android</b>：設定 → 系統 → 語言與輸入 → 文字轉語音輸出 → Google 文字轉語音 → 安裝語音資料 → 日本語。<br>'+
+       '<b>iPhone</b>：設定 → 輔助使用 → 朗讀內容 → 語音 → 日文。<br>'+
+       '<b>Windows</b>：設定 → 時間與語言 → 語音 → 新增日文。<br>裝好後重新整理這個頁面。</div>';
+  } else {
+    h+='<button class="btn primary" id="vwiz" style="margin-bottom:4px">聽一句，幫我挑最好的語音</button>';
+    h+='<div class="voicelist">';
+    voicesJa.forEach(function(v,n){
+      var sel = theVoice && v.voiceURI===theVoice.voiceURI, nv = isNetVoice(v);
+      h+='<div class="vrow'+(sel?' sel':'')+'" data-u="'+esc(v.voiceURI)+'">'+
+        '<span class="vn">'+esc(v.name||v.lang)+
+          '<span class="vq'+(nv?' net':'')+'">'+voiceTag(v)+'</span></span>'+
+        (n===0?'<span class="tag">建議</span>':'')+
+        '<button data-act="try">試聽</button>'+
+        '<button data-act="use">'+(sel?'使用中':'選用')+'</button></div>';
+    });
+    h+='</div>';
+    if(!net) h+='<div class="banner" style="margin-top:8px"><span class="ic">！</span><div>'+
+      '這台手機目前只有<b>本機語音</b>，那是壓縮過的小模型，聽起來就是機器人。<br><br>'+
+      '要換成接近真人的網路語音：<b>設定 → 系統 → 語言與輸入 → 文字轉語音輸出</b>，'+
+      '引擎選「Google 文字轉語音」，點旁邊的齒輪 → <b>安裝語音資料 → 日本語</b>，'+
+      '把清單裡標示較大檔案的那幾個（通常寫著「高品質」或下載圖示）裝起來，'+
+      '並把「<b>使用網路語音</b>」打開。回來重新整理這個頁面就會多出選項。</div></div>';
+    else h+='<div class="hint">標「網路・自然」的是神經語音，接近真人；標「本機」的是壓縮模型，'+
+      '沒網路時才建議用。聽不習慣就換一個試試，設定會記住。</div>';
+  }
+  h+='</div>';
 
   h+='<div class="set"><label>日文顯示方式</label><div class="seg" id="segD">'+
      '<button data-v="kanji" aria-pressed="'+(S.display==='kanji')+'">漢字＋假名</button>'+
      '<button data-v="kana" aria-pressed="'+(S.display==='kana')+'">純假名</button></div></div>';
 
   h+='<div class="set"><label>朗讀語速</label><div class="seg" id="segR">'+
-     [['0.7','很慢'],['0.85','慢'],['1','正常'],['1.15','快']].map(function(r){
+     [['0.65','很慢'],['0.8','慢'],['0.95','正常'],['1.1','快']].map(function(r){
        return '<button data-v="'+r[0]+'" aria-pressed="'+(String(S.rate)===r[0])+'">'+r[1]+'</button>';
      }).join('')+'</div></div>';
+
+  h+='<div class="set"><label>聲音高低</label><div class="seg" id="segT">'+
+     [['0.85','低沉'],['1','標準'],['1.2','輕快'],['1.35','更高']].map(function(r){
+       return '<button data-v="'+r[0]+'" aria-pressed="'+(String(S.pitch)===r[0])+'">'+r[1]+'</button>';
+     }).join('')+'</div><div class="hint">調高會比較像卡通角色的語氣。超過這個範圍就會開始像變聲器，所以我沒有開放更高。</div></div>';
 
   h+='<div class="set"><label>每輪題數</label><div class="seg" id="segC">'+
      [['10','10'],['15','15'],['25','25'],['0','全部']].map(function(r){
@@ -1801,24 +2183,6 @@ function openSheet(){
        return '<button data-v="'+r[0]+'" aria-pressed="'+(String(S.pace)===r[0])+'">'+r[1]+'</button>';
      }).join('')+'</div><div class="hint">跟讀模式播完一句後，留給你跟著念的時間。</div></div>';
 
-  h+='<div class="set"><label>日文語音</label>';
-  if(!voicesJa.length){
-    h+='<div class="hint">還沒偵測到日文語音。iPhone 請到「設定 → 輔助使用 → 語音內容」下載日文語音；'+
-       'Windows 請到「設定 → 時間與語言 → 語音」安裝日文。裝好後重新整理這個頁面。</div>';
-  } else {
-    h+='<div class="voicelist">';
-    voicesJa.forEach(function(v,n){
-      var sel = theVoice && v.voiceURI===theVoice.voiceURI;
-      h+='<div class="vrow'+(sel?' sel':'')+'" data-u="'+esc(v.voiceURI)+'">'+
-        '<span class="vn">'+esc(v.name||v.lang)+'</span>'+
-        (n===0?'<span class="tag">建議</span>':'')+
-        '<button data-act="try">試聽</button>'+
-        '<button data-act="use">'+(sel?'使用中':'選用')+'</button></div>';
-    });
-    h+='</div><div class="hint">選一個你聽起來最自然的。名字裡有 Nanami、Kyoko、O-ren、Google 日本語的通常最接近真人。</div>';
-  }
-  h+='</div>';
-
   h+='<div class="set"><label>練習行為</label>'+
      '<div class="sw"><div class="l"><strong>口說免持模式</strong>'+
      '<em>播範讀 → 嗶聲 → 自動開麥 → 判定 → 自動下一句，整輪手不用碰螢幕。</em></div>'+
@@ -1826,6 +2190,12 @@ function openSheet(){
      '<div class="sw"><div class="l"><strong>口說前先播範讀</strong>'+
      '<em>關掉就變成真正的測驗：只看中文，自己想怎麼講。</em></div>'+
      '<button class="toggle" id="tgM" aria-pressed="'+(S.model?'true':'false')+'" aria-label="範讀"></button></div>'+
+     '<div class="sw"><div class="l"><strong>對話用兩個角色的聲音</strong>'+
+     '<em>情境模擬裡店員和你用不同的聲音。這台裝置有兩個以上日文語音就各用一個，只有一個就用音調區分。</em></div>'+
+     '<button class="toggle" id="tgR" aria-pressed="'+(S.roles?'true':'false')+'" aria-label="角色聲音"></button></div>'+
+     '<div class="sw"><div class="l"><strong>情境模擬直接顯示中文</strong>'+
+     '<em>預設關閉：先只看日文，看不懂再按「提示」，答完會自動攤開全部中文。打開就一律顯示。</em></div>'+
+     '<button class="toggle" id="tgZ" aria-pressed="'+(S.dlgZh?'true':'false')+'" aria-label="對話顯示中文"></button></div>'+
      '<div class="sw"><div class="l"><strong>嚴格判定</strong>'+
      '<em>開啟後助詞念錯就算沒過，適合已經練熟想抓細節的時候。</em></div>'+
      '<button class="toggle" id="tgS" aria-pressed="'+(S.strict?'true':'false')+'" aria-label="嚴格判定"></button></div></div>';
@@ -1852,9 +2222,14 @@ function openSheet(){
   }
   seg('#segD','display',String); seg('#segR','rate',Number);
   seg('#segC','count',Number);   seg('#segP','pace',Number);
+  seg('#segT','pitch',Number);
+  var segT = PANEL.querySelector('#segT');
+  if(segT) segT.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){ speak('すみません、ちょっといいですか。'); });
+  });
   function tog(id,key){ var b=PANEL.querySelector(id); if(!b) return;
     b.onclick=function(){ S[key]=!S[key]; saveSet(); b.setAttribute('aria-pressed',S[key]?'true':'false'); }; }
-  tog('#tgH','hands'); tog('#tgM','model'); tog('#tgS','strict');
+  tog('#tgH','hands'); tog('#tgM','model'); tog('#tgS','strict'); tog('#tgZ','dlgZh'); tog('#tgR','roles');
   PANEL.querySelectorAll('.vrow button').forEach(function(b){
     b.onclick=function(){
       var row=b.parentNode, uri=row.dataset.u, v=null;
@@ -1864,7 +2239,7 @@ function openSheet(){
         var prev=theVoice; theVoice=v;
         speak('すみません、駅はどこですか。').then(function(){ theVoice = prev || v; });
       } else {
-        S.voice=uri; saveSet(); theVoice=v;
+        S.voice=uri; S.voiceOK=1; saveSet(); theVoice=v;
         PANEL.querySelectorAll('.vrow').forEach(function(r){
           var on = r.dataset.u===uri;
           r.classList.toggle('sel',on);
@@ -1874,12 +2249,57 @@ function openSheet(){
       }
     };
   });
+
+  /* 語音精靈：放一句真的會用到的話，聽不清楚就換下一個，不用自己讀名字猜 */
+  var wiz = PANEL.querySelector('#vwiz');
+  if(wiz) wiz.onclick=function(){
+    var idx = 0, SAMPLE = 'すみません、駅はどこですか。';
+    voicesJa.forEach(function(v,n){ if(theVoice && v.voiceURI===theVoice.voiceURI) idx=n; });
+    var box = document.createElement('div');
+    box.className = 'wiz';
+    wiz.replaceWith(box);
+    function show(){
+      var v = voicesJa[idx];
+      theVoice = v;
+      box.innerHTML = '<div class="wtop"><b>'+esc(v.name||v.lang)+'</b>'+
+        '<span class="vq'+(isNetVoice(v)?' net':'')+'">'+voiceTag(v)+'</span></div>'+
+        '<div class="wsample jp">すみません、{駅|えき}はどこですか。</div>'.replace(RUBY,
+          S.display==='kana' ? '$2' : '<ruby>$1<rt>$2</rt></ruby>')+
+        '<div class="wask zh">這句聽得清楚嗎？</div>'+
+        '<div class="row"><button class="btn ghost" id="wno">聽不清楚，換下一個</button>'+
+        '<button class="btn primary" id="wyes">就用這個</button></div>'+
+        '<div class="hint">'+(idx+1)+' / '+voicesJa.length+' 個日文語音</div>';
+      speak(SAMPLE);
+      box.querySelector('#wyes').onclick=function(){
+        S.voice=v.voiceURI; S.voiceOK=1; saveSet();
+        box.innerHTML='<div class="banner good"><span class="ic">✓</span><div>好，之後都用 <b>'+
+          esc(v.name||v.lang)+'</b>。隨時可以回到這裡換。</div></div>';
+      };
+      box.querySelector('#wno').onclick=function(){
+        if(idx+1 < voicesJa.length){ idx++; show(); }
+        else {
+          box.innerHTML='<div class="banner"><span class="ic">！</span><div>'+
+            '這台手機上的日文語音都試過了。如果每個都覺得機械，表示系統只裝了本機語音——'+
+            '到「<b>設定 → 系統 → 語言與輸入 → 文字轉語音輸出</b>」，引擎選 Google 文字轉語音，'+
+            '點齒輪 → <b>安裝語音資料 → 日本語</b>，把高品質的那幾個下載下來，'+
+            '並開啟「<b>使用網路語音</b>」，再回來重新整理這頁。</div></div>';
+          S.voiceOK=1; saveSet();
+        }
+      };
+    }
+    show();
+  };
+
   PANEL.querySelector('#reset').onclick=function(){
-    P={}; saveProg();
+    P={}; ST={days:{},streak:0,last:''}; saveProg(); saveStats();
     PANEL.querySelector('#reset').textContent='已清除';
     if(nav.length===1) draw();
   };
   PANEL.querySelector('#close').onclick=closeSheet;
+  if(focus==='voice'){
+    var sv = PANEL.querySelector('#sVoice');
+    if(sv) setTimeout(function(){ sv.scrollIntoView({block:'start',behavior:'smooth'}); }, 80);
+  }
 }
 
 /* ══════════ 啟動 ══════════ */
