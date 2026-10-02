@@ -1,0 +1,16 @@
+{
+  "name": "日本旅行會話練習",
+  "short_name": "日文會話",
+  "description": "310 句日本旅行常用會話，含聽力選擇、口說語音辨識、免持跟讀與情境模擬。",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0C1118",
+  "theme_color": "#0B6FA4",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

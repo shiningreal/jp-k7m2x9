@@ -1,0 +1,1906 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B6FA4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="日文會話">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px system-ui,sans-serif;background:#fafaf9}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>日本旅行會話練習</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* 版面概念：日本車站告示板 —— 左側線路色條、資訊分層、大字可遠讀；下方為拇指操作區 */
+:root{
+  --bg:#EEF1F4;            /* 偏藍的紙灰，不用純白 */
+  --surface:#FFFFFF;
+  --surface-2:#F6F8FA;
+  --fg:#101720;
+  --muted:#5C6773;
+  --line:#D9E0E7;
+  --accent:#0B6FA4;        /* 站名牌藍 */
+  --accent-ink:#FFFFFF;
+  --ok:#1C8A57;
+  --bad:#C4122F;           /* 朱 */
+  --warn:#9A6B00;
+  --scene:#0B6FA4;
+  --shadow:0 1px 2px rgba(16,23,32,.06), 0 6px 20px rgba(16,23,32,.07);
+  --r:14px;
+  --jp:"Zen Kaku Gothic New","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+  --zh:"PingFang TC","Microsoft JhengHei","Noto Sans TC","Heiti TC",sans-serif;
+  --ui:system-ui,-apple-system,"Segoe UI",Roboto,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1118;
+    --surface:#151C25;
+    --surface-2:#1C242F;
+    --fg:#E9EEF4;
+    --muted:#95A3B3;
+    --line:#28323F;
+    --accent:#52B2DE;
+    --accent-ink:#06121B;
+    --ok:#44C286;
+    --bad:#FF7A86;
+    --warn:#E0B458;
+    --scene:#52B2DE;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1118; --surface:#151C25; --surface-2:#1C242F; --fg:#E9EEF4; --muted:#95A3B3;
+  --line:#28323F; --accent:#52B2DE; --accent-ink:#06121B; --ok:#44C286; --bad:#FF7A86;
+  --warn:#E0B458; --scene:#52B2DE;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--ui);
+  -webkit-text-size-adjust:100%;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+.app{height:100%;display:flex;flex-direction:column;max-width:720px;margin:0 auto;
+  background:var(--bg);position:relative}
+
+/* ── 頂部列 ── */
+.bar{display:flex;align-items:center;gap:10px;padding:10px 16px;
+  padding-top:calc(10px + env(safe-area-inset-top,0px));
+  background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.bar .rail{width:5px;height:24px;border-radius:3px;background:var(--scene);flex:none}
+.bar-title{display:flex;align-items:center;gap:9px;flex:1;min-width:0;
+  font-weight:700;font-size:16px;letter-spacing:.01em}
+.bar-title span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iconbtn{background:none;border:1px solid var(--line);border-radius:10px;width:38px;height:38px;
+  display:grid;place-items:center;flex:none;color:var(--muted);padding:0}
+.iconbtn:hover{color:var(--fg);border-color:var(--muted)}
+.iconbtn svg{width:19px;height:19px;display:block}
+
+main{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.screen{display:flex;flex-direction:column;gap:14px;padding:18px 16px;
+  padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));min-height:100%}
+
+/* ── 共用 ── */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.muted{color:var(--muted)}
+.jp{font-family:var(--jp);font-feature-settings:"palt" 1}
+.zh{font-family:var(--zh)}
+h1{font-size:21px;margin:0;font-weight:700;letter-spacing:.01em;text-wrap:balance}
+h2{font-size:15px;margin:0;font-weight:700}
+ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
+
+.btn{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);
+  border-radius:12px;padding:15px 16px;box-shadow:var(--shadow);transition:transform .08s,border-color .15s}
+.btn:active{transform:scale(.985)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent;
+  text-align:center;font-weight:700;font-size:16px}
+.btn.ghost{background:var(--surface-2);box-shadow:none;text-align:center;font-weight:600}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.row{display:flex;gap:10px}
+.row>*{flex:1;min-width:0}
+
+/* ── 首頁 ── */
+.hero{display:flex;flex-direction:column;gap:5px}
+.hero .t{font-family:var(--jp);font-size:27px;font-weight:700;letter-spacing:.02em}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.stat{background:var(--surface);padding:12px 10px;text-align:center}
+.stat b{display:block;font-size:22px;font-variant-numeric:tabular-nums;line-height:1.25}
+.stat span{font-size:11px;color:var(--muted)}
+.modes{display:flex;flex-direction:column;gap:9px}
+.mode{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--surface);
+  border:1px solid var(--line);border-radius:12px;padding:14px 15px;box-shadow:var(--shadow)}
+.mode .n{flex:none;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+  font-family:var(--jp);font-size:15px;font-weight:700;background:var(--surface-2);color:var(--mc,var(--accent));
+  border:1px solid var(--line)}
+.mode .b{flex:1;min-width:0}
+.mode .b strong{display:block;font-size:15.5px;font-weight:700}
+.mode .b em{display:block;font-style:normal;font-size:12.5px;color:var(--muted);margin-top:2px}
+.mode .chev{flex:none;color:var(--muted)}
+
+/* ── 情境選單 ── */
+.scenes{display:flex;flex-direction:column;gap:8px}
+.scene{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);
+  border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+.scene .bar2{width:5px;align-self:stretch;min-height:34px;border-radius:3px;background:var(--sc)}
+.scene .b{flex:1;min-width:0}
+.scene .b strong{display:block;font-size:15px}
+.scene .b em{display:block;font-style:normal;font-family:var(--jp);font-size:12px;color:var(--muted);margin-top:1px}
+.scene .cnt{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.scene[aria-pressed="true"]{border-color:var(--sc);background:var(--surface-2)}
+.scene .tick{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.scene[aria-pressed="true"] .tick{background:var(--sc);border-color:var(--sc)}
+.scene[aria-pressed="true"] .tick::after{content:"";width:6px;height:10px;border:2px solid #fff;
+  border-top:0;border-left:0;transform:rotate(42deg) translate(-1px,-1px)}
+
+/* ── 練習 ── */
+.prog{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.prog .track{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.prog .fill{height:100%;background:var(--scene);transition:width .25s}
+
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--shadow);padding:22px 18px;display:flex;flex-direction:column;
+  align-items:center;gap:14px;text-align:center;border-top:4px solid var(--scene)}
+.stage .ask{font-size:13px;color:var(--muted);letter-spacing:.02em}
+.stage .big-jp{font-family:var(--jp);font-size:clamp(23px,6.4vw,31px);font-weight:700;
+  line-height:2.0;letter-spacing:.015em;text-wrap:balance}
+.stage .big-zh{font-family:var(--zh);font-size:clamp(20px,5.4vw,25px);font-weight:600;
+  line-height:1.6;text-wrap:balance}
+.stage .sub-zh{font-family:var(--zh);font-size:15px;color:var(--muted)}
+.stage .sub-jp{font-family:var(--jp);font-size:16px;color:var(--muted);line-height:1.9}
+
+.speaker{width:88px;height:88px;border-radius:50%;border:2px solid var(--scene);
+  background:var(--surface-2);display:grid;place-items:center;color:var(--scene);margin:2px 0}
+.speaker svg{width:34px;height:34px}
+.speaker.playing{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(11,111,164,.0)}50%{box-shadow:0 0 0 12px rgba(11,111,164,.12)}}
+.replay{display:inline-flex;align-items:center;gap:7px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:999px;padding:8px 15px;font-size:13.5px;font-weight:600;color:var(--muted);width:auto}
+.replay svg{width:16px;height:16px}
+
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:12px;padding:14px 15px;box-shadow:var(--shadow);
+  min-height:58px;transition:transform .08s,border-color .15s,background .15s}
+.opt:active{transform:scale(.985)}
+.opt .k{flex:none;width:25px;height:25px;border-radius:7px;background:var(--surface-2);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted)}
+.opt .txt{flex:1;min-width:0;font-size:16.5px;line-height:1.75}
+.opt.good{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 11%,var(--surface))}
+.opt.good .k{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.opt.bad .k{background:var(--bad);color:#fff;border-color:var(--bad)}
+.opt.dim{opacity:.45}
+
+.note{border-left:3px solid var(--scene);background:var(--surface-2);border-radius:0 10px 10px 0;
+  padding:11px 14px;font-size:13.5px;line-height:1.65;font-family:var(--zh);color:var(--muted)}
+.note b{color:var(--fg)}
+.verdict{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px}
+.verdict .mk{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  font-size:14px;color:#fff;flex:none}
+.verdict.ok .mk{background:var(--ok)} .verdict.ok{color:var(--ok)}
+.verdict.no .mk{background:var(--bad)} .verdict.no{color:var(--bad)}
+.verdict.mid .mk{background:var(--warn)} .verdict.mid{color:var(--warn)}
+
+/* ── 口說 ── */
+.mic{width:110px;height:110px;border-radius:50%;border:none;background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;box-shadow:var(--shadow);margin:4px 0}
+.mic svg{width:42px;height:42px}
+.mic.live{background:var(--bad);animation:live 1.2s ease-in-out infinite}
+@keyframes live{0%,100%{box-shadow:0 0 0 0 rgba(196,18,47,.35)}50%{box-shadow:0 0 0 18px rgba(196,18,47,0)}}
+.heard{font-family:var(--jp);font-size:19px;line-height:1.85;min-height:30px;word-break:break-all}
+.heard .x{color:var(--bad);text-decoration:underline wavy var(--bad);text-underline-offset:4px}
+.heard .ok{color:var(--fg)}
+.meter{width:100%;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;border-radius:3px;transition:width .3s}
+
+/* ── 對話 ── */
+.chat{display:flex;flex-direction:column;gap:11px}
+.bub{max-width:88%;padding:12px 15px;border-radius:15px;box-shadow:var(--shadow);line-height:1.8}
+.bub .j{font-family:var(--jp);font-size:17.5px;line-height:2.0}
+.bub .z{font-family:var(--zh);font-size:13px;color:var(--muted);margin-top:4px}
+.bub.them{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:5px}
+.bub.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:5px}
+.bub.me .z{color:var(--accent-ink);opacity:.8}
+.bub.me.wrong{background:var(--bad)}
+.bub .spk{background:none;border:0;padding:4px 0 0;color:var(--muted);display:inline-flex;align-items:center;gap:5px;font-size:12px}
+.bub.them .spk svg{width:14px;height:14px}
+.scenesetup{font-family:var(--zh);font-size:13.5px;color:var(--muted);text-align:center;
+  padding:9px 12px;background:var(--surface-2);border-radius:10px;line-height:1.6}
+
+/* ── 設定抽屜 ── */
+.sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;
+  background:rgba(8,13,19,.5);backdrop-filter:blur(2px)}
+.sheet .panel{background:var(--surface);width:100%;max-width:720px;max-height:88%;overflow-y:auto;
+  border-radius:18px 18px 0 0;padding:18px 16px;
+  padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px}
+.grab{width:38px;height:4px;background:var(--line);border-radius:2px;align-self:center}
+.set{display:flex;flex-direction:column;gap:8px}
+.set>label{font-size:13px;font-weight:700}
+.set .hint{font-size:12px;color:var(--muted);line-height:1.6;font-family:var(--zh)}
+.seg{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:11px;border:1px solid var(--line)}
+.seg button{flex:1;border:0;background:none;padding:9px 6px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow)}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.sw:last-child{border-bottom:0}
+.sw .l{flex:1;min-width:0}
+.sw .l strong{display:block;font-size:14px}
+.sw .l em{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:2px;font-family:var(--zh);line-height:1.5}
+.toggle{flex:none;width:50px;height:30px;border-radius:15px;background:var(--line);border:0;position:relative;transition:background .18s}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+  background:#fff;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.toggle[aria-pressed="true"]{background:var(--ok)}
+.toggle[aria-pressed="true"]::after{transform:translateX(20px)}
+.voicelist{display:flex;flex-direction:column;gap:7px;max-height:230px;overflow-y:auto}
+.vrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);
+  border-radius:10px;background:var(--surface-2)}
+.vrow.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
+.vrow .vn{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vrow .tag{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 6px;border-radius:5px;
+  background:var(--ok);color:#fff;flex:none}
+.vrow button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:8px;
+  padding:6px 11px;font-size:12px;font-weight:600}
+
+.banner{display:flex;gap:10px;padding:12px 14px;border-radius:11px;font-size:13px;line-height:1.65;
+  font-family:var(--zh);background:color-mix(in srgb,var(--warn) 13%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));color:var(--fg)}
+.banner.good{background:color-mix(in srgb,var(--ok) 11%,var(--surface));
+  border-color:color-mix(in srgb,var(--ok) 32%,var(--line))}
+.banner .ic{flex:none;font-weight:700;color:var(--warn)}
+.banner.good .ic{color:var(--ok)}
+
+/* ── 結果 ── */
+.score{text-align:center;padding:26px 18px}
+.score .pct{font-size:52px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;color:var(--scene)}
+.score .lbl{font-size:13px;color:var(--muted);margin-top:7px}
+.wronglist{display:flex;flex-direction:column;gap:8px}
+.wrongrow{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);
+  border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow)}
+.wrongrow .b{flex:1;min-width:0}
+.wrongrow .j{font-family:var(--jp);font-size:16px;line-height:1.9}
+.wrongrow .z{font-family:var(--zh);font-size:12.5px;color:var(--muted);margin-top:2px}
+.wrongrow button{flex:none;border:1px solid var(--line);background:var(--surface-2);border-radius:9px;
+  width:38px;height:38px;display:grid;place-items:center;color:var(--muted)}
+.wrongrow button svg{width:17px;height:17px}
+
+.pairtip{font-family:var(--zh);font-size:14px;line-height:1.75;background:var(--surface-2);
+  border:1px solid var(--line);border-left:4px solid var(--scene);border-radius:0 11px 11px 0;padding:13px 15px}
+.spacer{flex:1;min-height:8px}
+</style>
+
+</head>
+<body>
+<div class="app" id="app">
+  <header class="bar">
+    <button class="iconbtn" id="btnBack" hidden aria-label="返回">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="bar-title"><span class="rail"></span><span id="barTitle">日本旅行會話</span></div>
+    <button class="iconbtn" id="btnSet" aria-label="設定">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </header>
+  <main id="main"></main>
+</div>
+<div class="sheet" id="sheet" hidden><div class="panel" id="sheetPanel"></div></div>
+
+<script>
+/* 日本旅行會話資料集
+   j 欄位用 {漢字|假名} 標記注音：
+     - 漢字模式 → <ruby>漢字<rt>假名</rt></ruby>
+     - 純假名模式 → 假名
+     - 朗讀 → 漢字（TTS 讀漢字比讀純假名自然）
+   t: p=你會說的句子  c=店員/路人會對你說的話（只練聽）  w=單字
+*/
+window.JPDATA = {
+  scenes: [
+    { id: 'greet',   label: '基本・禮貌',   jp: 'あいさつ',       color: '#FF9500', line: '銀座線' },
+    { id: 'shop',    label: '購物',         jp: 'かいもの',       color: '#F62E36', line: '丸ノ内線' },
+    { id: 'clerk',   label: '店員會說的話', jp: 'てんいんのことば', color: '#0079C2', line: '三田線' },
+    { id: 'food',    label: '餐廳點餐',     jp: 'レストラン',     color: '#C1A470', line: '有楽町線' },
+    { id: 'conbini', label: '超商・藥妝',   jp: 'コンビニ',       color: '#00BB85', line: '千代田線' },
+    { id: 'transit', label: '交通・問路',   jp: 'でんしゃ・みち', color: '#009BBF', line: '東西線' },
+    { id: 'hotel',   label: '住宿',         jp: 'ホテル',         color: '#8F76D6', line: '半蔵門線' },
+    { id: 'sight',   label: '觀光・拍照',   jp: 'かんこう',       color: '#00AC9B', line: '南北線' },
+    { id: 'trouble', label: '出狀況・求助', jp: 'こまったとき',   color: '#B6007A', line: '大江戸線' },
+    { id: 'number',  label: '數字・時間',   jp: 'すうじ・じかん', color: '#E85298', line: '浅草線' }
+  ],
+
+  items: [
+    /* ───────── 基本・禮貌 ───────── */
+    { i:'g01', s:'greet', t:'p', j:'すみません。', z:'不好意思', n:'叫店員、借過、小道歉都用這句，日本最萬用的一句話' },
+    { i:'g02', s:'greet', t:'p', j:'ありがとうございます。', z:'謝謝' },
+    { i:'g03', s:'greet', t:'p', j:'お{願|ねが}いします。', z:'麻煩你了', n:'指著東西加這句就能完成大部分交易' },
+    { i:'g04', s:'greet', t:'p', j:'はい。', z:'是／好' },
+    { i:'g05', s:'greet', t:'p', j:'いいえ。', z:'不是' },
+    { i:'g06', s:'greet', t:'p', j:'{大丈夫|だいじょうぶ}です。', z:'沒關係／不用了', n:'被推銷時說這句＝婉拒；被關心時說這句＝我沒事。看情境' },
+    { i:'g07', s:'greet', t:'p', j:'けっこうです。', z:'不用了', n:'比「大丈夫です」更明確的拒絕，不會被誤會' },
+    { i:'g08', s:'greet', t:'p', j:'ちょっと{待|ま}ってください。', z:'請等一下' },
+    { i:'g09', s:'greet', t:'p', j:'もう{一度|いちど}お{願|ねが}いします。', z:'請再說一次' },
+    { i:'g10', s:'greet', t:'p', j:'ゆっくり{話|はな}してください。', z:'請說慢一點' },
+    { i:'g11', s:'greet', t:'p', j:'{日本語|にほんご}が{分|わ}かりません。', z:'我不懂日文' },
+    { i:'g12', s:'greet', t:'p', j:'{少|すこ}しだけ{分|わ}かります。', z:'我只懂一點點' },
+    { i:'g13', s:'greet', t:'p', j:'{英語|えいご}が{話|はな}せる{人|ひと}はいますか。', z:'有人會說英文嗎' },
+    { i:'g14', s:'greet', t:'p', j:'これは{何|なん}ですか。', z:'這是什麼' },
+    { i:'g15', s:'greet', t:'p', j:'ごめんなさい。', z:'對不起' },
+    { i:'g16', s:'greet', t:'p', j:'おはようございます。', z:'早安' },
+    { i:'g17', s:'greet', t:'p', j:'こんにちは。', z:'你好（白天）' },
+    { i:'g18', s:'greet', t:'p', j:'こんばんは。', z:'晚安（見面時）' },
+    { i:'g19', s:'greet', t:'p', j:'{失礼|しつれい}します。', z:'打擾了／先告辭' },
+    { i:'g20', s:'greet', t:'p', j:'いただきます。', z:'我開動了' },
+    { i:'g21', s:'greet', t:'p', j:'ごちそうさまでした。', z:'謝謝招待（吃飽了）' },
+    { i:'g22', s:'greet', t:'p', j:'どういたしまして。', z:'不客氣' },
+    { i:'g23', s:'greet', t:'p', j:'わかりました。', z:'我知道了' },
+    { i:'g24', s:'greet', t:'p', j:'これ、{書|か}いてもらえますか。', z:'可以幫我寫下來嗎', n:'聽不懂又很重要的時候，請對方寫下來最快' },
+    { i:'g25', s:'greet', t:'p', j:'{名前|なまえ}は{何|なん}ですか。', z:'請問叫什麼名字' },
+    { i:'g26', s:'greet', t:'p', j:'よろしくお{願|ねが}いします。', z:'請多指教' },
+
+    /* ───────── 購物 ───────── */
+    { i:'s01', s:'shop', t:'p', j:'これ、ください。', z:'我要這個', n:'手指著東西講就成立，購物最核心的一句' },
+    { i:'s02', s:'shop', t:'p', j:'それをください。', z:'我要那個' },
+    { i:'s03', s:'shop', t:'p', j:'いくらですか。', z:'多少錢' },
+    { i:'s04', s:'shop', t:'p', j:'{全部|ぜんぶ}でいくらですか。', z:'全部多少錢' },
+    { i:'s05', s:'shop', t:'p', j:'{見|み}ているだけです。', z:'我只是看看', n:'被店員搭話又不想買的時候用這句，超實用' },
+    { i:'s06', s:'shop', t:'p', j:'{試着|しちゃく}してもいいですか。', z:'可以試穿嗎' },
+    { i:'s07', s:'shop', t:'p', j:'{他|ほか}の{色|いろ}はありますか。', z:'有別的顏色嗎' },
+    { i:'s08', s:'shop', t:'p', j:'{他|ほか}のサイズはありますか。', z:'有別的尺寸嗎' },
+    { i:'s09', s:'shop', t:'p', j:'{大|おお}きいのはありますか。', z:'有大一點的嗎' },
+    { i:'s10', s:'shop', t:'p', j:'{小|ちい}さいのはありますか。', z:'有小一點的嗎' },
+    { i:'s11', s:'shop', t:'p', j:'{安|やす}いのはありますか。', z:'有便宜一點的嗎' },
+    { i:'s12', s:'shop', t:'p', j:'これと{同|おな}じものはありますか。', z:'有跟這個一樣的嗎' },
+    { i:'s13', s:'shop', t:'p', j:'{在庫|ざいこ}はありますか。', z:'還有庫存嗎' },
+    { i:'s14', s:'shop', t:'p', j:'{免税|めんぜい}できますか。', z:'可以免稅嗎' },
+    { i:'s15', s:'shop', t:'p', j:'パスポートはこれです。', z:'這是我的護照' },
+    { i:'s16', s:'shop', t:'p', j:'カードで{払|はら}えますか。', z:'可以刷卡嗎' },
+    { i:'s17', s:'shop', t:'p', j:'{現金|げんきん}で{払|はら}います。', z:'我付現金' },
+    { i:'s18', s:'shop', t:'p', j:'{袋|ふくろ}はいりません。', z:'不用袋子' },
+    { i:'s19', s:'shop', t:'p', j:'{袋|ふくろ}をください。', z:'請給我袋子' },
+    { i:'s20', s:'shop', t:'p', j:'{別々|べつべつ}でお{願|ねが}いします。', z:'麻煩分開結帳' },
+    { i:'s21', s:'shop', t:'p', j:'{一緒|いっしょ}でお{願|ねが}いします。', z:'一起結帳就好' },
+    { i:'s22', s:'shop', t:'p', j:'プレゼント{用|よう}でお{願|ねが}いします。', z:'麻煩包成送禮用的' },
+    { i:'s23', s:'shop', t:'p', j:'{少|すこ}し{考|かんが}えます。', z:'我再考慮一下' },
+    { i:'s24', s:'shop', t:'p', j:'また{来|き}ます。', z:'我再過來' },
+    { i:'s25', s:'shop', t:'p', j:'これ、{返品|へんぴん}できますか。', z:'這個可以退貨嗎' },
+    { i:'s26', s:'shop', t:'p', j:'レシートをください。', z:'請給我收據' },
+    { i:'s27', s:'shop', t:'p', j:'{値段|ねだん}が{違|ちが}うみたいです。', z:'價錢好像不對' },
+    { i:'s28', s:'shop', t:'p', j:'{試食|ししょく}してもいいですか。', z:'可以試吃嗎' },
+    { i:'s29', s:'shop', t:'p', j:'{割引|わりびき}はありますか。', z:'有折扣嗎' },
+    { i:'s30', s:'shop', t:'p', j:'{消費税|しょうひぜい}は{込|こ}みですか。', z:'有含稅嗎' },
+    { i:'s31', s:'shop', t:'p', j:'どこで{買|か}えますか。', z:'哪裡買得到' },
+    { i:'s32', s:'shop', t:'p', j:'{売|う}り{切|き}れですか。', z:'賣完了嗎' },
+    { i:'s33', s:'shop', t:'p', j:'{取|と}り{置|お}きできますか。', z:'可以幫我保留嗎' },
+    { i:'s34', s:'shop', t:'p', j:'これ、{人気|にんき}ですか。', z:'這個很受歡迎嗎' },
+    { i:'s35', s:'shop', t:'p', j:'{新|あたら}しいのをください。', z:'請給我新的' },
+    { i:'s36', s:'shop', t:'p', j:'{別|べつ}の{店|みせ}にありますか。', z:'別家店會有嗎' },
+
+    /* ───────── 店員會說的話（只練聽） ───────── */
+    { i:'c01', s:'clerk', t:'c', j:'いらっしゃいませ。', z:'歡迎光臨', n:'不用回話，點個頭就好' },
+    { i:'c02', s:'clerk', t:'c', j:'{袋|ふくろ}はご{利用|りよう}ですか。', z:'需要袋子嗎' },
+    { i:'c03', s:'clerk', t:'c', j:'{温|あたた}めますか。', z:'要加熱嗎' },
+    { i:'c04', s:'clerk', t:'c', j:'お{箸|はし}はおつけしますか。', z:'要附筷子嗎' },
+    { i:'c05', s:'clerk', t:'c', j:'スプーンはおつけしますか。', z:'要附湯匙嗎' },
+    { i:'c06', s:'clerk', t:'c', j:'ポイントカードはお{持|も}ちですか。', z:'有集點卡嗎' },
+    { i:'c07', s:'clerk', t:'c', j:'こちらでお{召|め}し{上|あ}がりですか、お{持|も}ち{帰|かえ}りですか。', z:'內用還是外帶', n:'速食店必問，聽到「おめしあがり」＝內用、「おもちかえり」＝外帶' },
+    { i:'c08', s:'clerk', t:'c', j:'お{支払|しはら}いは{現金|げんきん}ですか、カードですか。', z:'要付現還是刷卡' },
+    { i:'c09', s:'clerk', t:'c', j:'レシートはご{利用|りよう}ですか。', z:'收據需要嗎' },
+    { i:'c10', s:'clerk', t:'c', j:'{少々|しょうしょう}お{待|ま}ちください。', z:'請稍等' },
+    { i:'c11', s:'clerk', t:'c', j:'お{待|ま}たせしました。', z:'讓您久等了' },
+    { i:'c12', s:'clerk', t:'c', j:'こちらでよろしいですか。', z:'這樣可以嗎' },
+    { i:'c13', s:'clerk', t:'c', j:'ご{注文|ちゅうもん}は{以上|いじょう}でよろしいですか。', z:'餐點這樣就好了嗎' },
+    { i:'c14', s:'clerk', t:'c', j:'{何名様|なんめいさま}ですか。', z:'請問幾位' },
+    { i:'c15', s:'clerk', t:'c', j:'{喫煙席|きつえんせき}と{禁煙席|きんえんせき}、どちらがよろしいですか。', z:'吸菸區還是禁菸區' },
+    { i:'c16', s:'clerk', t:'c', j:'ただいま{満席|まんせき}です。', z:'現在客滿' },
+    { i:'c17', s:'clerk', t:'c', j:'{申|もう}し{訳|わけ}ございません。', z:'非常抱歉' },
+    { i:'c18', s:'clerk', t:'c', j:'{品切|しなぎ}れです。', z:'賣完了' },
+    { i:'c19', s:'clerk', t:'c', j:'こちらにサインをお{願|ねが}いします。', z:'請在這裡簽名' },
+    { i:'c20', s:'clerk', t:'c', j:'{暗証番号|あんしょうばんごう}をお{願|ねが}いします。', z:'請輸入密碼' },
+    { i:'c21', s:'clerk', t:'c', j:'{千円|せんえん}のお{返|かえ}しです。', z:'找您一千元' },
+    { i:'c22', s:'clerk', t:'c', j:'ご{一緒|いっしょ}でよろしいですか。', z:'一起結帳嗎' },
+    { i:'c23', s:'clerk', t:'c', j:'こちらへどうぞ。', z:'這邊請' },
+    { i:'c24', s:'clerk', t:'c', j:'{次|つぎ}にお{待|ま}ちのお{客様|きゃくさま}どうぞ。', z:'下一位客人請' },
+    { i:'c25', s:'clerk', t:'c', j:'ご{予約|よやく}はされていますか。', z:'有預約嗎' },
+    { i:'c26', s:'clerk', t:'c', j:'{身分証明書|みぶんしょうめいしょ}をお{願|ねが}いします。', z:'請出示證件' },
+    { i:'c27', s:'clerk', t:'c', j:'そのままお{進|すす}みください。', z:'請直接往前走' },
+    { i:'c28', s:'clerk', t:'c', j:'あちらのレジへどうぞ。', z:'請到那邊的收銀台' },
+    { i:'c29', s:'clerk', t:'c', j:'{温|あたた}かいものはこちらの{袋|ふくろ}に{入|い}れますね。', z:'熱的我幫您裝這個袋子喔' },
+    { i:'c30', s:'clerk', t:'c', j:'ありがとうございました。', z:'謝謝惠顧' },
+
+    /* ───────── 餐廳點餐 ───────── */
+    { i:'f01', s:'food', t:'p', j:'{二人|ふたり}です。', z:'兩位', n:'走進店裡店員問人數，比手指＋這句就好' },
+    { i:'f02', s:'food', t:'p', j:'{席|せき}はありますか。', z:'有位子嗎' },
+    { i:'f03', s:'food', t:'p', j:'どのくらい{待|ま}ちますか。', z:'要等多久' },
+    { i:'f04', s:'food', t:'p', j:'メニューをください。', z:'請給我菜單' },
+    { i:'f05', s:'food', t:'p', j:'{英語|えいご}のメニューはありますか。', z:'有英文菜單嗎' },
+    { i:'f06', s:'food', t:'p', j:'{写真|しゃしん}つきのメニューはありますか。', z:'有附照片的菜單嗎' },
+    { i:'f07', s:'food', t:'p', j:'おすすめは{何|なん}ですか。', z:'推薦什麼' },
+    { i:'f08', s:'food', t:'p', j:'これをください。', z:'我要這個' },
+    { i:'f09', s:'food', t:'p', j:'これと{同|おな}じものをください。', z:'我要跟這個一樣的', n:'看到隔壁桌好吃的就指著說這句' },
+    { i:'f10', s:'food', t:'p', j:'{注文|ちゅうもん}をお{願|ねが}いします。', z:'我要點餐' },
+    { i:'f11', s:'food', t:'p', j:'{辛|から}くしないでください。', z:'請不要辣' },
+    { i:'f12', s:'food', t:'p', j:'ねぎを{抜|ぬ}いてください。', z:'請不要加蔥' },
+    { i:'f13', s:'food', t:'p', j:'わさび{抜|ぬ}きでお{願|ねが}いします。', z:'不要哇沙比' },
+    { i:'f14', s:'food', t:'p', j:'アレルギーがあります。', z:'我有過敏' },
+    { i:'f15', s:'food', t:'p', j:'{肉|にく}は{食|た}べられません。', z:'我不能吃肉' },
+    { i:'f16', s:'food', t:'p', j:'{卵|たまご}は{入|はい}っていますか。', z:'裡面有蛋嗎' },
+    { i:'f17', s:'food', t:'p', j:'ベジタリアンです。', z:'我吃素' },
+    { i:'f18', s:'food', t:'p', j:'{大盛|おおも}りにできますか。', z:'可以加大嗎' },
+    { i:'f19', s:'food', t:'p', j:'{取|と}り{皿|ざら}をください。', z:'請給我小盤子' },
+    { i:'f20', s:'food', t:'p', j:'お{水|みず}をください。', z:'請給我水' },
+    { i:'f21', s:'food', t:'p', j:'おしぼりをください。', z:'請給我濕紙巾' },
+    { i:'f22', s:'food', t:'p', j:'{追加|ついか}でお{願|ねが}いします。', z:'我要加點' },
+    { i:'f23', s:'food', t:'p', j:'まだ{来|き}ていません。', z:'餐還沒來' },
+    { i:'f24', s:'food', t:'p', j:'これ、{頼|たの}んでいません。', z:'這個我沒點' },
+    { i:'f25', s:'food', t:'p', j:'お{会計|かいけい}お{願|ねが}いします。', z:'麻煩結帳' },
+    { i:'f26', s:'food', t:'p', j:'{別々|べつべつ}で{払|はら}えますか。', z:'可以分開付嗎' },
+    { i:'f27', s:'food', t:'p', j:'{持|も}ち{帰|かえ}りできますか。', z:'可以外帶嗎', n:'問「能不能外帶」。要說自己選外帶是下一句' },
+    { i:'f28', s:'food', t:'p', j:'{持|も}ち{帰|かえ}りでお{願|ねが}いします。', z:'我要外帶', n:'店員問內用外帶時，回這句' },
+    { i:'f29', s:'food', t:'p', j:'ここで{食|た}べます。', z:'我在這裡吃' },
+    { i:'f30', s:'food', t:'p', j:'おいしいです。', z:'很好吃' },
+    { i:'f31', s:'food', t:'p', j:'{禁煙席|きんえんせき}でお{願|ねが}いします。', z:'麻煩禁菸區' },
+    { i:'f32', s:'food', t:'p', j:'{生|なま}ビールをください。', z:'請給我生啤酒' },
+    { i:'f33', s:'food', t:'p', j:'ノンアルコールはありますか。', z:'有無酒精的嗎' },
+    { i:'f34', s:'food', t:'p', j:'{食|た}べ{放題|ほうだい}はありますか。', z:'有吃到飽嗎' },
+    { i:'f35', s:'food', t:'p', j:'{時間制限|じかんせいげん}はありますか。', z:'有時間限制嗎' },
+    { i:'f36', s:'food', t:'p', j:'{券売機|けんばいき}はどこですか。', z:'售票機在哪裡', n:'拉麵店、定食店大多先在機器買餐券' },
+    { i:'f37', s:'food', t:'p', j:'{使|つか}い{方|かた}を{教|おし}えてください。', z:'請教我怎麼用' },
+    { i:'f38', s:'food', t:'p', j:'{量|りょう}は{多|おお}いですか。', z:'份量多嗎' },
+    { i:'f39', s:'food', t:'p', j:'{子供|こども}{用|よう}のいすはありますか。', z:'有兒童椅嗎' },
+    { i:'f40', s:'food', t:'p', j:'トイレはどこですか。', z:'廁所在哪裡' },
+    { i:'f41', s:'food', t:'p', j:'お{冷|ひ}やをください。', z:'請給我冰水', n:'居酒屋、定食店常用的講法' },
+
+    /* ───────── 超商・藥妝 ───────── */
+    { i:'k01', s:'conbini', t:'p', j:'{温|あたた}めてください。', z:'請幫我加熱' },
+    { i:'k02', s:'conbini', t:'p', j:'{温|あたた}めなくていいです。', z:'不用加熱' },
+    { i:'k03', s:'conbini', t:'p', j:'お{箸|はし}をください。', z:'請給我筷子' },
+    { i:'k04', s:'conbini', t:'p', j:'スプーンをください。', z:'請給我湯匙' },
+    { i:'k05', s:'conbini', t:'p', j:'ストローをください。', z:'請給我吸管' },
+    { i:'k06', s:'conbini', t:'p', j:'{袋|ふくろ}を{一枚|いちまい}ください。', z:'請給我一個袋子', n:'袋子的量詞是「枚（まい）」' },
+    { i:'k07', s:'conbini', t:'p', j:'ポイントカードはありません。', z:'我沒有集點卡' },
+    { i:'k08', s:'conbini', t:'p', j:'{別|べつ}の{袋|ふくろ}に{入|い}れてください。', z:'請分開裝' },
+    { i:'k09', s:'conbini', t:'p', j:'ここで{食|た}べてもいいですか。', z:'可以在這裡吃嗎' },
+    { i:'k10', s:'conbini', t:'p', j:'ATMはありますか。', z:'有提款機嗎' },
+    { i:'k11', s:'conbini', t:'p', j:'コピー{機|き}を{使|つか}いたいです。', z:'我想用影印機' },
+    { i:'k12', s:'conbini', t:'p', j:'{切手|きって}はありますか。', z:'有賣郵票嗎' },
+    { i:'k13', s:'conbini', t:'p', j:'{宅配|たくはい}をお{願|ねが}いします。', z:'我要寄宅配' },
+    { i:'k14', s:'conbini', t:'p', j:'{風邪薬|かぜぐすり}はありますか。', z:'有感冒藥嗎' },
+    { i:'k15', s:'conbini', t:'p', j:'{頭|あたま}が{痛|いた}いです。', z:'我頭痛' },
+    { i:'k16', s:'conbini', t:'p', j:'{胃|い}が{痛|いた}いです。', z:'我胃痛' },
+    { i:'k17', s:'conbini', t:'p', j:'{酔|よ}い{止|ど}めはありますか。', z:'有暈車藥嗎' },
+    { i:'k18', s:'conbini', t:'p', j:'{絆創膏|ばんそうこう}はどこですか。', z:'OK繃在哪裡' },
+    { i:'k19', s:'conbini', t:'p', j:'{日焼|ひや}け{止|ど}めはどこですか。', z:'防曬在哪裡' },
+    { i:'k20', s:'conbini', t:'p', j:'{一日|いちにち}に{何回|なんかい}{飲|の}みますか。', z:'一天要吃幾次' },
+    { i:'k21', s:'conbini', t:'p', j:'{免税|めんぜい}カウンターはどこですか。', z:'免稅櫃台在哪裡' },
+    { i:'k22', s:'conbini', t:'p', j:'{電池|でんち}はありますか。', z:'有電池嗎' },
+    { i:'k23', s:'conbini', t:'p', j:'{充電器|じゅうでんき}はありますか。', z:'有充電器嗎' },
+    { i:'k24', s:'conbini', t:'p', j:'{冷|つめ}たいのと{温|あたた}かいの、{分|わ}けてください。', z:'冷的熱的請分開裝' },
+
+    /* ───────── 交通・問路 ───────── */
+    { i:'t01', s:'transit', t:'p', j:'すみません、{道|みち}を{教|おし}えてください。', z:'不好意思，請告訴我怎麼走' },
+    { i:'t02', s:'transit', t:'p', j:'ここはどこですか。', z:'這裡是哪裡' },
+    { i:'t03', s:'transit', t:'p', j:'{駅|えき}はどこですか。', z:'車站在哪裡' },
+    { i:'t04', s:'transit', t:'p', j:'{地下鉄|ちかてつ}の{駅|えき}はどこですか。', z:'地鐵站在哪裡' },
+    { i:'t05', s:'transit', t:'p', j:'ここに{行|い}きたいです。', z:'我想去這裡', n:'指著地圖或螢幕說這句，萬用到不行' },
+    { i:'t06', s:'transit', t:'p', j:'{歩|ある}いて{何分|なんぷん}くらいですか。', z:'走路大概幾分鐘' },
+    { i:'t07', s:'transit', t:'p', j:'{遠|とお}いですか。', z:'會很遠嗎' },
+    { i:'t08', s:'transit', t:'p', j:'{歩|ある}いて{行|い}けますか。', z:'走路到得了嗎' },
+    { i:'t09', s:'transit', t:'p', j:'この{電車|でんしゃ}は{東京|とうきょう}に{行|い}きますか。', z:'這班電車有到東京嗎' },
+    { i:'t10', s:'transit', t:'p', j:'{何番線|なんばんせん}ですか。', z:'幾號月台' },
+    { i:'t11', s:'transit', t:'p', j:'{乗|の}り{換|か}えはどこですか。', z:'在哪裡換車' },
+    { i:'t12', s:'transit', t:'p', j:'{乗|の}り{換|か}えは{必要|ひつよう}ですか。', z:'需要換車嗎' },
+    { i:'t13', s:'transit', t:'p', j:'{切符|きっぷ}はどこで{買|か}いますか。', z:'票在哪裡買' },
+    { i:'t14', s:'transit', t:'p', j:'ICカードはチャージできますか。', z:'IC卡可以儲值嗎' },
+    { i:'t15', s:'transit', t:'p', j:'チャージしたいです。', z:'我要儲值' },
+    { i:'t16', s:'transit', t:'p', j:'{一日乗車券|いちにちじょうしゃけん}はありますか。', z:'有一日券嗎' },
+    { i:'t17', s:'transit', t:'p', j:'{次|つぎ}の{電車|でんしゃ}は{何時|なんじ}ですか。', z:'下一班電車幾點' },
+    { i:'t18', s:'transit', t:'p', j:'{終電|しゅうでん}は{何時|なんじ}ですか。', z:'末班車幾點' },
+    { i:'t19', s:'transit', t:'p', j:'{急行|きゅうこう}は{止|と}まりますか。', z:'快車有停嗎' },
+    { i:'t20', s:'transit', t:'p', j:'{出口|でぐち}はどこですか。', z:'出口在哪裡' },
+    { i:'t21', s:'transit', t:'p', j:'{北口|きたぐち}はどちらですか。', z:'北口在哪一邊' },
+    { i:'t22', s:'transit', t:'p', j:'エレベーターはどこですか。', z:'電梯在哪裡' },
+    { i:'t23', s:'transit', t:'p', j:'コインロッカーはありますか。', z:'有投幣置物櫃嗎' },
+    { i:'t24', s:'transit', t:'p', j:'タクシー{乗|の}り{場|ば}はどこですか。', z:'計程車招呼站在哪' },
+    { i:'t25', s:'transit', t:'p', j:'バス{停|てい}はどこですか。', z:'公車站在哪裡' },
+    { i:'t26', s:'transit', t:'p', j:'このバスは{空港|くうこう}に{行|い}きますか。', z:'這班公車到機場嗎' },
+    { i:'t27', s:'transit', t:'p', j:'{空港|くうこう}までお{願|ねが}いします。', z:'麻煩到機場' },
+    { i:'t28', s:'transit', t:'p', j:'ここで{降|お}ります。', z:'我在這裡下車' },
+    { i:'t29', s:'transit', t:'p', j:'{着|つ}いたら{教|おし}えてください。', z:'到了請告訴我' },
+    { i:'t30', s:'transit', t:'p', j:'{乗|の}り{過|す}ごしました。', z:'我坐過站了' },
+    { i:'t31', s:'transit', t:'p', j:'{反対方向|はんたいほうこう}に{乗|の}ってしまいました。', z:'我搭到反方向了' },
+    { i:'t32', s:'transit', t:'p', j:'{地図|ちず}で{教|おし}えてもらえますか。', z:'可以在地圖上指給我看嗎' },
+    { i:'t33', s:'transit', t:'p', j:'{終|お}わりましたら{教|おし}えてください。', z:'結束的話請告訴我' },
+    { i:'t34', s:'transit', t:'w', j:'まっすぐ', z:'直走' },
+    { i:'t35', s:'transit', t:'w', j:'{右|みぎ}', z:'右邊' },
+    { i:'t36', s:'transit', t:'w', j:'{左|ひだり}', z:'左邊' },
+    { i:'t37', s:'transit', t:'w', j:'{角|かど}', z:'轉角' },
+    { i:'t38', s:'transit', t:'w', j:'{信号|しんごう}', z:'紅綠燈' },
+    { i:'t39', s:'transit', t:'w', j:'{交差点|こうさてん}', z:'十字路口' },
+    { i:'t40', s:'transit', t:'w', j:'{突|つ}き{当|あ}たり', z:'路的盡頭' },
+    { i:'t41', s:'transit', t:'w', j:'{向|む}かい', z:'對面' },
+    { i:'t42', s:'transit', t:'w', j:'{隣|となり}', z:'隔壁' },
+    { i:'t43', s:'transit', t:'c', j:'{二|ふた}つ{目|め}の{信号|しんごう}を{右|みぎ}です。', z:'第二個紅綠燈右轉' },
+    { i:'t44', s:'transit', t:'c', j:'この{道|みち}をまっすぐです。', z:'這條路直走' },
+    { i:'t45', s:'transit', t:'c', j:'{突|つ}き{当|あ}たりを{左|ひだり}に{曲|ま}がってください。', z:'走到底左轉' },
+
+    /* ───────── 住宿 ───────── */
+    { i:'h01', s:'hotel', t:'p', j:'チェックインお{願|ねが}いします。', z:'我要辦入住' },
+    { i:'h02', s:'hotel', t:'p', j:'{予約|よやく}しています。', z:'我有預約' },
+    { i:'h03', s:'hotel', t:'p', j:'チェックアウトは{何時|なんじ}ですか。', z:'退房是幾點' },
+    { i:'h04', s:'hotel', t:'p', j:'{荷物|にもつ}を{預|あず}かってもらえますか。', z:'可以幫我寄放行李嗎' },
+    { i:'h05', s:'hotel', t:'p', j:'{荷物|にもつ}を{取|と}りに{来|き}ました。', z:'我來拿行李' },
+    { i:'h06', s:'hotel', t:'p', j:'Wi-Fiのパスワードを{教|おし}えてください。', z:'請告訴我 Wi-Fi 密碼' },
+    { i:'h07', s:'hotel', t:'p', j:'{朝食|ちょうしょく}は{何時|なんじ}からですか。', z:'早餐幾點開始' },
+    { i:'h08', s:'hotel', t:'p', j:'{朝食|ちょうしょく}はどこで{食|た}べますか。', z:'早餐在哪裡吃' },
+    { i:'h09', s:'hotel', t:'p', j:'タオルをもう{一枚|いちまい}ください。', z:'請再給我一條毛巾' },
+    { i:'h10', s:'hotel', t:'p', j:'{部屋|へや}の{鍵|かぎ}をなくしました。', z:'我把房間鑰匙弄丟了' },
+    { i:'h11', s:'hotel', t:'p', j:'エアコンが{効|き}きません。', z:'冷氣不冷' },
+    { i:'h12', s:'hotel', t:'p', j:'お{湯|ゆ}が{出|で}ません。', z:'沒有熱水' },
+    { i:'h13', s:'hotel', t:'p', j:'{隣|となり}の{部屋|へや}がうるさいです。', z:'隔壁房間很吵' },
+    { i:'h14', s:'hotel', t:'p', j:'{部屋|へや}を{変|か}えてもらえますか。', z:'可以幫我換房間嗎' },
+    { i:'h15', s:'hotel', t:'p', j:'{掃除|そうじ}はしなくていいです。', z:'不用打掃' },
+    { i:'h16', s:'hotel', t:'p', j:'{延泊|えんぱく}できますか。', z:'可以多住一晚嗎' },
+    { i:'h17', s:'hotel', t:'p', j:'{大浴場|だいよくじょう}は{何時|なんじ}までですか。', z:'大浴場開到幾點' },
+    { i:'h18', s:'hotel', t:'p', j:'コインランドリーはありますか。', z:'有自助洗衣嗎' },
+    { i:'h19', s:'hotel', t:'p', j:'{近|ちか}くにコンビニはありますか。', z:'附近有超商嗎' },
+    { i:'h20', s:'hotel', t:'p', j:'タクシーを{呼|よ}んでもらえますか。', z:'可以幫我叫計程車嗎' },
+    { i:'h21', s:'hotel', t:'p', j:'{空|あ}いている{部屋|へや}はありますか。', z:'還有空房嗎' },
+    { i:'h22', s:'hotel', t:'p', j:'{一泊|いっぱく}いくらですか。', z:'一晚多少錢' },
+
+    /* ───────── 觀光・拍照 ───────── */
+    { i:'v01', s:'sight', t:'p', j:'{入場料|にゅうじょうりょう}はいくらですか。', z:'入場費多少' },
+    { i:'v02', s:'sight', t:'p', j:'チケットはどこで{買|か}いますか。', z:'票在哪裡買' },
+    { i:'v03', s:'sight', t:'p', j:'{何時|なんじ}までですか。', z:'開到幾點' },
+    { i:'v04', s:'sight', t:'p', j:'{何時|なんじ}からですか。', z:'幾點開始' },
+    { i:'v05', s:'sight', t:'p', j:'{休|やす}みはいつですか。', z:'哪天公休' },
+    { i:'v06', s:'sight', t:'p', j:'{写真|しゃしん}を{撮|と}ってもいいですか。', z:'我可以拍照嗎', n:'問對方「我拍可以嗎」。要請人幫你拍是下一句，差一個字意思完全不同' },
+    { i:'v07', s:'sight', t:'p', j:'{写真|しゃしん}を{撮|と}ってもらえますか。', z:'可以幫我拍照嗎', n:'「もらえますか」＝請對方幫我做。這組最容易搞混' },
+    { i:'v08', s:'sight', t:'p', j:'もう{一枚|いちまい}お{願|ねが}いします。', z:'麻煩再拍一張' },
+    { i:'v09', s:'sight', t:'p', j:'{一緒|いっしょ}に{写真|しゃしん}を{撮|と}ってもいいですか。', z:'可以跟你合照嗎' },
+    { i:'v10', s:'sight', t:'p', j:'ここを{押|お}してください。', z:'請按這裡' },
+    { i:'v11', s:'sight', t:'p', j:'{荷物|にもつ}を{預|あず}けるところはありますか。', z:'哪裡可以寄放行李' },
+    { i:'v12', s:'sight', t:'p', j:'パンフレットはありますか。', z:'有簡介嗎' },
+    { i:'v13', s:'sight', t:'p', j:'{中国語|ちゅうごくご}のパンフレットはありますか。', z:'有中文簡介嗎' },
+    { i:'v14', s:'sight', t:'p', j:'おすすめの{場所|ばしょ}はどこですか。', z:'推薦哪裡' },
+    { i:'v15', s:'sight', t:'p', j:'{見|み}どころは{何|なん}ですか。', z:'必看的是什麼' },
+    { i:'v16', s:'sight', t:'p', j:'{並|なら}びますか。', z:'要排隊嗎' },
+    { i:'v17', s:'sight', t:'p', j:'どのくらい{並|なら}びますか。', z:'要排多久' },
+    { i:'v18', s:'sight', t:'p', j:'{予約|よやく}が{必要|ひつよう}ですか。', z:'需要預約嗎' },
+    { i:'v19', s:'sight', t:'p', j:'{靴|くつ}を{脱|ぬ}ぎますか。', z:'要脫鞋嗎' },
+    { i:'v20', s:'sight', t:'p', j:'{触|さわ}ってもいいですか。', z:'可以摸嗎' },
+    { i:'v21', s:'sight', t:'p', j:'ここに{入|はい}ってもいいですか。', z:'可以進去嗎' },
+    { i:'v22', s:'sight', t:'p', j:'お{土産|みやげ}はどこで{買|か}えますか。', z:'哪裡可以買伴手禮' },
+    { i:'v23', s:'sight', t:'p', j:'{御朱印|ごしゅいん}をお{願|ねが}いします。', z:'我想要御朱印' },
+    { i:'v24', s:'sight', t:'p', j:'{日本語|にほんご}のガイドしかないですか。', z:'只有日文導覽嗎' },
+
+    /* ───────── 出狀況・求助 ───────── */
+    { i:'x01', s:'trouble', t:'p', j:'{道|みち}に{迷|まよ}いました。', z:'我迷路了' },
+    { i:'x02', s:'trouble', t:'p', j:'{財布|さいふ}をなくしました。', z:'我錢包不見了' },
+    { i:'x03', s:'trouble', t:'p', j:'パスポートをなくしました。', z:'我護照不見了' },
+    { i:'x04', s:'trouble', t:'p', j:'{電車|でんしゃ}に{忘|わす}れ{物|もの}をしました。', z:'我東西忘在電車上' },
+    { i:'x05', s:'trouble', t:'p', j:'{落|お}とし{物|もの}センターはどこですか。', z:'失物招領在哪裡' },
+    { i:'x06', s:'trouble', t:'p', j:'{助|たす}けてください。', z:'請幫幫我' },
+    { i:'x07', s:'trouble', t:'p', j:'{警察|けいさつ}を{呼|よ}んでください。', z:'請幫我叫警察' },
+    { i:'x08', s:'trouble', t:'p', j:'{救急車|きゅうきゅうしゃ}を{呼|よ}んでください。', z:'請幫我叫救護車' },
+    { i:'x09', s:'trouble', t:'p', j:'{具合|ぐあい}が{悪|わる}いです。', z:'我身體不舒服' },
+    { i:'x10', s:'trouble', t:'p', j:'{気分|きぶん}が{悪|わる}いです。', z:'我覺得想吐／不舒服' },
+    { i:'x11', s:'trouble', t:'p', j:'{熱|ねつ}があります。', z:'我發燒了' },
+    { i:'x12', s:'trouble', t:'p', j:'{病院|びょういん}はどこですか。', z:'醫院在哪裡' },
+    { i:'x13', s:'trouble', t:'p', j:'{薬局|やっきょく}はどこですか。', z:'藥局在哪裡' },
+    { i:'x14', s:'trouble', t:'p', j:'{保険|ほけん}に{入|はい}っています。', z:'我有保險' },
+    { i:'x15', s:'trouble', t:'p', j:'{台湾|たいわん}から{来|き}ました。', z:'我從台灣來的' },
+    { i:'x16', s:'trouble', t:'p', j:'{中国語|ちゅうごくご}が{話|はな}せる{人|ひと}はいますか。', z:'有人會說中文嗎' },
+    { i:'x17', s:'trouble', t:'p', j:'{大使館|たいしかん}に{連絡|れんらく}したいです。', z:'我想聯絡辦事處' },
+    { i:'x18', s:'trouble', t:'p', j:'スマホの{充電|じゅうでん}ができますか。', z:'可以充手機嗎' },
+    { i:'x19', s:'trouble', t:'p', j:'Wi-Fiは{使|つか}えますか。', z:'可以用 Wi-Fi 嗎' },
+    { i:'x20', s:'trouble', t:'p', j:'{電波|でんぱ}が{入|はい}りません。', z:'沒有訊號' },
+    { i:'x21', s:'trouble', t:'p', j:'{両替|りょうがえ}できますか。', z:'可以換錢嗎' },
+    { i:'x22', s:'trouble', t:'p', j:'ATMはどこですか。', z:'提款機在哪裡' },
+    { i:'x23', s:'trouble', t:'p', j:'カードが{使|つか}えません。', z:'卡刷不過' },
+    { i:'x24', s:'trouble', t:'p', j:'{電車|でんしゃ}が{止|と}まっています。', z:'電車停駛了' },
+    { i:'x25', s:'trouble', t:'p', j:'{傘|かさ}をなくしました。', z:'我傘不見了' },
+    { i:'x26', s:'trouble', t:'p', j:'{非常口|ひじょうぐち}はどこですか。', z:'緊急出口在哪裡' },
+
+    /* ───────── 數字・時間・量詞 ───────── */
+    { i:'n01', s:'number', t:'w', j:'{一|ひと}つ', z:'一個' },
+    { i:'n02', s:'number', t:'w', j:'{二|ふた}つ', z:'兩個' },
+    { i:'n03', s:'number', t:'w', j:'{三|みっ}つ', z:'三個' },
+    { i:'n04', s:'number', t:'w', j:'{四|よっ}つ', z:'四個' },
+    { i:'n05', s:'number', t:'w', j:'{五|いつ}つ', z:'五個' },
+    { i:'n06', s:'number', t:'w', j:'{六|むっ}つ', z:'六個' },
+    { i:'n07', s:'number', t:'w', j:'{七|なな}つ', z:'七個' },
+    { i:'n08', s:'number', t:'w', j:'{八|やっ}つ', z:'八個' },
+    { i:'n09', s:'number', t:'w', j:'{九|ここの}つ', z:'九個' },
+    { i:'n10', s:'number', t:'w', j:'{十|とお}', z:'十個' },
+    { i:'n11', s:'number', t:'w', j:'{一人|ひとり}', z:'一個人' },
+    { i:'n12', s:'number', t:'w', j:'{二人|ふたり}', z:'兩個人' },
+    { i:'n13', s:'number', t:'w', j:'{三人|さんにん}', z:'三個人' },
+    { i:'n14', s:'number', t:'w', j:'{百円|ひゃくえん}', z:'一百日圓' },
+    { i:'n15', s:'number', t:'w', j:'{三百円|さんびゃくえん}', z:'三百日圓', n:'三百唸「さんびゃく」不是「さんひゃく」' },
+    { i:'n16', s:'number', t:'w', j:'{六百円|ろっぴゃくえん}', z:'六百日圓', n:'六百唸「ろっぴゃく」' },
+    { i:'n17', s:'number', t:'w', j:'{八百円|はっぴゃくえん}', z:'八百日圓', n:'八百唸「はっぴゃく」' },
+    { i:'n18', s:'number', t:'w', j:'{千円|せんえん}', z:'一千日圓' },
+    { i:'n19', s:'number', t:'w', j:'{三千円|さんぜんえん}', z:'三千日圓', n:'三千唸「さんぜん」不是「さんせん」' },
+    { i:'n20', s:'number', t:'w', j:'{八千円|はっせんえん}', z:'八千日圓' },
+    { i:'n21', s:'number', t:'w', j:'{一万円|いちまんえん}', z:'一萬日圓' },
+    { i:'n22', s:'number', t:'w', j:'{今日|きょう}', z:'今天' },
+    { i:'n23', s:'number', t:'w', j:'{明日|あした}', z:'明天' },
+    { i:'n24', s:'number', t:'w', j:'{昨日|きのう}', z:'昨天' },
+    { i:'n25', s:'number', t:'w', j:'{午前|ごぜん}', z:'上午' },
+    { i:'n26', s:'number', t:'w', j:'{午後|ごご}', z:'下午' },
+    { i:'n27', s:'number', t:'w', j:'{四時|よじ}', z:'四點', n:'唸「よじ」不是「しじ」' },
+    { i:'n28', s:'number', t:'w', j:'{七時|しちじ}', z:'七點' },
+    { i:'n29', s:'number', t:'w', j:'{九時|くじ}', z:'九點', n:'唸「くじ」不是「きゅうじ」' },
+    { i:'n30', s:'number', t:'w', j:'{一枚|いちまい}', z:'一張／一件（扁平物）' },
+    { i:'n31', s:'number', t:'w', j:'{一本|いっぽん}', z:'一瓶／一支（細長物）' },
+    { i:'n32', s:'number', t:'w', j:'{一個|いっこ}', z:'一個' },
+    { i:'n33', s:'number', t:'w', j:'{一杯|いっぱい}', z:'一杯' },
+    { i:'n34', s:'number', t:'w', j:'{半分|はんぶん}', z:'一半' },
+    { i:'n35', s:'number', t:'w', j:'{二十分|にじゅっぷん}', z:'二十分鐘' },
+    { i:'n36', s:'number', t:'p', j:'{今|いま}{何時|なんじ}ですか。', z:'現在幾點' }
+  ],
+
+  /* 易混淆對照組：差一點點、意思差很多的句子 */
+  pairs: [
+    { title:'我拍 vs 幫我拍', ids:['v06','v07'],
+      tip:'「〜てもいいですか」＝我做可以嗎／「〜てもらえますか」＝可以請你做嗎。對著人說錯這組，對方會一臉問號。' },
+    { title:'婉拒的兩種講法', ids:['g06','g07'],
+      tip:'「大丈夫です」語氣軟，也可能被聽成「我沒事」；「けっこうです」是明確的不用了。想明確拒絕用後者。' },
+    { title:'要袋子 vs 不要袋子', ids:['s19','s18'],
+      tip:'「ください」＝請給我／「いりません」＝不需要。結帳時最常用到的一組。' },
+    { title:'店員問加熱 vs 你說要加熱', ids:['c03','k01'],
+      tip:'「温めますか」是店員問你；「温めてください」是你主動要求。聽到前者，回「はい、お願いします」即可。' },
+    { title:'能外帶嗎 vs 我要外帶', ids:['f27','f28'],
+      tip:'「できますか」在問可不可能；「でお願いします」是在下決定。店員問你內用外帶時要用後者。' },
+    { title:'內用 vs 外帶', ids:['f29','f28'],
+      tip:'「ここで食べます」＝在這吃／「持ち帰りでお願いします」＝外帶。速食店每次都會被問。' },
+    { title:'這班車有到嗎 vs 我想去那', ids:['t09','t05'],
+      tip:'「行きますか」是問車；「行きたいです」是講自己的目的地。在月台上先問前者比較快。' },
+    { title:'幾點開始 vs 開到幾點', ids:['v04','v03'],
+      tip:'「から」＝從⋯開始／「まで」＝到⋯為止。只差一個助詞。' },
+    { title:'東西沒來 vs 我沒點這個', ids:['f23','f24'],
+      tip:'餐點出錯時的兩種狀況，講錯會變成在催別人的菜。' },
+    { title:'人的量詞', ids:['n11','n12','n13'],
+      tip:'一、二人是特殊唸法（ひとり・ふたり），三人開始才規則（さんにん）。' },
+    { title:'時間的例外唸法', ids:['n27','n28','n29'],
+      tip:'四時（よじ）、七時（しちじ）、九時（くじ）這三個不照常規唸，聽店員報時間時最容易卡住。' },
+    { title:'百的音變', ids:['n15','n16','n17'],
+      tip:'三百、六百、八百都會變音。聽價錢時這三個最常聽錯。' }
+  ],
+
+  /* 情境對話模擬：店員講一句、你選怎麼回 */
+  dialogs: [
+    {
+      id:'d1', scene:'conbini', title:'超商結帳', sub:'買了一個便當跟一瓶飲料，走到收銀台',
+      turns: [
+        { who:'clerk', j:'いらっしゃいませ。', z:'歡迎光臨' },
+        { who:'clerk', j:'お{弁当|べんとう}、{温|あたた}めますか。', z:'便當要加熱嗎' },
+        { who:'you', q:'要加熱，怎麼回？', opts:[
+          { j:'はい、お{願|ねが}いします。', z:'好，麻煩你了', ok:true },
+          { j:'{温|あたた}めますか。', z:'要加熱嗎', why:'這是店員問你的話，照抄回去會變成你在問他' },
+          { j:'いただきます。', z:'我開動了', why:'這是吃飯前才說的' }
+        ]},
+        { who:'clerk', j:'お{箸|はし}はおつけしますか。', z:'要附筷子嗎' },
+        { who:'you', q:'要筷子，怎麼回？', opts:[
+          { j:'はい、ください。', z:'好，請給我', ok:true },
+          { j:'けっこうです。', z:'不用了', why:'這是拒絕，筷子就拿不到了' },
+          { j:'{袋|ふくろ}はいりません。', z:'不用袋子', why:'答非所問，他問的是筷子' }
+        ]},
+        { who:'clerk', j:'ポイントカードはお{持|も}ちですか。', z:'有集點卡嗎' },
+        { who:'you', q:'沒有集點卡，怎麼回？', opts:[
+          { j:'ありません。', z:'沒有', ok:true },
+          { j:'はい、お{願|ねが}いします。', z:'好，麻煩你', why:'回「有」店員會等你拿卡出來' },
+          { j:'いくらですか。', z:'多少錢', why:'他沒有在跟你收錢' }
+        ]},
+        { who:'clerk', j:'{五百円|ごひゃくえん}のお{返|かえ}しです。ありがとうございました。', z:'找您五百元，謝謝惠顧' }
+      ]
+    },
+    {
+      id:'d2', scene:'food', title:'咖啡廳點餐', sub:'在連鎖咖啡廳櫃台前',
+      turns: [
+        { who:'clerk', j:'ご{注文|ちゅうもん}をどうぞ。', z:'請點餐' },
+        { who:'you', q:'想點菜單上的那杯拿鐵', opts:[
+          { j:'これ、ください。', z:'我要這個', ok:true },
+          { j:'これは{何|なん}ですか。', z:'這是什麼', why:'可以問，但這樣還沒點到餐' },
+          { j:'お{会計|かいけい}お{願|ねが}いします。', z:'麻煩結帳', why:'還沒點就要結帳' }
+        ]},
+        { who:'clerk', j:'サイズはいかがなさいますか。', z:'請問要什麼尺寸' },
+        { who:'you', q:'想要大杯的', opts:[
+          { j:'{大|おお}きいのをお{願|ねが}いします。', z:'麻煩大的', ok:true },
+          { j:'{大盛|おおも}りにできますか。', z:'可以加大嗎', why:'「大盛り」是飯麵加量用的，飲料不這樣講' },
+          { j:'{全部|ぜんぶ}でいくらですか。', z:'全部多少錢', why:'他在問尺寸不是在報價' }
+        ]},
+        { who:'clerk', j:'こちらでお{召|め}し{上|あ}がりですか、お{持|も}ち{帰|かえ}りですか。', z:'內用還是外帶' },
+        { who:'you', q:'要帶走', opts:[
+          { j:'{持|も}ち{帰|かえ}りでお{願|ねが}いします。', z:'我要外帶', ok:true },
+          { j:'ここで{食|た}べます。', z:'我在這裡吃', why:'這是內用，意思反了' },
+          { j:'{持|も}ち{帰|かえ}りできますか。', z:'可以外帶嗎', why:'他正在問你要哪一種，這樣回等於沒回答' }
+        ]},
+        { who:'clerk', j:'{四百五十円|よんひゃくごじゅうえん}になります。', z:'總共四百五十元' },
+        { who:'you', q:'要刷卡', opts:[
+          { j:'カードで{払|はら}えますか。', z:'可以刷卡嗎', ok:true },
+          { j:'{別々|べつべつ}でお{願|ねが}いします。', z:'麻煩分開結帳', why:'你只有一個人一杯' },
+          { j:'{割引|わりびき}はありますか。', z:'有折扣嗎', why:'連鎖店不會因為你問就打折' }
+        ]}
+      ]
+    },
+    {
+      id:'d3', scene:'food', title:'走進餐廳', sub:'晚餐時間，兩個人，站在店門口',
+      turns: [
+        { who:'clerk', j:'いらっしゃいませ。{何名様|なんめいさま}ですか。', z:'歡迎光臨，請問幾位' },
+        { who:'you', q:'兩個人', opts:[
+          { j:'{二人|ふたり}です。', z:'兩位', ok:true },
+          { j:'{二|ふた}つです。', z:'兩個', why:'「ふたつ」是數東西，數人要用「ふたり」' },
+          { j:'{二階|にかい}です。', z:'二樓', why:'唸起來有點像，但意思完全不同' }
+        ]},
+        { who:'clerk', j:'{申|もう}し{訳|わけ}ございません、ただいま{満席|まんせき}です。', z:'非常抱歉，現在客滿' },
+        { who:'you', q:'想知道要等多久', opts:[
+          { j:'どのくらい{待|ま}ちますか。', z:'要等多久', ok:true },
+          { j:'{席|せき}はありますか。', z:'有位子嗎', why:'他剛說客滿了' },
+          { j:'いくらですか。', z:'多少錢', why:'還沒點餐' }
+        ]},
+        { who:'clerk', j:'{二十分|にじゅっぷん}ほどお{待|ま}ちいただきます。', z:'大約要等二十分鐘' },
+        { who:'you', q:'決定等', opts:[
+          { j:'{大丈夫|だいじょうぶ}です。{待|ま}ちます。', z:'沒關係，我等', ok:true },
+          { j:'けっこうです。', z:'不用了', why:'這樣講就是放棄不等了' },
+          { j:'まだ{来|き}ていません。', z:'還沒來', why:'這是抱怨餐點沒上的句子' }
+        ]},
+        { who:'clerk', j:'では、お{名前|なまえ}をこちらにお{書|か}きください。', z:'那請在這裡寫下您的名字' }
+      ]
+    },
+    {
+      id:'d4', scene:'shop', title:'服飾店試穿', sub:'看上一件外套',
+      turns: [
+        { who:'clerk', j:'いらっしゃいませ。{何|なに}かお{探|さが}しですか。', z:'歡迎光臨，在找什麼嗎' },
+        { who:'you', q:'只是隨便看看', opts:[
+          { j:'{見|み}ているだけです。', z:'我只是看看', ok:true },
+          { j:'{大丈夫|だいじょうぶ}です。', z:'沒關係', why:'不算錯，但有點含糊，店員可能繼續跟著你' },
+          { j:'{分|わ}かりました。', z:'我知道了', why:'他是在問你，不是在告訴你事情' }
+        ]},
+        { who:'you', q:'後來想試穿這件', opts:[
+          { j:'{試着|しちゃく}してもいいですか。', z:'可以試穿嗎', ok:true },
+          { j:'{試食|ししょく}してもいいですか。', z:'可以試吃嗎', why:'「ししょく」是試吃，衣服不能吃' },
+          { j:'{返品|へんぴん}できますか。', z:'可以退貨嗎', why:'都還沒買' }
+        ]},
+        { who:'clerk', j:'はい、どうぞ。サイズはいかがですか。', z:'好的請，尺寸如何呢' },
+        { who:'you', q:'有點小，想要大一號', opts:[
+          { j:'{大|おお}きいのはありますか。', z:'有大一點的嗎', ok:true },
+          { j:'{安|やす}いのはありますか。', z:'有便宜一點的嗎', why:'他問的是尺寸' },
+          { j:'{他|ほか}の{色|いろ}はありますか。', z:'有別的顏色嗎', why:'可以問，但沒解決尺寸的問題' }
+        ]},
+        { who:'clerk', j:'こちらのLサイズはいかがでしょう。', z:'這件 L 號您覺得如何' }
+      ]
+    },
+    {
+      id:'d5', scene:'conbini', title:'藥妝店免稅結帳', sub:'買了一堆東西，要辦免稅',
+      turns: [
+        { who:'you', q:'想問能不能免稅', opts:[
+          { j:'{免税|めんぜい}できますか。', z:'可以免稅嗎', ok:true },
+          { j:'{割引|わりびき}はありますか。', z:'有折扣嗎', why:'免稅跟打折是兩回事' },
+          { j:'{消費税|しょうひぜい}は{込|こ}みですか。', z:'有含稅嗎', why:'這是在問標價，不是在辦免稅' }
+        ]},
+        { who:'clerk', j:'はい、{身分証明書|みぶんしょうめいしょ}をお{願|ねが}いします。', z:'可以的，請出示證件' },
+        { who:'you', q:'拿出護照', opts:[
+          { j:'パスポートはこれです。', z:'這是我的護照', ok:true },
+          { j:'パスポートをなくしました。', z:'我護照不見了', why:'這樣就辦不成了' },
+          { j:'{持|も}っていません。', z:'我沒有帶', why:'沒帶護照就不能免稅' }
+        ]},
+        { who:'clerk', j:'お{支払|しはら}いは{現金|げんきん}ですか、カードですか。', z:'要付現還是刷卡' },
+        { who:'you', q:'付現金', opts:[
+          { j:'{現金|げんきん}で{払|はら}います。', z:'我付現金', ok:true },
+          { j:'カードで{払|はら}えますか。', z:'可以刷卡嗎', why:'這是刷卡，跟你想的相反' },
+          { j:'{別々|べつべつ}でお{願|ねが}いします。', z:'麻煩分開結帳', why:'他問的是付款方式' }
+        ]},
+        { who:'clerk', j:'こちらの{袋|ふくろ}は{日本国内|にほんこくない}では{開|あ}けないでください。', z:'這個袋子在日本國內請不要打開' }
+      ]
+    },
+    {
+      id:'d6', scene:'transit', title:'在車站問路', sub:'要去淺草，但不知道搭哪一班',
+      turns: [
+        { who:'you', q:'先叫住站務員', opts:[
+          { j:'すみません。', z:'不好意思', ok:true },
+          { j:'こんにちは。', z:'你好', why:'不算錯，但日本人叫住陌生人習慣用「すみません」' },
+          { j:'お{願|ねが}いします。', z:'麻煩你了', why:'還沒說要什麼就先拜託，對方會愣住' }
+        ]},
+        { who:'you', q:'說出你要去的地方', opts:[
+          { j:'ここに{行|い}きたいです。', z:'我想去這裡', ok:true, note:'搭配指地圖或手機螢幕最有效' },
+          { j:'ここはどこですか。', z:'這裡是哪裡', why:'這是在問你現在的位置' },
+          { j:'{道|みち}に{迷|まよ}いました。', z:'我迷路了', why:'可以講，但對方不知道你要去哪' }
+        ]},
+        { who:'clerk', j:'{銀座線|ぎんざせん}です。{三番線|さんばんせん}からお{乗|の}りください。', z:'是銀座線，請在三號月台搭車' },
+        { who:'you', q:'想確認需不需要換車', opts:[
+          { j:'{乗|の}り{換|か}えは{必要|ひつよう}ですか。', z:'需要換車嗎', ok:true },
+          { j:'{何番線|なんばんせん}ですか。', z:'幾號月台', why:'他剛剛才講過三號月台' },
+          { j:'{終電|しゅうでん}は{何時|なんじ}ですか。', z:'末班車幾點', why:'現在用不到' }
+        ]},
+        { who:'clerk', j:'いいえ、{乗|の}り{換|か}えなしで{行|い}けますよ。', z:'不用，不用換車就能到喔' },
+        { who:'you', q:'道謝收尾', opts:[
+          { j:'ありがとうございます。{助|たす}かりました。', z:'謝謝，幫了大忙', ok:true },
+          { j:'さようなら。', z:'再見', why:'有點太正式，像要很久不見' },
+          { j:'いただきます。', z:'我開動了', why:'這是吃飯用的' }
+        ]}
+      ]
+    },
+    {
+      id:'d7', scene:'hotel', title:'飯店入住', sub:'下午三點抵達飯店櫃台',
+      turns: [
+        { who:'clerk', j:'いらっしゃいませ。', z:'歡迎光臨' },
+        { who:'you', q:'告訴對方你要入住', opts:[
+          { j:'チェックインお{願|ねが}いします。{予約|よやく}しています。', z:'我要辦入住，我有預約', ok:true },
+          { j:'{空|あ}いている{部屋|へや}はありますか。', z:'還有空房嗎', why:'你已經訂好了，這樣講會變成現場找房' },
+          { j:'チェックアウトは{何時|なんじ}ですか。', z:'退房是幾點', why:'還沒入住就先問退房' }
+        ]},
+        { who:'clerk', j:'ありがとうございます。パスポートをお{預|あず}かりします。', z:'謝謝，請讓我收一下您的護照' },
+        { who:'clerk', j:'お{部屋|へや}は{八階|はちかい}の{８０５号室|はちまるごごうしつ}です。', z:'您的房間是八樓的 805 號房' },
+        { who:'you', q:'想問 Wi-Fi', opts:[
+          { j:'Wi-Fiのパスワードを{教|おし}えてください。', z:'請告訴我 Wi-Fi 密碼', ok:true },
+          { j:'{電波|でんぱ}が{入|はい}りません。', z:'沒有訊號', why:'都還沒進房間' },
+          { j:'スマホの{充電|じゅうでん}ができますか。', z:'可以充手機嗎', why:'房間本來就有插座' }
+        ]},
+        { who:'you', q:'想先把行李寄放，等晚點再拿', opts:[
+          { j:'{荷物|にもつ}を{預|あず}かってもらえますか。', z:'可以幫我寄放行李嗎', ok:true },
+          { j:'{荷物|にもつ}を{取|と}りに{来|き}ました。', z:'我來拿行李', why:'還沒寄放就要拿' },
+          { j:'{部屋|へや}を{変|か}えてもらえますか。', z:'可以幫我換房間嗎', why:'房間都還沒看到' }
+        ]},
+        { who:'clerk', j:'かしこまりました。{朝食|ちょうしょく}は{七時|しちじ}から{十時|じゅうじ}までです。', z:'好的。早餐是七點到十點' }
+      ]
+    },
+    {
+      id:'d8', scene:'sight', title:'請路人幫忙拍照', sub:'在神社前面，想要一張合照',
+      turns: [
+        { who:'you', q:'先叫住對方', opts:[
+          { j:'すみません。', z:'不好意思', ok:true },
+          { j:'{助|たす}けてください。', z:'請幫幫我', why:'這是遇到危險才講的，會嚇到人' },
+          { j:'こんばんは。', z:'晚安', why:'白天不會這樣講' }
+        ]},
+        { who:'you', q:'請對方幫你拍', opts:[
+          { j:'{写真|しゃしん}を{撮|と}ってもらえますか。', z:'可以幫我拍照嗎', ok:true, note:'「もらえますか」＝請你幫我' },
+          { j:'{写真|しゃしん}を{撮|と}ってもいいですか。', z:'我可以拍照嗎', why:'這是在問自己能不能拍，對方會說「請便」然後走掉' },
+          { j:'{一緒|いっしょ}に{写真|しゃしん}を{撮|と}ってもいいですか。', z:'可以跟你合照嗎', why:'這是要跟對方本人合照' }
+        ]},
+        { who:'clerk', j:'はい、いいですよ。どこを{押|お}せばいいですか。', z:'好啊，要按哪裡呢' },
+        { who:'you', q:'告訴對方按鈕在哪', opts:[
+          { j:'ここを{押|お}してください。', z:'請按這裡', ok:true },
+          { j:'{使|つか}い{方|かた}を{教|おし}えてください。', z:'請教我怎麼用', why:'這是你在請教對方，角色反了' },
+          { j:'もう{一枚|いちまい}お{願|ねが}いします。', z:'麻煩再拍一張', why:'第一張都還沒拍' }
+        ]},
+        { who:'clerk', j:'はい、{撮|と}りますよ。', z:'好，我要拍囉' },
+        { who:'you', q:'想請對方再拍一張', opts:[
+          { j:'もう{一枚|いちまい}お{願|ねが}いします。', z:'麻煩再拍一張', ok:true },
+          { j:'{大丈夫|だいじょうぶ}です。', z:'不用了', why:'這樣就結束了，拍不到第二張' },
+          { j:'{並|なら}びますか。', z:'要排隊嗎', why:'跟拍照沒關係' }
+        ]},
+        { who:'clerk', j:'はい、どうぞ。', z:'好了，給你' }
+      ]
+    }
+  ]
+};
+
+</script>
+<script>
+(function(){
+"use strict";
+var D = window.JPDATA, ITEMS = D.items, SCENES = D.scenes;
+var SC = {}; SCENES.forEach(function(s){ SC[s.id] = s; });
+var BY_ID = {}; ITEMS.forEach(function(x){ BY_ID[x.i] = x; });
+
+/* ══════════ 工具 ══════════ */
+var RUBY = /\{([^{}|]+)\|([^{}|]+)\}/g;
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function toKanji(j){ return String(j).replace(RUBY,'$1'); }
+function toKana(j){ return String(j).replace(RUBY,'$2'); }
+function toRuby(j){ return esc(j).replace(RUBY,function(m,k,r){
+  return '<ruby>'+k+'<rt>'+r+'</rt></ruby>'; }); }
+function jpHTML(j){ return S.display==='kana' ? esc(toKana(j)) : toRuby(j); }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var k=Math.floor(Math.random()*(i+1));
+  var t=a[i]; a[i]=a[k]; a[k]=t; } return a; }
+function el(id){ return document.getElementById(id); }
+function sleep(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
+
+var SVG = {
+  speaker:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>',
+  small:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>',
+  mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><path d="M12 19v3"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
+  replay:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4"/><path d="M3 3v6h6"/></svg>'
+};
+
+/* ══════════ 設定與進度（localStorage best-effort） ══════════ */
+var DEF = { display:'kanji', rate:0.85, voice:'', count:15, hands:false, model:true, pace:3.2, strict:false };
+var S = {}, P = {};
+function load(k,fb){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):fb; }catch(e){ return fb; } }
+function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+(function(){ var s=load('jp_set',{})||{}; for(var k in DEF) S[k]=(k in s)?s[k]:DEF[k];
+  P = load('jp_prog',{})||{}; })();
+function saveSet(){ save('jp_set',S); }
+function saveProg(){ save('jp_prog',P); }
+function rec(id){ return P[id]||(P[id]={box:0,seen:0,wrong:0}); }
+function mark(id,good){ var r=rec(id); r.seen++; if(good){ r.box=Math.min(5,r.box+1); }
+  else { r.box=0; r.wrong++; } saveProg(); }
+function learned(){ var n=0; for(var k in P) if(P[k].box>=4) n++; return n; }
+function dueList(){ var a=[]; for(var k in P){ if(BY_ID[k] && P[k].box<4 && P[k].wrong>0) a.push(BY_ID[k]); }
+  a.sort(function(x,y){ return (P[x.i].box-P[y.i].box) || (P[y.i].wrong-P[x.i].wrong); }); return a; }
+
+/* ══════════ 語音朗讀 ══════════ */
+var synth = window.speechSynthesis, voicesJa = [], theVoice = null, primed = false;
+var TTS_OK = !!synth && typeof window.SpeechSynthesisUtterance === 'function';
+function rankVoice(v){
+  var n=(v.name||'')+' '+(v.voiceURI||''), sc=0, i,
+  good=[[/Nanami/i,100],[/Kyoko/i,97],[/O\s*-?\s*ren/i,92],[/Keita/i,90],[/Google[^|]*(日本語|Japanese)/i,88],
+        [/Otoya/i,80],[/Hattori/i,78],[/Sayaka/i,76],[/Mizuki/i,74],[/Takumi/i,72],
+        [/Ayumi/i,70],[/Haruka/i,70],[/Ichiro/i,66]];
+  for(i=0;i<good.length;i++) if(good[i][0].test(n)) sc=Math.max(sc,good[i][1]);
+  if(/Natural|Neural|Premium|Enhanced/i.test(n)) sc+=30;
+  if(/eSpeak|espeak|compact|Compact|Android Speech/i.test(n)) sc-=70;
+  if(sc===0) sc=40;
+  if(v.localService===false) sc+=4;
+  return sc;
+}
+function loadVoices(){
+  if(!TTS_OK) return;
+  var all=[]; try{ all=synth.getVoices()||[]; }catch(e){ all=[]; }
+  voicesJa = all.filter(function(v){ return /^ja/i.test(v.lang||'') || /japan/i.test(v.name||''); });
+  voicesJa.sort(function(a,b){ return rankVoice(b)-rankVoice(a); });
+  var want=null,i;
+  if(S.voice) for(i=0;i<voicesJa.length;i++) if(voicesJa[i].voiceURI===S.voice) want=voicesJa[i];
+  theVoice = want || voicesJa[0] || null;
+}
+if(TTS_OK){
+  loadVoices();
+  try{ synth.onvoiceschanged = loadVoices; }catch(e){}
+  var tries=0, pv=setInterval(function(){ loadVoices();
+    if(voicesJa.length || ++tries>24) clearInterval(pv); }, 250);
+}
+function prime(){
+  if(primed || !TTS_OK) return; primed = true;
+  try{ var u=new SpeechSynthesisUtterance(' '); u.volume=0; u.lang='ja-JP'; synth.speak(u); }catch(e){}
+  loadVoices();
+}
+var speakToken = 0;
+function stopSpeak(){ speakToken++; if(TTS_OK){ try{ synth.cancel(); }catch(e){} } }
+function speak(text, rate){
+  var my = ++speakToken;
+  return new Promise(function(res){
+    if(!TTS_OK || !text){ res(); return; }
+    try{ synth.cancel(); }catch(e){}
+    setTimeout(function(){
+      if(my!==speakToken){ res(); return; }
+      var u;
+      try{ u = new SpeechSynthesisUtterance(text); }catch(e){ res(); return; }
+      u.lang='ja-JP';
+      if(theVoice){ try{ u.voice=theVoice; }catch(e){} }
+      u.rate = rate || S.rate; u.pitch = 1; u.volume = 1;
+      var done=false, fin=function(){ if(done) return; done=true; clearTimeout(wd); res(); };
+      u.onend=fin; u.onerror=fin;
+      var wd=setTimeout(fin, 1200 + text.length*320);
+      try{ synth.speak(u); }catch(e){ fin(); }
+    }, 55);
+  });
+}
+var actx=null;
+function beep(freq,ms){
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended') actx.resume();
+    var o=actx.createOscillator(), g=actx.createGain();
+    o.type='sine'; o.frequency.value=freq||880;
+    g.gain.setValueAtTime(0.0001,actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.13,actx.currentTime+0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+(ms||160)/1000);
+    o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime+(ms||160)/1000+0.02);
+  }catch(e){}
+}
+
+/* ══════════ 語音辨識 ══════════ */
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var ASR_PRESENT = !!SR;
+var asrBlocked = false, asrReason = '';
+function kata2hira(s){ return String(s).replace(/[ァ-ヶ]/g,function(c){
+  return String.fromCharCode(c.charCodeAt(0)-0x60); }); }
+function norm(s){
+  return kata2hira(String(s||''))
+    .replace(/[！-～]/g,function(c){ return String.fromCharCode(c.charCodeAt(0)-0xFEE0); })
+    .toLowerCase()
+    .replace(/[\s　]/g,'')
+    .replace(/[、。．，,.!！?？「」『』（）()・…‥~〜ー－—–\-]/g,'');
+}
+function lev(a,b){
+  var m=a.length,n=b.length,i,j,prev,tmp,row=[];
+  if(!m) return n; if(!n) return m;
+  for(j=0;j<=n;j++) row[j]=j;
+  for(i=1;i<=m;i++){ prev=row[0]; row[0]=i;
+    for(j=1;j<=n;j++){ tmp=row[j];
+      row[j]=Math.min(row[j]+1, row[j-1]+1, prev+(a.charAt(i-1)===b.charAt(j-1)?0:1));
+      prev=tmp; } }
+  return row[n];
+}
+function simil(a,b){ var m=Math.max(a.length,b.length); if(!m) return 0; return 1-lev(a,b)/m; }
+function lcsMark(heard,target){
+  var a=heard, b=target, m=a.length, n=b.length, i, j;
+  var dp=[]; for(i=0;i<=m;i++){ dp[i]=[]; for(j=0;j<=n;j++) dp[i][j]=0; }
+  for(i=1;i<=m;i++) for(j=1;j<=n;j++)
+    dp[i][j] = a.charAt(i-1)===b.charAt(j-1) ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j],dp[i][j-1]);
+  var keep={}; i=m; j=n;
+  while(i>0&&j>0){
+    if(a.charAt(i-1)===b.charAt(j-1)){ keep[i-1]=1; i--; j--; }
+    else if(dp[i-1][j]>=dp[i][j-1]) i--; else j--;
+  }
+  var out='';
+  for(i=0;i<m;i++) out += '<span class="'+(keep[i]?'ok':'x')+'">'+esc(a.charAt(i))+'</span>';
+  return out;
+}
+/* 辨識引擎會自己挑漢字寫法（いりません→要りません、ください→下さい），
+   所以先用資料集本身的注音標記建一本漢字→讀音表，把辨識結果也轉成假名再比對。 */
+var K2K = (function(){
+  var map = {};
+  function harvest(j){ var m, re=/\{([^{}|]+)\|([^{}|]+)\}/g;
+    while((m=re.exec(String(j)))) if(!map[m[1]]) map[m[1]]=m[2]; }
+  ITEMS.forEach(function(it){ harvest(it.j); });
+  D.dialogs.forEach(function(dg){ dg.turns.forEach(function(t){
+    if(t.j) harvest(t.j);
+    if(t.opts) t.opts.forEach(function(o){ harvest(o.j); }); }); });
+  /* 辨識引擎偏好、但資料集沒有的常見漢字寫法 */
+  var extra = {'要りません':'いりません','入りません':'いりません','下さい':'ください',
+    '御願い':'おねがい','有難う':'ありがとう','出来ます':'できます','出来ますか':'できますか',
+    '貰え':'もらえ','居ます':'います','良い':'いい','一寸':'ちょっと','判りません':'わかりません',
+    '分かりません':'わかりません','宜しく':'よろしく','無い':'ない','有ります':'あります',
+    '丁度':'ちょうど','此れ':'これ','其れ':'それ','大丈夫':'だいじょうぶ'};
+  for(var k in extra) map[k]=extra[k];
+  return Object.keys(map).sort(function(a,b){ return b.length-a.length; })
+    .map(function(k){ return [k,map[k]]; });
+})();
+function deKanji(s){
+  var out = String(s||'');
+  for(var i=0;i<K2K.length;i++){
+    if(out.indexOf(K2K[i][0])>=0) out = out.split(K2K[i][0]).join(K2K[i][1]);
+  }
+  return out;
+}
+function grade(heardList, item){
+  var tKanji = norm(toKanji(item.j)), tKana = norm(toKana(item.j));
+  var best=0, bestHeard=heardList[0]||'', bestPair=[norm(heardList[0]||''), tKanji];
+  for(var i=0;i<heardList.length;i++){
+    var raw = heardList[i];
+    var cands = [norm(raw), norm(deKanji(raw))];
+    for(var c=0;c<cands.length;c++){
+      var tg = [tKanji, tKana];
+      for(var k=0;k<tg.length;k++){
+        var s = simil(cands[c], tg[k]);
+        if(s>best){ best=s; bestHeard=raw; bestPair=[cands[c], tg[k]]; }
+      }
+    }
+  }
+  var pass = S.strict ? 0.95 : 0.85, half = S.strict ? 0.80 : 0.60;
+  return { score:best, heard:bestHeard, cmp:bestPair,
+           level: best>=pass ? 'great' : (best>=half ? 'close' : 'retry') };
+}
+var recog = null, recLive = false, recTimer = null;
+function stopRec(){ if(recTimer){ clearTimeout(recTimer); recTimer=null; }
+  if(recog){ try{ recog.stop(); }catch(e){} } }
+function listen(onInterim){
+  return new Promise(function(res){
+    if(!ASR_PRESENT){ res({err:'unsupported'}); return; }
+    var got=[], settled=false, errCode='';
+    var r;
+    try{ r = new SR(); }catch(e){ res({err:'unsupported'}); return; }
+    recog = r;
+    r.lang='ja-JP'; r.interimResults=true; r.continuous=false;
+    try{ r.maxAlternatives=5; }catch(e){}
+    r.onresult=function(ev){
+      for(var i=ev.resultIndex;i<ev.results.length;i++){
+        var rr=ev.results[i];
+        if(rr.isFinal){ for(var k=0;k<rr.length;k++) if(rr[k]&&rr[k].transcript) got.push(rr[k].transcript); }
+        else if(onInterim && rr[0]) onInterim(rr[0].transcript);
+      }
+    };
+    r.onerror=function(ev){ errCode = (ev&&ev.error)||'error';
+      if(errCode==='not-allowed'||errCode==='service-not-allowed'){ asrBlocked=true; asrReason=errCode; } };
+    r.onend=function(){ if(settled) return; settled=true; recLive=false;
+      if(recTimer){ clearTimeout(recTimer); recTimer=null; }
+      res(got.length ? {list:got} : {err: errCode||'no-speech'}); };
+    try{ r.start(); recLive=true; }
+    catch(e){ settled=true; recLive=false; res({err:'start-failed'}); return; }
+    recTimer = setTimeout(function(){ try{ r.stop(); }catch(e){} }, 7000);
+  });
+}
+var ASR_ERR = {
+  'unsupported':'這個瀏覽器沒有語音辨識功能。Android Chrome 或 iPhone Safari 可以用。',
+  'not-allowed':'麥克風被擋住了。這個頁面所在的環境不允許存取麥克風，先用「自評」來練。',
+  'service-not-allowed':'麥克風被擋住了。這個頁面所在的環境不允許存取麥克風，先用「自評」來練。',
+  'no-speech':'沒聽到聲音。靠近一點、大聲一些再試。',
+  'audio-capture':'找不到麥克風。',
+  'network':'辨識需要連網，目前連不上。',
+  'start-failed':'麥克風無法啟動，可能被其他 App 佔用。',
+  'aborted':'辨識被中斷了。'
+};
+
+/* ══════════ 螢幕恆亮 ══════════ */
+var wl=null, wantWake=false;
+function wake(on){
+  wantWake = on;
+  if(!('wakeLock' in navigator)) return;
+  if(on){ if(wl) return;
+    try{ navigator.wakeLock.request('screen').then(function(s){ wl=s;
+      s.addEventListener('release',function(){ wl=null; }); },function(){}); }catch(e){}
+  } else if(wl){ try{ wl.release(); }catch(e){} wl=null; }
+}
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='visible' && wantWake){ wl=null; wake(true); }
+  else if(document.visibilityState!=='visible'){ autoStop(); }
+});
+
+/* ══════════ 畫面路由 ══════════ */
+var MAIN = el('main'), BAR = el('barTitle'), BACK = el('btnBack');
+var nav = [];
+function setScene(id){
+  var c = id && SC[id] ? SC[id].color : '';
+  el('app').style.setProperty('--scene', c || '');
+  if(!c) el('app').style.removeProperty('--scene');
+}
+function go(render, title, sceneColor){
+  autoStop(); stopSpeak(); stopRec();
+  nav.push({r:render,t:title,c:sceneColor});
+  draw();
+}
+function back(){
+  autoStop(); stopSpeak(); stopRec();
+  if(nav.length>1) nav.pop();
+  draw();
+}
+function replace(render,title,sceneColor){
+  autoStop(); stopSpeak(); stopRec();
+  nav[nav.length-1]={r:render,t:title,c:sceneColor};
+  draw();
+}
+function draw(){
+  var cur = nav[nav.length-1];
+  BAR.textContent = cur.t;
+  BACK.hidden = nav.length<=1;
+  setScene(cur.c);
+  MAIN.scrollTop = 0;
+  MAIN.innerHTML = '';
+  var node = cur.r();
+  if(node) MAIN.appendChild(node);
+}
+BACK.onclick = back;
+function screen(html){ var d=document.createElement('div'); d.className='screen'; d.innerHTML=html; return d; }
+
+/* ══════════ 首頁 ══════════ */
+var MODES = [
+  {id:'listen', jp:'聴', t:'聽力選擇題', d:'只聽日文發音，選出中文意思'},
+  {id:'produce',jp:'訳', t:'中翻日選擇題', d:'看中文，選出正確的日文說法'},
+  {id:'speak',  jp:'話', t:'口說練習', d:'自己念出來，語音辨識幫你抓發音'},
+  {id:'shadow', jp:'流', t:'聽讀跟讀（免持）', d:'手機放桌上自動循環，手不用碰螢幕'},
+  {id:'dialog', jp:'会', t:'情境模擬', d:'店員講一句，你選怎麼回，走完整個場景'},
+  {id:'pairs',  jp:'較', t:'易混淆對照', d:'差一個字意思差很多的句子，集中練'},
+  {id:'review', jp:'復', t:'錯題複習', d:'答錯過的句子，照間隔重複排程回來'}
+];
+function homeScreen(){
+  wake(false);
+  var due = dueList().length, done = learned();
+  var h = '<div class="hero"><div class="eyebrow">日本旅行會話</div>'+
+    '<div class="t jp">にほん かいわ れんしゅう</div></div>'+
+    '<div class="stats">'+
+      '<div class="stat"><b>'+ITEMS.length+'</b><span>總句數</span></div>'+
+      '<div class="stat"><b style="color:var(--ok)">'+done+'</b><span>已熟練</span></div>'+
+      '<div class="stat"><b style="color:'+(due?'var(--bad)':'var(--muted)')+'">'+due+'</b><span>待複習</span></div>'+
+    '</div><div class="modes">';
+  MODES.forEach(function(m,ix){
+    var col = SCENES[ix % SCENES.length].color;
+    h += '<button class="mode" data-m="'+m.id+'" style="--mc:'+col+'">'+
+      '<span class="n jp" style="color:'+col+'">'+m.jp+'</span>'+
+      '<span class="b"><strong>'+esc(m.t)+'</strong><em class="zh">'+esc(m.d)+'</em></span>'+
+      '<span class="chev">'+SVG.chev+'</span></button>';
+  });
+  h += '</div>';
+  if(!TTS_OK) h += '<div class="banner"><span class="ic">！</span><div>這個瀏覽器不支援語音朗讀，建議改用 Chrome、Edge 或 Safari。</div></div>';
+  var d = screen(h);
+  d.querySelectorAll('.mode').forEach(function(b){
+    b.onclick = function(){ prime(); openMode(b.dataset.m); };
+  });
+  return d;
+}
+function openMode(m){
+  if(m==='dialog') return go(dialogPickScreen,'情境模擬');
+  if(m==='pairs')  return go(pairPickScreen,'易混淆對照');
+  if(m==='review'){
+    var due = dueList();
+    if(!due.length){ return go(function(){
+      var d = screen(
+        '<div class="banner good"><span class="ic">✓</span><div>目前沒有錯題。先去其他模式練幾輪，答錯的句子會自動收進這裡，照間隔重複排程回來找你。</div></div>'+
+        '<div class="spacer"></div><button class="btn primary" id="bk">回首頁</button>');
+      d.querySelector('#bk').onclick = back;
+      return d;
+    }, '錯題複習'); }
+    return startQuiz(due.slice(0,Math.max(S.count,10)), 'mix', '錯題複習', '');
+  }
+  go(function(){ return scenePickScreen(m); }, MODES.filter(function(x){return x.id===m;})[0].t);
+}
+
+/* ══════════ 情境選擇 ══════════ */
+var pickSel = {};
+function scenePickScreen(mode){
+  if(!Object.keys(pickSel).length) SCENES.forEach(function(s){ pickSel[s.id]=true; });
+  var h = '<div class="eyebrow">選要練的情境</div><div class="scenes">';
+  SCENES.forEach(function(s){
+    var n = ITEMS.filter(function(x){ return x.s===s.id; }).length;
+    h += '<button class="scene" data-s="'+s.id+'" aria-pressed="'+(pickSel[s.id]?'true':'false')+
+      '" style="--sc:'+s.color+'"><span class="bar2"></span>'+
+      '<span class="b"><strong>'+esc(s.label)+'</strong><em>'+esc(s.jp)+'</em></span>'+
+      '<span class="cnt">'+n+'</span><span class="tick"></span></button>';
+  });
+  h += '</div><div class="row"><button class="btn ghost" id="all">全選</button>'+
+       '<button class="btn ghost" id="none">全不選</button></div>'+
+       '<div class="spacer"></div>'+
+       '<button class="btn primary" id="start">開始練習</button>';
+  var d = screen(h);
+  function sync(){
+    d.querySelectorAll('.scene').forEach(function(b){
+      b.setAttribute('aria-pressed', pickSel[b.dataset.s]?'true':'false'); });
+    var any = SCENES.some(function(s){ return pickSel[s.id]; });
+    d.querySelector('#start').disabled = !any;
+  }
+  d.querySelectorAll('.scene').forEach(function(b){
+    b.onclick=function(){ pickSel[b.dataset.s]=!pickSel[b.dataset.s]; sync(); }; });
+  d.querySelector('#all').onclick=function(){ SCENES.forEach(function(s){pickSel[s.id]=true;}); sync(); };
+  d.querySelector('#none').onclick=function(){ SCENES.forEach(function(s){pickSel[s.id]=false;}); sync(); };
+  d.querySelector('#start').onclick=function(){
+    prime();
+    var pool = ITEMS.filter(function(x){ return pickSel[x.s]; });
+    /* 店員講的話只練聽，不拿來當「你要說的句子」 */
+    if(mode==='produce'||mode==='speak') pool = pool.filter(function(x){ return x.t!=='c'; });
+    pool = shuffle(pool).slice(0, S.count===0 ? pool.length : S.count);
+    if(!pool.length) return;
+    var only = SCENES.filter(function(s){return pickSel[s.id];});
+    var col = only.length===1 ? only[0].color : '';
+    if(mode==='speak') startSpeak(pool, col);
+    else if(mode==='shadow') startShadow(pool, col);
+    else startQuiz(pool, mode, MODES.filter(function(x){return x.id===mode;})[0].t, col);
+  };
+  sync();
+  return d;
+}
+
+/* ══════════ 選擇題 ══════════ */
+function makeOptions(item, pool, kind){
+  var same = pool.filter(function(x){ return x.s===item.s && x.i!==item.i; });
+  var other= ITEMS.filter(function(x){ return x.s!==item.s && x.i!==item.i; });
+  var cand = shuffle(same).concat(shuffle(other));
+  var key = kind==='listen' ? 'z' : 'j';
+  var out=[item], used={}; used[item[key]]=1;
+  for(var i=0;i<cand.length && out.length<4;i++){
+    var c=cand[i]; if(used[c[key]]) continue; used[c[key]]=1; out.push(c);
+  }
+  return shuffle(out);
+}
+function startQuiz(pool, mode, title, color){
+  var ix=0, right=0, wrong=[];
+  function render(){
+    var item = pool[ix];
+    var kind = mode==='mix' ? (ix%2 ? 'produce':'listen') : mode;
+    var opts = makeOptions(item, pool, kind);
+    var answered=false;
+    var h = '<div class="prog"><span>'+(ix+1)+' / '+pool.length+'</span>'+
+      '<span class="track"><i class="fill" style="width:'+(ix/pool.length*100)+'%"></i></span>'+
+      '<span>'+right+' 對</span></div>';
+    if(kind==='listen'){
+      h += '<div class="stage"><div class="ask">聽聽看這句是什麼意思</div>'+
+        '<button class="speaker" id="spk" aria-label="播放">'+SVG.speaker+'</button>'+
+        '<button class="replay" id="slow">'+SVG.replay+' 慢速再聽一次</button>'+
+        '<div id="reveal" hidden></div></div>';
+    } else {
+      h += '<div class="stage"><div class="ask">這句日文怎麼說？</div>'+
+        '<div class="big-zh zh">'+esc(item.z)+'</div>'+
+        '<div id="reveal" hidden></div></div>';
+    }
+    h += '<div class="opts" id="opts">';
+    opts.forEach(function(o,n){
+      var txt = kind==='listen' ? '<span class="zh">'+esc(o.z)+'</span>' : '<span class="jp">'+jpHTML(o.j)+'</span>';
+      h += '<button class="opt" data-i="'+o.i+'"><span class="k">'+(n+1)+'</span><span class="txt">'+txt+'</span></button>';
+    });
+    h += '</div><div id="after"></div><div class="spacer"></div>';
+    var d = screen(h);
+    var spk = d.querySelector('#spk');
+    function play(rate){ if(spk) spk.classList.add('playing');
+      return speak(toKanji(item.j), rate).then(function(){ if(spk) spk.classList.remove('playing'); }); }
+    if(kind==='listen'){
+      spk.onclick=function(){ play(); };
+      d.querySelector('#slow').onclick=function(){ play(Math.max(0.55,S.rate-0.25)); };
+      setTimeout(function(){ play(); }, 260);
+    }
+    d.querySelectorAll('.opt').forEach(function(b){
+      b.onclick=function(){
+        if(answered) return; answered=true;
+        var good = b.dataset.i===item.i;
+        mark(item.i, good);
+        if(good) right++; else wrong.push(item);
+        d.querySelectorAll('.opt').forEach(function(o){
+          if(o.dataset.i===item.i) o.classList.add('good');
+          else if(o===b) o.classList.add('bad');
+          else o.classList.add('dim');
+        });
+        var rv = d.querySelector('#reveal');
+        rv.hidden=false;
+        rv.innerHTML = (kind==='listen'
+            ? '<div class="big-jp jp">'+jpHTML(item.j)+'</div><div class="sub-zh zh">'+esc(item.z)+'</div>'
+            : '<div class="sub-jp jp">'+jpHTML(item.j)+'</div>');
+        var af = d.querySelector('#after'), ah='';
+        ah += '<div class="verdict '+(good?'ok':'no')+'"><span class="mk">'+(good?'✓':'✕')+'</span>'+
+              (good?'答對了':'正確答案是上面綠色那個')+'</div>';
+        if(item.n) ah += '<div class="note zh"><b>用法：</b>'+esc(item.n)+'</div>';
+        ah += '<button class="btn primary" id="next" style="margin-top:12px">'+
+              (ix+1>=pool.length?'看結果':'下一題')+'</button>';
+        af.innerHTML = ah;
+        af.querySelector('#next').onclick=function(){
+          ix++; if(ix>=pool.length) showResult(right,pool.length,wrong,title,color);
+          else replace(render,title,color);
+        };
+        if(kind!=='listen') play();
+        setTimeout(function(){ af.scrollIntoView({block:'nearest',behavior:'smooth'}); },60);
+      };
+    });
+    return d;
+  }
+  go(render, title, color);
+}
+
+/* ══════════ 口說練習 ══════════ */
+function startSpeak(pool, color){
+  var ix=0, great=0, results=[], stopped=false;
+  function render(){
+    stopped = false;                 /* 每題重置，replace() 先呼叫過 autoStop() */
+    var item = pool[ix];
+    var h = '<div class="prog"><span>'+(ix+1)+' / '+pool.length+'</span>'+
+      '<span class="track"><i class="fill" style="width:'+(ix/pool.length*100)+'%"></i></span>'+
+      '<span id="hf">'+(S.hands?'免持中':'')+'</span></div>'+
+      '<div class="stage"><div class="ask" id="ask">看著中文，用日文念出來</div>'+
+      '<div class="big-zh zh">'+esc(item.z)+'</div>'+
+      '<div id="jp" '+(S.model?'':'hidden')+'><div class="sub-jp jp">'+jpHTML(item.j)+'</div></div>'+
+      '<button class="mic" id="mic" aria-label="開始錄音">'+SVG.mic+'</button>'+
+      '<div class="heard" id="heard"></div>'+
+      '<div class="meter"><i id="meter" style="width:0"></i></div>'+
+      '<button class="replay" id="model">'+SVG.small+' 聽範讀</button></div>'+
+      '<div id="after"></div><div class="spacer"></div>'+
+      '<div class="row"><button class="btn ghost" id="skip">跳過</button>'+
+      '<button class="btn ghost" id="toggleJp">'+(S.model?'蓋住日文':'顯示日文')+'</button></div>';
+    var d = screen(h);
+    var mic=d.querySelector('#mic'), heard=d.querySelector('#heard'),
+        meter=d.querySelector('#meter'), after=d.querySelector('#after'), ask=d.querySelector('#ask');
+
+    function nextQ(){
+      ix++;
+      if(ix>=pool.length){ wake(false); showSpeakResult(great,pool.length,results,color); }
+      else replace(render,'口說練習',color);
+    }
+    function finish(res){
+      var g = res.list ? grade(res.list, item) : null;
+      mic.classList.remove('live');
+      if(!g){
+        var msg = ASR_ERR[res.err] || '沒有辨識到內容，再試一次。';
+        heard.innerHTML = '';
+        after.innerHTML = '<div class="banner"><span class="ic">！</span><div>'+esc(msg)+'</div></div>'+
+          '<div class="row" style="margin-top:12px">'+
+          '<button class="btn ghost" id="retry">再念一次</button>'+
+          '<button class="btn primary" id="self">我念對了</button></div>';
+        after.querySelector('#retry').onclick=function(){ after.innerHTML=''; run(); };
+        after.querySelector('#self').onclick=function(){ mark(item.i,true); great++;
+          results.push({item:item,score:1,self:true}); nextQ(); };
+        return;
+      }
+      var lvl=g.level, pct=Math.round(g.score*100);
+      heard.innerHTML = lcsMark(g.cmp[0], g.cmp[1]);
+      meter.style.width = pct+'%';
+      meter.style.background = lvl==='great'?'var(--ok)':(lvl==='close'?'var(--warn)':'var(--bad)');
+      var okNow = lvl==='great';
+      mark(item.i, okNow);
+      if(okNow) great++;
+      results.push({item:item,score:g.score,heard:g.heard});
+      var vt = lvl==='great' ? ['ok','✓','完全正確']
+             : lvl==='close' ? ['mid','～','快到了，有幾個字不一樣']
+             : ['no','✕','差比較多，再念一次試試'];
+      var ah = '<div class="verdict '+vt[0]+'"><span class="mk">'+vt[1]+'</span>'+vt[2]+
+               ' <span class="muted" style="font-weight:400;font-size:13px">'+pct+'%</span></div>'+
+               '<div class="note zh">辨識到：<b class="jp">'+esc(g.heard)+'</b><br>正確說法：<b class="jp">'+esc(toKanji(item.j))+'</b></div>';
+      if(item.n) ah += '<div class="note zh" style="margin-top:8px"><b>用法：</b>'+esc(item.n)+'</div>';
+      ah += '<div class="row" style="margin-top:12px">'+
+            '<button class="btn ghost" id="again">再念一次</button>'+
+            '<button class="btn primary" id="next">'+(ix+1>=pool.length?'看結果':'下一句')+'</button></div>';
+      after.innerHTML = ah;
+      after.querySelector('#again').onclick=function(){ after.innerHTML=''; heard.innerHTML='';
+        meter.style.width='0'; run(); };
+      after.querySelector('#next').onclick=nextQ;
+      setTimeout(function(){ after.scrollIntoView({block:'nearest',behavior:'smooth'}); },60);
+      if(S.hands && !stopped){ setTimeout(function(){ if(!stopped) nextQ(); }, lvl==='great'?1600:2800); }
+    }
+    async function run(){
+      if(stopped) return;
+      after.innerHTML=''; heard.innerHTML=''; meter.style.width='0';
+      if(S.model){ ask.textContent='先聽一次範讀'; await speak(toKanji(item.j)); }
+      if(stopped) return;
+      ask.textContent='嗶一聲之後請念出來';
+      beep(880,150); await sleep(330);
+      if(stopped) return;
+      mic.classList.add('live'); ask.textContent='請念⋯⋯';
+      var res = await listen(function(t){ heard.textContent = t; });
+      ask.textContent='看著中文，用日文念出來';
+      finish(res);
+    }
+    mic.onclick=function(){ prime(); if(recLive){ stopRec(); } else { run(); } };
+    d.querySelector('#model').onclick=function(){ prime(); speak(toKanji(item.j)); };
+    d.querySelector('#skip').onclick=nextQ;
+    d.querySelector('#toggleJp').onclick=function(){
+      S.model=!S.model; saveSet(); replace(render,'口說練習',color); };
+    if(S.hands){ wake(true); setTimeout(function(){ prime(); run(); }, 420); }
+    autoStop = function(){ stopped=true; stopRec(); };
+    return d;
+  }
+  if(!ASR_PRESENT){
+    go(function(){
+      var d = screen('<div class="banner"><span class="ic">！</span><div>'+
+        '這個瀏覽器／環境沒有語音辨識。你還是可以用「自評」的方式練：聽範讀 → 自己念 → 自己判斷。'+
+        '<br><br>想用自動辨識的話，請在 <b>Android Chrome</b> 或 <b>iPhone Safari</b> 開啟，'+
+        '而且網址必須是 <b>https</b> 或 <b>localhost</b>。</div></div>'+
+        '<button class="btn primary" id="go">用自評模式開始</button>');
+      d.querySelector('#go').onclick=function(){ prime(); replace(function(){
+        return startSpeakSelf(pool,color); },'口說練習（自評）',color); };
+      return d;
+    }, '口說練習', color);
+    return;
+  }
+  go(render, '口說練習', color);
+}
+function startSpeakSelf(pool,color){
+  var ix=0, ok=0, results=[];
+  function render(){
+    var item=pool[ix];
+    var h='<div class="prog"><span>'+(ix+1)+' / '+pool.length+'</span>'+
+      '<span class="track"><i class="fill" style="width:'+(ix/pool.length*100)+'%"></i></span><span></span></div>'+
+      '<div class="stage"><div class="ask">用日文念出來，再對答案</div>'+
+      '<div class="big-zh zh">'+esc(item.z)+'</div>'+
+      '<button class="speaker" id="spk">'+SVG.speaker+'</button>'+
+      '<div id="rv" hidden></div></div><div id="after"></div><div class="spacer"></div>'+
+      '<button class="btn primary" id="show">對答案</button>';
+    var d=screen(h);
+    d.querySelector('#spk').onclick=function(){ speak(toKanji(item.j)); };
+    d.querySelector('#show').onclick=function(){
+      var rv=d.querySelector('#rv'); rv.hidden=false;
+      rv.innerHTML='<div class="big-jp jp">'+jpHTML(item.j)+'</div>';
+      speak(toKanji(item.j));
+      var ah = (item.n?'<div class="note zh"><b>用法：</b>'+esc(item.n)+'</div>':'')+
+        '<div class="row" style="margin-top:12px">'+
+        '<button class="btn ghost" id="no">再練一次</button>'+
+        '<button class="btn primary" id="yes">我念對了</button></div>';
+      d.querySelector('#after').innerHTML=ah;
+      d.querySelector('#show').hidden=true;
+      d.querySelector('#no').onclick=function(){ mark(item.i,false); results.push({item:item,score:0}); step(); };
+      d.querySelector('#yes').onclick=function(){ mark(item.i,true); ok++; results.push({item:item,score:1}); step(); };
+    };
+    function step(){ ix++; if(ix>=pool.length) showSpeakResult(ok,pool.length,results,color);
+      else replace(render,'口說練習（自評）',color); }
+    return d;
+  }
+  return render();
+}
+
+/* ══════════ 聽讀跟讀（免持） ══════════ */
+function startShadow(pool, color){
+  var ix=0, playing=true, stopped=false;
+  function render(){
+    stopped = false;                 /* 每句重置 */
+    var item=pool[ix];
+    var h='<div class="prog"><span>'+(ix+1)+' / '+pool.length+'</span>'+
+      '<span class="track"><i class="fill" style="width:'+(ix/pool.length*100)+'%"></i></span>'+
+      '<span id="st">播放中</span></div>'+
+      '<div class="stage"><div class="ask">'+esc(SC[item.s]?SC[item.s].label:'')+'</div>'+
+      '<div class="big-jp jp">'+jpHTML(item.j)+'</div>'+
+      '<div class="sub-zh zh">'+esc(item.z)+'</div>'+
+      (item.n?'<div class="note zh" style="text-align:left;align-self:stretch">'+esc(item.n)+'</div>':'')+
+      '</div><div class="spacer"></div>'+
+      '<div class="row"><button class="btn ghost" id="prev">上一句</button>'+
+      '<button class="btn ghost" id="nx">下一句</button></div>'+
+      '<button class="btn primary" id="pp">暫停</button>';
+    var d=screen(h);
+    var st=d.querySelector('#st'), pp=d.querySelector('#pp');
+    function sync(){ st.textContent = playing?'播放中':'已暫停'; pp.textContent = playing?'暫停':'繼續'; }
+    pp.onclick=function(){ playing=!playing; sync();
+      if(playing){ prime(); loop(); } else { stopSpeak(); } };
+    d.querySelector('#prev').onclick=function(){ stopSpeak(); ix=(ix-1+pool.length)%pool.length;
+      replace(render,'聽讀跟讀',color); };
+    d.querySelector('#nx').onclick=function(){ stopSpeak(); ix=(ix+1)%pool.length;
+      replace(render,'聽讀跟讀',color); };
+    async function loop(){
+      if(stopped||!playing) return;
+      await speak(toKanji(item.j));
+      if(stopped||!playing) return;
+      await sleep(S.pace*1000);              /* 留白給你跟著念 */
+      if(stopped||!playing) return;
+      await speak(toKanji(item.j), Math.max(0.6,S.rate-0.1));
+      if(stopped||!playing) return;
+      await sleep(900);
+      if(stopped||!playing) return;
+      mark(item.i,true);
+      ix++;
+      if(ix>=pool.length){ wake(false); showResult(pool.length,pool.length,[],'聽讀跟讀',color); }
+      else replace(render,'聽讀跟讀',color);
+    }
+    autoStop=function(){ stopped=true; };
+    wake(true); sync();
+    setTimeout(function(){ prime(); loop(); }, 400);
+    return d;
+  }
+  go(render,'聽讀跟讀',color);
+}
+
+/* ══════════ 情境模擬 ══════════ */
+function dialogPickScreen(){
+  var h='<div class="eyebrow">選一個場景走一遍</div><div class="scenes">';
+  D.dialogs.forEach(function(dg){
+    var s=SC[dg.scene]||{color:'var(--accent)'};
+    h+='<button class="scene" data-d="'+dg.id+'" style="--sc:'+s.color+'"><span class="bar2"></span>'+
+      '<span class="b"><strong>'+esc(dg.title)+'</strong><em class="zh" style="font-family:var(--zh)">'+esc(dg.sub)+'</em></span>'+
+      '<span class="chev">'+SVG.chev+'</span></button>';
+  });
+  h+='</div>';
+  var d=screen(h);
+  d.querySelectorAll('.scene').forEach(function(b){
+    b.onclick=function(){ prime();
+      var dg = D.dialogs.filter(function(x){return x.id===b.dataset.d;})[0];
+      startDialog(dg); };
+  });
+  return d;
+}
+function startDialog(dg){
+  var col = (SC[dg.scene]||{}).color || '';
+  var ti=0, right=0, asked=0, log=[];
+  function render(){
+    var h='<div class="scenesetup zh">'+esc(dg.sub)+'</div><div class="chat" id="chat"></div>'+
+      '<div id="area"></div><div class="spacer"></div>';
+    var d=screen(h);
+    var chat=d.querySelector('#chat'), area=d.querySelector('#area');
+    function bubble(side, j, z, wrong){
+      var b=document.createElement('div');
+      b.className='bub '+(side==='them'?'them':'me')+(wrong?' wrong':'');
+      b.innerHTML='<div class="j">'+jpHTML(j)+'</div><div class="z zh">'+esc(z)+'</div>'+
+        (side==='them'?'<button class="spk">'+SVG.small+' 再聽一次</button>':'');
+      if(side==='them') b.querySelector('.spk').onclick=function(){ speak(toKanji(j)); };
+      chat.appendChild(b);
+      b.scrollIntoView({block:'nearest',behavior:'smooth'});
+      return b;
+    }
+    log.forEach(function(L){ bubble(L.side,L.j,L.z,L.wrong); });
+    function step(){
+      if(ti>=dg.turns.length){
+        area.innerHTML='<div class="verdict '+(right===asked?'ok':'mid')+'" style="margin:14px 0">'+
+          '<span class="mk">'+(right===asked?'✓':'～')+'</span>這個場景走完了：'+right+' / '+asked+' 題答對</div>'+
+          '<div class="row"><button class="btn ghost" id="ag">再走一次</button>'+
+          '<button class="btn primary" id="hm">換一個場景</button></div>';
+        area.querySelector('#ag').onclick=function(){ ti=0;right=0;asked=0;log=[]; replace(render,dg.title,col); };
+        area.querySelector('#hm').onclick=function(){ back(); };
+        return;
+      }
+      var t=dg.turns[ti];
+      if(t.who==='clerk'){
+        log.push({side:'them',j:t.j,z:t.z});
+        bubble('them',t.j,t.z);
+        speak(toKanji(t.j));
+        ti++;
+        setTimeout(step, 1100);
+        return;
+      }
+      asked++;
+      var opts=shuffle(t.opts);
+      var h2='<div class="eyebrow" style="margin:14px 0 9px">'+esc(t.q)+'</div><div class="opts">';
+      opts.forEach(function(o,n){
+        h2+='<button class="opt" data-n="'+t.opts.indexOf(o)+'"><span class="k">'+(n+1)+'</span>'+
+          '<span class="txt"><span class="jp">'+jpHTML(o.j)+'</span>'+
+          '<span class="zh" style="display:block;font-size:12.5px;color:var(--muted);margin-top:3px">'+esc(o.z)+'</span></span></button>';
+      });
+      h2+='</div><div id="fb"></div>';
+      area.innerHTML=h2;
+      area.querySelectorAll('.opt').forEach(function(b){
+        b.onclick=function(){
+          var o=t.opts[+b.dataset.n], good=!!o.ok;
+          if(good) right++;
+          area.querySelectorAll('.opt').forEach(function(x){
+            var ox=t.opts[+x.dataset.n];
+            if(ox.ok) x.classList.add('good'); else if(x===b) x.classList.add('bad'); else x.classList.add('dim');
+          });
+          log.push({side:'me',j:o.j,z:o.z,wrong:!good});
+          bubble('me',o.j,o.z,!good);
+          speak(toKanji(o.j));
+          var corr = t.opts.filter(function(x){return x.ok;})[0];
+          var fh='<div class="verdict '+(good?'ok':'no')+'" style="margin-top:12px">'+
+            '<span class="mk">'+(good?'✓':'✕')+'</span>'+(good?'這樣回就對了':'這句不太對')+'</div>';
+          if(!good && o.why) fh+='<div class="note zh"><b>為什麼不行：</b>'+esc(o.why)+'</div>';
+          if(!good) fh+='<div class="note zh" style="margin-top:8px"><b>應該說：</b><span class="jp">'+
+            jpHTML(corr.j)+'</span>（'+esc(corr.z)+'）</div>';
+          if(corr.note) fh+='<div class="note zh" style="margin-top:8px">'+esc(corr.note)+'</div>';
+          fh+='<button class="btn primary" id="go" style="margin-top:12px">繼續</button>';
+          area.querySelector('#fb').innerHTML=fh;
+          area.querySelector('#go').onclick=function(){ ti++; step(); };
+          setTimeout(function(){ area.querySelector('#fb').scrollIntoView({block:'nearest',behavior:'smooth'}); },60);
+        };
+      });
+    }
+    setTimeout(step,300);
+    return d;
+  }
+  go(render,dg.title,col);
+}
+
+/* ══════════ 易混淆對照 ══════════ */
+function pairPickScreen(){
+  var h='<div class="eyebrow">差一點點，意思差很多</div><div class="scenes">';
+  D.pairs.forEach(function(p,n){
+    h+='<button class="scene" data-n="'+n+'" style="--sc:'+SCENES[n%SCENES.length].color+'">'+
+      '<span class="bar2"></span><span class="b"><strong>'+esc(p.title)+'</strong>'+
+      '<em class="zh" style="font-family:var(--zh)">'+p.ids.length+' 句對照</em></span>'+
+      '<span class="chev">'+SVG.chev+'</span></button>';
+  });
+  h+='</div>';
+  var d=screen(h);
+  d.querySelectorAll('.scene').forEach(function(b){
+    b.onclick=function(){ prime(); startPair(D.pairs[+b.dataset.n], SCENES[+b.dataset.n%SCENES.length].color); };
+  });
+  return d;
+}
+function startPair(p, col){
+  var items = p.ids.map(function(id){ return BY_ID[id]; }).filter(Boolean);
+  function learnScreen(){
+    var h='<div class="pairtip zh">'+esc(p.tip)+'</div><div class="opts">';
+    items.forEach(function(it){
+      h+='<div class="opt" style="cursor:default"><span class="txt">'+
+        '<span class="jp" style="font-size:18px;line-height:2">'+jpHTML(it.j)+'</span>'+
+        '<span class="zh" style="display:block;font-size:13px;color:var(--muted);margin-top:3px">'+esc(it.z)+'</span>'+
+        '</span><button class="k" data-i="'+it.i+'" style="width:40px;height:40px;cursor:pointer">'+SVG.small+'</button></div>';
+    });
+    h+='</div><div class="spacer"></div><button class="btn primary" id="go">開始測驗</button>';
+    var d=screen(h);
+    d.querySelectorAll('button[data-i]').forEach(function(b){
+      b.onclick=function(){ speak(toKanji(BY_ID[b.dataset.i].j)); }; });
+    d.querySelector('#go').onclick=function(){ prime(); quiz(); };
+    return d;
+  }
+  function quiz(){
+    var seq = shuffle(items.concat(items)), ix=0, right=0;
+    function render(){
+      var item=seq[ix];
+      var h='<div class="prog"><span>'+(ix+1)+' / '+seq.length+'</span>'+
+        '<span class="track"><i class="fill" style="width:'+(ix/seq.length*100)+'%"></i></span>'+
+        '<span>'+right+' 對</span></div>'+
+        '<div class="stage"><div class="ask">這個意思要用哪一句？</div>'+
+        '<div class="big-zh zh">'+esc(item.z)+'</div></div><div class="opts">';
+      shuffle(items).forEach(function(o,n){
+        h+='<button class="opt" data-i="'+o.i+'"><span class="k">'+(n+1)+'</span>'+
+          '<span class="txt jp" style="font-size:17.5px;line-height:1.95">'+jpHTML(o.j)+'</span></button>';
+      });
+      h+='</div><div id="after"></div><div class="spacer"></div>';
+      var d=screen(h), done=false;
+      d.querySelectorAll('.opt').forEach(function(b){
+        b.onclick=function(){
+          if(done) return; done=true;
+          var good=b.dataset.i===item.i; mark(item.i,good); if(good) right++;
+          d.querySelectorAll('.opt').forEach(function(x){
+            if(x.dataset.i===item.i) x.classList.add('good');
+            else if(x===b) x.classList.add('bad'); else x.classList.add('dim'); });
+          speak(toKanji(item.j));
+          var ah='<div class="verdict '+(good?'ok':'no')+'"><span class="mk">'+(good?'✓':'✕')+'</span>'+
+            (good?'對了':'注意看差在哪裡')+'</div><div class="pairtip zh">'+esc(p.tip)+'</div>'+
+            '<button class="btn primary" id="n" style="margin-top:12px">'+
+            (ix+1>=seq.length?'看結果':'下一題')+'</button>';
+          d.querySelector('#after').innerHTML=ah;
+          d.querySelector('#n').onclick=function(){ ix++;
+            if(ix>=seq.length) showResult(right,seq.length,[],p.title,col);
+            else replace(render,p.title,col); };
+        };
+      });
+      return d;
+    }
+    replace(render,p.title,col);
+  }
+  go(learnScreen,p.title,col);
+}
+
+/* ══════════ 結果 ══════════ */
+function showResult(right,total,wrong,title,color){
+  replace(function(){
+    var pct = total? Math.round(right/total*100):0;
+    var h='<div class="card score"><div class="pct">'+pct+'%</div>'+
+      '<div class="lbl">'+total+' 題中答對 '+right+' 題</div></div>';
+    if(wrong && wrong.length){
+      h+='<div class="eyebrow">這幾句再看一次</div><div class="wronglist">';
+      wrong.forEach(function(w){
+        h+='<div class="wrongrow"><div class="b"><div class="j jp">'+jpHTML(w.j)+'</div>'+
+          '<div class="z zh">'+esc(w.z)+'</div></div>'+
+          '<button data-i="'+w.i+'">'+SVG.small+'</button></div>';
+      });
+      h+='</div><div class="note zh">答錯的句子已經收進「錯題複習」，之後會自動排回來給你練。</div>';
+    } else {
+      h+='<div class="banner good"><span class="ic">✓</span><div>這一輪全對。</div></div>';
+    }
+    h+='<div class="spacer"></div><div class="row">'+
+      (wrong && wrong.length ? '<button class="btn ghost" id="again">只練錯的</button>' : '')+
+      '<button class="btn primary" id="home">回首頁</button></div>';
+    var d=screen(h);
+    d.querySelectorAll('.wrongrow button').forEach(function(b){
+      b.onclick=function(){ speak(toKanji(BY_ID[b.dataset.i].j)); }; });
+    var ag = d.querySelector('#again');
+    if(ag) ag.onclick=function(){ prime(); startQuiz(shuffle(wrong),'mix',title+'・錯題',color); };
+    d.querySelector('#home').onclick=function(){ nav=[{r:homeScreen,t:'日本旅行會話',c:''}]; draw(); };
+    return d;
+  }, '練習結果', color);
+}
+function showSpeakResult(great,total,results,color){
+  replace(function(){
+    var pct= total?Math.round(great/total*100):0;
+    var h='<div class="card score"><div class="pct">'+pct+'%</div>'+
+      '<div class="lbl">'+total+' 句中念對 '+great+' 句</div></div>';
+    var low = results.filter(function(r){ return r.score<0.86; });
+    if(low.length){
+      h+='<div class="eyebrow">這幾句再練</div><div class="wronglist">';
+      low.forEach(function(r){
+        h+='<div class="wrongrow"><div class="b"><div class="j jp">'+jpHTML(r.item.j)+'</div>'+
+          '<div class="z zh">'+esc(r.item.z)+(r.heard?' ・辨識到「'+esc(r.heard)+'」':'')+'</div></div>'+
+          '<button data-i="'+r.item.i+'">'+SVG.small+'</button></div>';
+      });
+      h+='</div>';
+    } else h+='<div class="banner good"><span class="ic">✓</span><div>這一輪都念對了。</div></div>';
+    h+='<div class="spacer"></div><button class="btn primary" id="home">回首頁</button>';
+    var d=screen(h);
+    d.querySelectorAll('.wrongrow button').forEach(function(b){
+      b.onclick=function(){ speak(toKanji(BY_ID[b.dataset.i].j)); }; });
+    d.querySelector('#home').onclick=function(){ nav=[{r:homeScreen,t:'日本旅行會話',c:''}]; draw(); };
+    return d;
+  },'口說結果',color);
+}
+
+/* ══════════ 設定 ══════════ */
+var SHEET=el('sheet'), PANEL=el('sheetPanel');
+el('btnSet').onclick=function(){ prime(); openSheet(); };
+SHEET.onclick=function(e){ if(e.target===SHEET) closeSheet(); };
+function closeSheet(){ SHEET.hidden=true; stopSpeak(); }
+function openSheet(){
+  loadVoices();
+  var env = location.protocol==='https:' || location.hostname==='localhost' || location.hostname==='127.0.0.1';
+  var h='<div class="grab"></div><h2>設定</h2>';
+
+  h+='<div class="set"><label>日文顯示方式</label><div class="seg" id="segD">'+
+     '<button data-v="kanji" aria-pressed="'+(S.display==='kanji')+'">漢字＋假名</button>'+
+     '<button data-v="kana" aria-pressed="'+(S.display==='kana')+'">純假名</button></div></div>';
+
+  h+='<div class="set"><label>朗讀語速</label><div class="seg" id="segR">'+
+     [['0.7','很慢'],['0.85','慢'],['1','正常'],['1.15','快']].map(function(r){
+       return '<button data-v="'+r[0]+'" aria-pressed="'+(String(S.rate)===r[0])+'">'+r[1]+'</button>';
+     }).join('')+'</div></div>';
+
+  h+='<div class="set"><label>每輪題數</label><div class="seg" id="segC">'+
+     [['10','10'],['15','15'],['25','25'],['0','全部']].map(function(r){
+       return '<button data-v="'+r[0]+'" aria-pressed="'+(String(S.count)===r[0])+'">'+r[1]+'</button>';
+     }).join('')+'</div></div>';
+
+  h+='<div class="set"><label>跟讀留白</label><div class="seg" id="segP">'+
+     [['2.2','短'],['3.2','中'],['4.5','長']].map(function(r){
+       return '<button data-v="'+r[0]+'" aria-pressed="'+(String(S.pace)===r[0])+'">'+r[1]+'</button>';
+     }).join('')+'</div><div class="hint">跟讀模式播完一句後，留給你跟著念的時間。</div></div>';
+
+  h+='<div class="set"><label>日文語音</label>';
+  if(!voicesJa.length){
+    h+='<div class="hint">還沒偵測到日文語音。iPhone 請到「設定 → 輔助使用 → 語音內容」下載日文語音；'+
+       'Windows 請到「設定 → 時間與語言 → 語音」安裝日文。裝好後重新整理這個頁面。</div>';
+  } else {
+    h+='<div class="voicelist">';
+    voicesJa.forEach(function(v,n){
+      var sel = theVoice && v.voiceURI===theVoice.voiceURI;
+      h+='<div class="vrow'+(sel?' sel':'')+'" data-u="'+esc(v.voiceURI)+'">'+
+        '<span class="vn">'+esc(v.name||v.lang)+'</span>'+
+        (n===0?'<span class="tag">建議</span>':'')+
+        '<button data-act="try">試聽</button>'+
+        '<button data-act="use">'+(sel?'使用中':'選用')+'</button></div>';
+    });
+    h+='</div><div class="hint">選一個你聽起來最自然的。名字裡有 Nanami、Kyoko、O-ren、Google 日本語的通常最接近真人。</div>';
+  }
+  h+='</div>';
+
+  h+='<div class="set"><label>練習行為</label>'+
+     '<div class="sw"><div class="l"><strong>口說免持模式</strong>'+
+     '<em>播範讀 → 嗶聲 → 自動開麥 → 判定 → 自動下一句，整輪手不用碰螢幕。</em></div>'+
+     '<button class="toggle" id="tgH" aria-pressed="'+(S.hands?'true':'false')+'" aria-label="免持模式"></button></div>'+
+     '<div class="sw"><div class="l"><strong>口說前先播範讀</strong>'+
+     '<em>關掉就變成真正的測驗：只看中文，自己想怎麼講。</em></div>'+
+     '<button class="toggle" id="tgM" aria-pressed="'+(S.model?'true':'false')+'" aria-label="範讀"></button></div>'+
+     '<div class="sw"><div class="l"><strong>嚴格判定</strong>'+
+     '<em>開啟後助詞念錯就算沒過，適合已經練熟想抓細節的時候。</em></div>'+
+     '<button class="toggle" id="tgS" aria-pressed="'+(S.strict?'true':'false')+'" aria-label="嚴格判定"></button></div></div>';
+
+  h+='<div class="set"><label>這台裝置的支援狀況</label>'+
+     '<div class="hint">'+
+     '朗讀：'+(TTS_OK?(voicesJa.length?('可用 ・ 偵測到 '+voicesJa.length+' 個日文語音'):'可用，但尚未偵測到日文語音'):'不支援')+'<br>'+
+     '語音辨識：'+(!ASR_PRESENT?'這個瀏覽器不支援':(asrBlocked?'被環境擋住（會自動切成自評）':(env?'可用':'目前網址不是 https 或 localhost，麥克風會被擋')))+'<br>'+
+     '螢幕恆亮：'+(('wakeLock' in navigator)?'可用':'不支援（請自己把螢幕休眠時間調長）')+
+     '</div></div>';
+
+  h+='<div class="set"><button class="btn ghost" id="reset">清除練習紀錄</button></div>'+
+     '<button class="btn primary" id="close">完成</button>';
+
+  PANEL.innerHTML=h; SHEET.hidden=false;
+  function seg(id,key,cast){
+    var w=PANEL.querySelector(id); if(!w) return;
+    w.querySelectorAll('button').forEach(function(b){
+      b.onclick=function(){
+        S[key]=cast(b.dataset.v); saveSet();
+        w.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
+      };
+    });
+  }
+  seg('#segD','display',String); seg('#segR','rate',Number);
+  seg('#segC','count',Number);   seg('#segP','pace',Number);
+  function tog(id,key){ var b=PANEL.querySelector(id); if(!b) return;
+    b.onclick=function(){ S[key]=!S[key]; saveSet(); b.setAttribute('aria-pressed',S[key]?'true':'false'); }; }
+  tog('#tgH','hands'); tog('#tgM','model'); tog('#tgS','strict');
+  PANEL.querySelectorAll('.vrow button').forEach(function(b){
+    b.onclick=function(){
+      var row=b.parentNode, uri=row.dataset.u, v=null;
+      voicesJa.forEach(function(x){ if(x.voiceURI===uri) v=x; });
+      if(!v) return;
+      if(b.dataset.act==='try'){
+        var prev=theVoice; theVoice=v;
+        speak('すみません、駅はどこですか。').then(function(){ theVoice = prev || v; });
+      } else {
+        S.voice=uri; saveSet(); theVoice=v;
+        PANEL.querySelectorAll('.vrow').forEach(function(r){
+          var on = r.dataset.u===uri;
+          r.classList.toggle('sel',on);
+          var ub=r.querySelector('[data-act="use"]'); if(ub) ub.textContent = on?'使用中':'選用';
+        });
+        speak('ありがとうございます。');
+      }
+    };
+  });
+  PANEL.querySelector('#reset').onclick=function(){
+    P={}; saveProg();
+    PANEL.querySelector('#reset').textContent='已清除';
+    if(nav.length===1) draw();
+  };
+  PANEL.querySelector('#close').onclick=closeSheet;
+}
+
+/* ══════════ 啟動 ══════════ */
+var autoStop = function(){};
+document.addEventListener('keydown',function(e){
+  if(SHEET.hidden===false) return;
+  var n = parseInt(e.key,10);
+  if(n>=1&&n<=4){ var b=MAIN.querySelectorAll('.opt')[n-1]; if(b&&b.tagName==='BUTTON') b.click(); }
+  if(e.key==='Escape'&&nav.length>1) back();
+});
+nav=[{r:homeScreen,t:'日本旅行會話',c:''}];
+draw();
+})();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
