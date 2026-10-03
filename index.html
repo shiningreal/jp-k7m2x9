@@ -327,6 +327,62 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 
 .pairtip{font-family:var(--zh);font-size:14px;line-height:1.75;background:var(--surface-2);
   border:1px solid var(--line);border-left:4px solid var(--scene);border-radius:0 11px 11px 0;padding:13px 15px}
+
+/* ── 嚮導「プク」 ── */
+.guide{display:block;flex:none}
+.guide svg{width:100%;height:100%;display:block;overflow:visible}
+.g-sm{width:66px;height:83px}
+.g-md{width:92px;height:115px}
+.g-lg{width:132px;height:165px;margin:0 auto}
+.grow{display:flex;align-items:center;gap:13px;margin-top:10px}
+.grow .gtext{flex:1;min-width:0}
+.hero-row{display:flex;align-items:center;gap:12px}
+.hero-row .hero{flex:1;min-width:0}
+/* 嚮導佔掉寬度後，標題要縮一點才不會斷在詞中間 */
+.hero-row .guide{width:62px;height:78px}
+.hero-row .hero .t{font-size:clamp(17px,5.1vw,24px);word-break:keep-all;line-height:1.3}
+.rig{transform-box:fill-box;transform-origin:center bottom}
+.idle .rig{animation:bob 3.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.good-anim .rig{animation:hop .62s cubic-bezier(.3,1.5,.5,1) 1}
+@keyframes hop{0%{transform:translateY(0) scale(1,1)}22%{transform:translateY(-22px) scale(.97,1.05)}
+  55%{transform:translateY(0) scale(1.05,.95)}75%{transform:translateY(-5px)}100%{transform:translateY(0) scale(1,1)}}
+.bad-anim .rig{animation:shake .7s ease-in-out 1}
+@keyframes shake{0%,100%{transform:translateX(0) rotate(0)}18%{transform:translateX(-7px) rotate(-3.5deg)}
+  38%{transform:translateX(6px) rotate(2.5deg)}58%{transform:translateX(-4px) rotate(-1.5deg)}78%{transform:translateX(3px) rotate(.8deg)}}
+.streak-anim .rig{animation:strut 1.1s ease-in-out 1}
+@keyframes strut{0%{transform:translateY(0) rotate(0)}25%{transform:translateY(-6px) rotate(-3deg)}
+  55%{transform:translateY(0) rotate(2.5deg)}80%{transform:translateY(-3px) rotate(-1deg)}100%{transform:translateY(0) rotate(0)}}
+.cele-anim .rig{animation:cheer 1s cubic-bezier(.3,1.4,.5,1) 1}
+@keyframes cheer{0%{transform:translateY(0) scale(1)}18%{transform:translateY(-30px) scale(.95,1.08)}
+  42%{transform:translateY(0) scale(1.07,.94)}62%{transform:translateY(-18px) scale(.98,1.04)}
+  85%{transform:translateY(0) scale(1.03,.98)}100%{transform:translateY(0) scale(1)}}
+.puff{transform-box:fill-box;transform-origin:center}
+.good-anim .puff{animation:inflate .62s cubic-bezier(.3,1.5,.5,1) 1}
+@keyframes inflate{0%{transform:scale(1)}32%{transform:scale(1.15)}70%{transform:scale(.98)}100%{transform:scale(1)}}
+.bad-anim .puff{animation:deflate .85s ease-out 1}
+@keyframes deflate{0%{transform:scale(1)}16%{transform:scale(.78)}58%{transform:scale(.82)}100%{transform:scale(1)}}
+.spikes{transform-box:fill-box;transform-origin:center}
+.bad-anim .spikes{animation:spikesin .85s ease-out 1}
+@keyframes spikesin{0%{transform:scale(1)}16%{transform:scale(.86)}58%{transform:scale(.88)}100%{transform:scale(1)}}
+.good-anim .spikes{animation:spikesout .62s cubic-bezier(.3,1.5,.5,1) 1}
+@keyframes spikesout{0%{transform:scale(1)}32%{transform:scale(1.09)}100%{transform:scale(1)}}
+.cele-anim .puff{animation:inflate2 1s cubic-bezier(.3,1.4,.5,1) 1}
+@keyframes inflate2{0%{transform:scale(1)}20%{transform:scale(1.2)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+.gblink{transform-box:fill-box;transform-origin:center}
+.idle .gblink{animation:blinkg 4.6s infinite}
+@keyframes blinkg{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}97%{transform:scaleY(1)}}
+.gmark{transform-box:fill-box;transform-origin:center;animation:gpop .5s cubic-bezier(.2,1.7,.4,1) both}
+@keyframes gpop{0%{transform:scale(0) rotate(-24deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.gspark{transform-box:fill-box;transform-origin:center;animation:twink 1.1s ease-out both}
+@keyframes twink{0%{transform:scale(0);opacity:0}35%{transform:scale(1.25);opacity:1}100%{transform:scale(.9);opacity:0}}
+.gdrop{transform-box:fill-box;transform-origin:center top;animation:slip 1.5s ease-in both}
+@keyframes slip{0%{transform:translateY(-6px) scale(.5);opacity:0}25%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(16px) scale(.9);opacity:0}}
+.gconf{transform-box:fill-box;transform-origin:center;animation:fall 2s ease-in both}
+@keyframes fall{0%{transform:translateY(-30px) rotate(0);opacity:0}15%{opacity:1}100%{transform:translateY(230px) rotate(540deg);opacity:0}}
+@media (prefers-reduced-motion: reduce){
+  .rig,.gblink,.gmark,.gspark,.gdrop,.puff,.gconf,.spikes{animation:none!important}
+}
 .spacer{flex:1;min-height:8px}
 </style>
 
@@ -968,7 +1024,8 @@ var SVG = {
 
 /* ══════════ 設定與進度（localStorage best-effort） ══════════ */
 var DEF = { display:'kanji', rate:0.8, voice:'', count:15, hands:false, model:true,
-            pace:3.2, strict:false, dlgZh:false, voiceOK:0, pitch:1, roles:true };
+            pace:3.2, strict:false, dlgZh:false, voiceOK:0, pitch:1, roles:true,
+            sfx:true, guide:true };
 var S = {}, P = {}, ST = {};
 function load(k,fb){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):fb; }catch(e){ return fb; } }
 function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
@@ -1328,6 +1385,198 @@ document.addEventListener('visibilitychange',function(){
   else if(document.visibilityState!=='visible'){ autoStop(); }
 });
 
+
+/* ══════════ 嚮導「プク」 ══════════ */
+var BODY='#F2B544', BODY_D='#D4931F', BELLY='#FDF2DC', FIN='#E89A3C',
+    INK='#2B2724', PACK='#5E7148', GOLD='#F2C14E',
+    MARU='#E8502E', BATSU='#3F6FA8', DROPC='#6CC6E8';
+var CONFETTI=['#E8502E','#F2C14E','#3F6FA8','#2BB673','#E07BA0','#7B4FB5'];
+var WHITE='#FFFFFF';
+function star(x,y,sc,fill,delay,cls){
+  return '<g transform="translate('+x+','+y+') scale('+sc+')">'+
+         '<path class="'+(cls||'gspark')+'" style="animation-delay:'+delay+'s" '+
+         'd="M 0,-11 L 2.8,-2.8 L 11,0 L 2.8,2.8 L 0,11 L -2.8,2.8 L -11,0 L -2.8,-2.8 Z" fill="'+fill+'"/></g>';
+}
+
+/* 原創角色「プク」：河豚探險家，不戴帽子，靠身上的刺撐輪廓 */
+function guideSVG(mood){
+  var s=[], CX=100, CY=128, R=60;
+  var happy=(mood==='good'), sad=(mood==='bad'),
+      streak=(mood==='streak'), cele=(mood==='cele');
+
+  s.push('<g class="rig"><g class="puff">');
+
+  /* 尾鰭 */
+  s.push('<path d="M 156,144 Q 184,124 188,146 Q 184,170 156,156 Z" fill="'+FIN+'"/>');
+  /* 腳 */
+  s.push('<ellipse cx="84" cy="196" rx="15" ry="9" fill="'+FIN+'"/>');
+  s.push('<ellipse cx="116" cy="196" rx="15" ry="9" fill="'+FIN+'"/>');
+
+  /* 舉高與垂下的鰭畫在身體後面 */
+  if(cele){
+    s.push('<path d="M 50,118 Q 26,96 18,68" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+    s.push('<path d="M 150,118 Q 174,96 182,68" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+    s.push('<ellipse cx="16" cy="62" rx="16" ry="11" fill="'+FIN+'" transform="rotate(-38 16 62)"/>');
+    s.push('<ellipse cx="184" cy="62" rx="16" ry="11" fill="'+FIN+'" transform="rotate(38 184 62)"/>');
+  } else if(happy){
+    s.push('<path d="M 52,120 Q 32,100 26,78" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+    s.push('<path d="M 148,120 Q 168,100 174,78" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+    s.push('<ellipse cx="24" cy="72" rx="15" ry="11" fill="'+FIN+'" transform="rotate(-30 24 72)"/>');
+    s.push('<ellipse cx="176" cy="72" rx="15" ry="11" fill="'+FIN+'" transform="rotate(30 176 72)"/>');
+  } else if(!sad && !streak){
+    s.push('<path d="M 50,136 Q 34,148 30,166" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+    s.push('<path d="M 150,136 Q 166,148 170,166" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+    s.push('<ellipse cx="28" cy="172" rx="14" ry="10" fill="'+FIN+'" transform="rotate(25 28 172)"/>');
+    s.push('<ellipse cx="172" cy="172" rx="14" ry="10" fill="'+FIN+'" transform="rotate(-25 172 172)"/>');
+  }
+
+  /* 身體：刺畫在圓形之前，才會從邊緣冒出來。刺另外成一組，消風時會縮更多 */
+  s.push('<g class="spikes">');
+  var spikes='';
+  for(var a=0; a<360; a+=24){
+    var r=a*Math.PI/180, w=9*Math.PI/180;
+    var x1=CX+(R-6)*Math.cos(r-w), y1=CY+(R-6)*Math.sin(r-w);
+    var x2=CX+(R-6)*Math.cos(r+w), y2=CY+(R-6)*Math.sin(r+w);
+    var xt=CX+(R+14)*Math.cos(r),  yt=CY+(R+14)*Math.sin(r);
+    spikes += 'M '+x1.toFixed(1)+','+y1.toFixed(1)+' L '+xt.toFixed(1)+','+yt.toFixed(1)+' L '+x2.toFixed(1)+','+y2.toFixed(1)+' Z ';
+  }
+  s.push('<path d="'+spikes+'" fill="'+BODY_D+'"/>');
+  s.push('</g>');
+  s.push('<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="'+BODY+'"/>');
+  s.push('<ellipse cx="100" cy="156" rx="44" ry="30" fill="'+BELLY+'"/>');
+
+  /* 背包帶 */
+  s.push('<path d="M 58,136 L 118,178" stroke="'+PACK+'" stroke-width="11" stroke-linecap="round"/>');
+  s.push('<rect x="105" y="160" width="14" height="14" rx="3" fill="'+GOLD+'"/>');
+
+  /* 叉腰與交叉畫在身體之後，手勢才看得見 */
+  if(streak){
+    s.push('<path d="M 56,120 Q 24,142 64,164" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+    s.push('<path d="M 144,120 Q 176,142 136,164" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+  } else if(sad){
+    s.push('<path d="M 60,118 L 140,164" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+    s.push('<path d="M 140,118 L 60,164" stroke="'+FIN+'" stroke-width="15" stroke-linecap="round" fill="none"/>');
+  }
+
+  /* 眉毛：角度帶情緒 */
+  if(happy || cele){
+    s.push('<rect x="60" y="80" width="22" height="6" rx="3" fill="'+INK+'" transform="rotate(-14 71 83)"/>');
+    s.push('<rect x="118" y="80" width="22" height="6" rx="3" fill="'+INK+'" transform="rotate(14 129 83)"/>');
+  } else if(sad){
+    s.push('<rect x="60" y="80" width="22" height="6" rx="3" fill="'+INK+'" transform="rotate(22 71 83)"/>');
+    s.push('<rect x="118" y="80" width="22" height="6" rx="3" fill="'+INK+'" transform="rotate(-22 129 83)"/>');
+  } else if(streak){
+    s.push('<rect x="60" y="78" width="22" height="6" rx="3" fill="'+INK+'" transform="rotate(-20 71 81)"/>');
+    s.push('<rect x="118" y="82" width="22" height="6" rx="3" fill="'+INK+'" transform="rotate(-6 129 85)"/>');
+  } else {
+    s.push('<rect x="61" y="82" width="20" height="6" rx="3" fill="'+INK+'"/>');
+    s.push('<rect x="119" y="82" width="20" height="6" rx="3" fill="'+INK+'"/>');
+  }
+
+  /* 眼睛 */
+  if(happy || cele){
+    s.push('<path d="M 60,112 Q 72,98 84,112 M 116,112 Q 128,98 140,112" stroke="'+INK+'" stroke-width="7" stroke-linecap="round" fill="none"/>');
+  } else if(streak){
+    /* 半瞇的得意眼：上方一條平線，下方一道淺弧 */
+    s.push('<path d="M 60,104 L 84,104 M 116,104 L 140,104" stroke="'+INK+'" stroke-width="7" stroke-linecap="round"/>');
+    s.push('<path d="M 62,110 Q 72,118 82,110 M 118,110 Q 128,118 138,110" stroke="'+INK+'" stroke-width="5" stroke-linecap="round" fill="none"/>');
+  } else {
+    s.push('<g class="gblink">');
+    s.push('<ellipse cx="72" cy="108" rx="14" ry="15" fill="'+WHITE+'"/>');
+    s.push('<ellipse cx="128" cy="108" rx="14" ry="15" fill="'+WHITE+'"/>');
+    if(sad){
+      s.push('<circle cx="70" cy="102" r="7.5" fill="'+INK+'"/>');
+      s.push('<circle cx="126" cy="102" r="7.5" fill="'+INK+'"/>');
+    } else {
+      s.push('<circle cx="73" cy="110" r="7.5" fill="'+INK+'"/>');
+      s.push('<circle cx="129" cy="110" r="7.5" fill="'+INK+'"/>');
+    }
+    s.push('</g>');
+  }
+
+  /* 嘴：河豚的小嘟嘴配兩顆門牙 */
+  if(cele){
+    s.push('<ellipse cx="100" cy="146" rx="20" ry="17" fill="'+INK+'"/>');
+    s.push('<rect x="91" y="132" width="8" height="8" rx="2" fill="'+WHITE+'"/>');
+    s.push('<rect x="101" y="132" width="8" height="8" rx="2" fill="'+WHITE+'"/>');
+  } else if(happy){
+    s.push('<ellipse cx="100" cy="144" rx="17" ry="14" fill="'+INK+'"/>');
+    s.push('<rect x="92" y="132" width="7" height="7" rx="2" fill="'+WHITE+'"/>');
+    s.push('<rect x="101" y="132" width="7" height="7" rx="2" fill="'+WHITE+'"/>');
+  } else if(sad){
+    s.push('<path d="M 88,144 q 6,-7 12,0 q 6,7 12,0" stroke="'+INK+'" stroke-width="5" stroke-linecap="round" fill="none"/>');
+  } else if(streak){
+    s.push('<path d="M 86,138 Q 100,152 116,134" stroke="'+INK+'" stroke-width="5.5" stroke-linecap="round" fill="none"/>');
+    s.push('<rect x="104" y="134" width="7" height="6" rx="2" fill="'+WHITE+'"/>');
+  } else {
+    s.push('<ellipse cx="100" cy="142" rx="13" ry="10" fill="'+INK+'"/>');
+    s.push('<rect x="93" y="134" width="6.5" height="6" rx="2" fill="'+WHITE+'"/>');
+    s.push('<rect x="101" y="134" width="6.5" height="6" rx="2" fill="'+WHITE+'"/>');
+  }
+  s.push('</g></g>');
+
+  /* 判定符號與特效 */
+  if(happy){
+    s.push('<circle class="gmark" cx="166" cy="26" r="18" fill="none" stroke="'+MARU+'" stroke-width="9"/>');
+    s.push(star(32,28,1,GOLD,0));
+    s.push(star(14,110,.68,GOLD,.13));
+    s.push(star(186,114,.58,GOLD,.26));
+  } else if(sad){
+    s.push('<g class="gmark"><path d="M 154,14 L 178,38 M 178,14 L 154,38" stroke="'+BATSU+'" stroke-width="10" stroke-linecap="round"/></g>');
+    s.push('<path class="gdrop" d="M 160,90 Q 169,106 160,115 Q 151,106 160,90 Z" fill="'+DROPC+'"/>');
+  } else if(streak){
+    s.push(star(68,32,.95,GOLD,0,'gmark'));
+    s.push(star(100,16,1.15,GOLD,.08,'gmark'));
+    s.push(star(132,32,.95,GOLD,.16,'gmark'));
+  } else if(cele){
+    s.push('<circle class="gmark" cx="100" cy="22" r="16" fill="none" stroke="'+GOLD+'" stroke-width="8"/>');
+    for(var c=0;c<12;c++){
+      var cx2 = 10 + c*16, w2 = 7+(c%3)*2, h2 = 11+(c%2)*4;
+      s.push('<rect class="gconf" style="animation-delay:'+(c*0.08).toFixed(2)+'s" x="'+cx2+'" y="'+(4+(c%4)*9)+
+             '" width="'+w2+'" height="'+h2+'" rx="2" fill="'+CONFETTI[c%CONFETTI.length]+'"/>');
+    }
+  }
+  return '<svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">'+s.join('')+'</svg>';
+}
+
+
+var MOODCLS={idle:'idle',good:'good-anim',bad:'bad-anim',streak:'streak-anim',cele:'cele-anim'};
+function guide(mood,size){
+  if(!S.guide) return '';
+  return '<span class="guide g-'+(size||'sm')+' '+(MOODCLS[mood]||'idle')+'">'+guideSVG(mood)+'</span>';
+}
+/* 音效：即時合成，沒有音檔，離線一樣有聲音 */
+function ac(){ try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+  if(actx.state==='suspended') actx.resume(); return actx; }catch(e){ return null; } }
+function tone(freq,at,dur,type,vol,cutoff){
+  var c=ac(); if(!c) return;
+  try{
+    var t0=c.currentTime+at, o=c.createOscillator(), g=c.createGain(), tail=g;
+    o.type=type||'triangle'; o.frequency.setValueAtTime(freq,t0);
+    g.gain.setValueAtTime(0.0001,t0);
+    g.gain.exponentialRampToValueAtTime(vol||0.16,t0+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.connect(g);
+    if(cutoff){ var f=c.createBiquadFilter(); f.type='lowpass'; f.frequency.setValueAtTime(cutoff,t0);
+      g.connect(f); tail=f; }
+    tail.connect(c.destination); o.start(t0); o.stop(t0+dur+0.03);
+  }catch(e){}
+}
+function sfxGood(){ if(!S.sfx) return;
+  tone(523.25,0,.10,'triangle',.15); tone(659.25,.075,.10,'triangle',.15); tone(783.99,.15,.22,'triangle',.17); }
+/* ㄅㄟㄅㄟ：兩個略微錯開的方波低音疊出顫動，再過低通削掉刺耳的高頻 */
+function sfxBad(){ if(!S.sfx) return;
+  tone(196,0,.17,'square',.13,1100);  tone(186,0,.17,'square',.10,1100);
+  tone(196,.235,.24,'square',.13,1100); tone(186,.235,.24,'square',.10,1100); }
+function sfxStreak(){ if(!S.sfx) return;
+  tone(587.33,0,.09,'triangle',.14); tone(698.46,.07,.09,'triangle',.14);
+  tone(880.00,.14,.09,'triangle',.15); tone(1046.50,.21,.24,'triangle',.16); }
+function sfxCele(){ if(!S.sfx) return;
+  [[523.25,0,.13],[659.25,.09,.13],[783.99,.18,.13],[1046.50,.27,.13],[987.77,.40,.13],[1318.51,.50,.5]]
+    .forEach(function(n){ tone(n[0],n[1],n[2],'triangle',.16); });
+  tone(392.00,.27,.45,'sine',.09); }
+function sfxFor(mood){ ({good:sfxGood,bad:sfxBad,streak:sfxStreak,cele:sfxCele}[mood]||function(){})(); }
+
 /* ══════════ 畫面路由 ══════════ */
 var MAIN = el('main'), BAR = el('barTitle'), BACK = el('btnBack');
 var nav = [];
@@ -1379,8 +1628,9 @@ function homeScreen(){
   wake(false);
   var t = tally(), due = dueList().length, ready = checkList().length;
   var pct = Math.round(t.known/t.total*100);
-  var h = '<div class="hero"><div class="eyebrow">日本旅行會話</div>'+
-    '<div class="t jp">にほん かいわ れんしゅう</div></div>';
+  var h = '<div class="hero-row">'+guide('idle','md')+
+    '<div class="hero"><div class="eyebrow">日本旅行會話</div>'+
+    '<div class="t jp">にほん かいわ れんしゅう</div></div></div>';
 
   h += '<div class="card progwrap">'+
     '<div class="prow"><span class="plabel">學習進度</span>'+
@@ -1529,7 +1779,7 @@ function makeOptions(item, pool, kind){
   return shuffle(out);
 }
 function startQuiz(pool, mode, title, color, ctx){
-  var ix=0, right=0, wrong=[], gained=0;
+  var ix=0, right=0, wrong=[], gained=0, run=0;   /* run = 目前連續答對幾題 */
   ctx = ctx || {};
   function render(){
     var item = pool[ix];
@@ -1574,7 +1824,9 @@ function startQuiz(pool, mode, title, color, ctx){
         var good = b.dataset.i===item.i;
         var mv = mark(item.i, good);
         if(mv.levelUp) gained++;
-        if(good) right++; else wrong.push(item);
+        if(good){ right++; run++; } else { wrong.push(item); run=0; }
+        var mood = good ? (run>=3 ? 'streak' : 'good') : 'bad';
+        sfxFor(mood);
         d.querySelectorAll('.opt').forEach(function(o){
           if(o.dataset.i===item.i) o.classList.add('good');
           else if(o===b) o.classList.add('bad');
@@ -1586,8 +1838,9 @@ function startQuiz(pool, mode, title, color, ctx){
             ? '<div class="big-jp jp">'+jpHTML(item.j)+'</div><div class="sub-zh zh">'+esc(item.z)+'</div>'
             : '<div class="sub-jp jp">'+jpHTML(item.j)+'</div>');
         var af = d.querySelector('#after'), ah='';
-        ah += '<div class="verdict '+(good?'ok':'no')+'"><span class="mk">'+(good?'✓':'✕')+'</span>'+
-              (good?'答對了':'正確答案是上面綠色那個')+'</div>';
+        ah += '<div class="grow">'+guide(mood,'sm')+'<div class="gtext">'+
+              '<div class="verdict '+(good?'ok':'no')+'"><span class="mk">'+(good?'✓':'✕')+'</span>'+
+              (good ? (run>=3 ? '連續答對 '+run+' 題' : '答對了') : '正確答案是上面綠色那個')+'</div></div></div>';
         /* 讓每一次作答都看得到熟練度的變化 */
         ah += '<div class="lvlup"><span class="muted">熟練度</span>'+
               '<span class="pips">'+pips(mv.before)+'</span><span class="arrow">→</span>'+
@@ -1603,7 +1856,7 @@ function startQuiz(pool, mode, title, color, ctx){
           ix++; if(ix>=pool.length) showResult(right,pool.length,wrong,title,color,gained,ctx);
           else replace(render,title,color);
         };
-        if(kind!=='listen') play();
+        if(kind!=='listen') setTimeout(play, 420);
         setTimeout(function(){ af.scrollIntoView({block:'nearest',behavior:'smooth'}); },60);
       };
     });
@@ -1903,6 +2156,7 @@ function startDialog(dg){
           var o=t.opts[+b.dataset.n], good=!!o.ok;
           if(good) right++;
           countDay();
+          sfxFor(good?'good':'bad');
           area.querySelectorAll('.opt').forEach(function(x){
             var ox=t.opts[+x.dataset.n];
             if(ox.ok) x.classList.add('good'); else if(x===b) x.classList.add('bad'); else x.classList.add('dim');
@@ -1914,10 +2168,11 @@ function startDialog(dg){
           log.forEach(function(L){ L.open=true; });
           log.push({side:'me',j:o.j,z:o.z,wrong:!good,open:true});
           bubble('me',o.j,o.z,!good,true);
-          speak(toKanji(o.j), null, roleOpt('me'));
+          setTimeout(function(){ speak(toKanji(o.j), null, roleOpt('me')); }, 430);
           var corr = t.opts.filter(function(x){return x.ok;})[0];
-          var fh='<div class="verdict '+(good?'ok':'no')+'" style="margin-top:12px">'+
-            '<span class="mk">'+(good?'✓':'✕')+'</span>'+(good?'這樣回就對了':'這句不太對')+'</div>';
+          var fh='<div class="grow">'+guide(good?'good':'bad','sm')+'<div class="gtext">'+
+            '<div class="verdict '+(good?'ok':'no')+'">'+
+            '<span class="mk">'+(good?'✓':'✕')+'</span>'+(good?'這樣回就對了':'這句不太對')+'</div></div></div>';
           if(!good && o.why) fh+='<div class="note zh"><b>為什麼不行：</b>'+esc(o.why)+'</div>';
           if(!good) fh+='<div class="note zh" style="margin-top:8px"><b>應該說：</b><span class="jp">'+
             jpHTML(corr.j)+'</span>（'+esc(corr.z)+'）</div>';
@@ -1987,6 +2242,7 @@ function startPair(p, col){
         b.onclick=function(){
           if(done) return; done=true;
           var good=b.dataset.i===item.i; mark(item.i,good); if(good) right++;
+          sfxFor(good?'good':'bad');
           d.querySelectorAll('.opt').forEach(function(x){
             if(x.dataset.i===item.i) x.classList.add('good');
             else if(x===b) x.classList.add('bad'); else x.classList.add('dim'); });
@@ -2014,7 +2270,10 @@ function showResult(right,total,wrong,title,color,gained,ctx){
   replace(function(){
     var pct = total? Math.round(right/total*100):0;
     var t = tally();
-    var h='<div class="card score"><div class="pct">'+pct+'%</div>'+
+    /* 分數低的時候給中性的待機表情，不給沮喪臉——答得差已經夠難受了 */
+    var mood = (ctx.kind==='check' && pct>=80) || pct===100 ? 'cele'
+             : pct>=80 ? 'streak' : pct>=60 ? 'good' : 'idle';
+    var h='<div class="card score">'+guide(mood,'lg')+'<div class="pct">'+pct+'%</div>'+
       '<div class="lbl">'+total+' 題中答對 '+right+' 題</div></div>';
 
     /* 這一輪到底換到了什麼 —— 不是只給一個分數就結束 */
@@ -2064,6 +2323,7 @@ function showResult(right,total,wrong,title,color,gained,ctx){
         '<button class="btn primary" id="home">回首頁</button></div>';
     }
     var d=screen(h);
+    sfxFor(mood==='idle'?'':mood);
     d.querySelectorAll('.wrongrow button').forEach(function(b){
       b.onclick=function(){ speak(toKanji(BY_ID[b.dataset.i].j)); }; });
     var nx = d.querySelector('#next');
@@ -2078,7 +2338,8 @@ function showSpeakResult(great,total,results,color,gained,ctx){
   ctx = ctx || {}; gained = gained || 0;
   replace(function(){
     var pct= total?Math.round(great/total*100):0;
-    var h='<div class="card score"><div class="pct">'+pct+'%</div>'+
+    var mood = pct===100 ? 'cele' : pct>=80 ? 'streak' : pct>=60 ? 'good' : 'idle';
+    var h='<div class="card score">'+guide(mood,'lg')+'<div class="pct">'+pct+'%</div>'+
       '<div class="lbl">'+total+' 句中念對 '+great+' 句</div></div>';
     var low = results.filter(function(r){ return r.score<0.86; });
     if(low.length){
@@ -2190,6 +2451,12 @@ function openSheet(focus){
      '<div class="sw"><div class="l"><strong>口說前先播範讀</strong>'+
      '<em>關掉就變成真正的測驗：只看中文，自己想怎麼講。</em></div>'+
      '<button class="toggle" id="tgM" aria-pressed="'+(S.model?'true':'false')+'" aria-label="範讀"></button></div>'+
+     '<div class="sw"><div class="l"><strong>答對答錯的音效</strong>'+
+     '<em>答對是往上的三個音，答錯是 ㄅㄟㄅㄟ 的蜂鳴聲。即時合成，離線一樣有聲音。</em></div>'+
+     '<button class="toggle" id="tgF" aria-pressed="'+(S.sfx?'true':'false')+'" aria-label="音效"></button></div>'+
+     '<div class="sw"><div class="l"><strong>顯示嚮導プク</strong>'+
+     '<em>答題、對話、結算畫面會出現的那隻河豚。關掉就只剩文字。</em></div>'+
+     '<button class="toggle" id="tgG" aria-pressed="'+(S.guide?'true':'false')+'" aria-label="嚮導"></button></div>'+
      '<div class="sw"><div class="l"><strong>對話用兩個角色的聲音</strong>'+
      '<em>情境模擬裡店員和你用不同的聲音。這台裝置有兩個以上日文語音就各用一個，只有一個就用音調區分。</em></div>'+
      '<button class="toggle" id="tgR" aria-pressed="'+(S.roles?'true':'false')+'" aria-label="角色聲音"></button></div>'+
@@ -2230,6 +2497,7 @@ function openSheet(focus){
   function tog(id,key){ var b=PANEL.querySelector(id); if(!b) return;
     b.onclick=function(){ S[key]=!S[key]; saveSet(); b.setAttribute('aria-pressed',S[key]?'true':'false'); }; }
   tog('#tgH','hands'); tog('#tgM','model'); tog('#tgS','strict'); tog('#tgZ','dlgZh'); tog('#tgR','roles');
+  tog('#tgF','sfx'); tog('#tgG','guide');
   PANEL.querySelectorAll('.vrow button').forEach(function(b){
     b.onclick=function(){
       var row=b.parentNode, uri=row.dataset.u, v=null;

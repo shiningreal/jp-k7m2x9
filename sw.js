@@ -1,5 +1,5 @@
 /* 離線快取：裝好之後沒網路也能練（語音辨識除外，那個一定要連網） */
-const CACHE = 'jp-kaiwa-v4';
+const CACHE = 'jp-kaiwa-v5';
 const SHELL = ['./', './index.html', './manifest.webmanifest',
                './icon-192.png', './icon-512.png', './icon-180.png'];
 
