@@ -1,10 +1,19 @@
 /* 離線快取：裝好之後沒網路也能練（語音辨識除外，那個一定要連網） */
-const CACHE = 'jp-kaiwa-v5';
+const CACHE = 'jp-kaiwa-v7';
 const SHELL = ['./', './index.html', './manifest.webmanifest',
                './icon-192.png', './icon-512.png', './icon-180.png'];
 
+/* 日文字型先暖機。第一次開如果在有網路的地方，就把字型一起存起來，
+   之後到日本沒網路也還是日文字形（抓不到也不影響安裝，所以用 catch 吞掉）*/
+const WARM = ['https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap'];
+
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(CACHE)
+      .then(c => c.addAll(SHELL).then(() =>
+        Promise.all(WARM.map(u => c.add(u).catch(() => {})))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', e => {
