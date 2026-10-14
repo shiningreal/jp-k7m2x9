@@ -130,7 +130,9 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .pnum{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
 .pbar{display:flex;height:9px;border-radius:5px;overflow:hidden;background:var(--line)}
 .pbar .seg{display:block;height:100%;transition:width .4s}
-.seg.known{background:var(--accent)} .seg.doing{background:var(--warn)}
+.seg.master{background:var(--ok)} .seg.known{background:var(--accent)} .seg.doing{background:var(--warn)}
+/* 兩段顏色交界處補一條細細的分隔，深綠接深藍才不會糊成一塊 */
+.pbar .seg+.seg{box-shadow:inset 1px 0 0 rgba(255,255,255,.55)}
 .plegend{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--muted);
   font-variant-numeric:tabular-nums}
 .plegend span{display:inline-flex;align-items:center;gap:5px}
@@ -161,8 +163,11 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .gtx{flex:1;min-width:0;font-family:var(--zh)}
 .gtx strong{display:block;font-size:15px;font-weight:700}
 .gtx em{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.45}
-.gbar{display:block;height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:7px;max-width:210px}
-.gbar i{display:block;height:100%;background:var(--accent);border-radius:2px;transition:width .4s}
+.gbar{display:flex;height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:7px;max-width:210px}
+/* 細進度條的三段配色，和首頁大進度條一致 */
+.mseg{display:block;height:100%;transition:width .4s}
+.mseg.master{background:var(--ok)} .mseg.known{background:var(--accent)} .mseg.doing{background:var(--warn)}
+.mseg+.mseg{box-shadow:inset 1px 0 0 rgba(255,255,255,.6)}
 .gnum{margin-top:4px!important;font-size:11px!important}
 .gcnt{flex:none;margin-top:2px;font-family:var(--zh);font-size:11px;font-weight:700;color:var(--muted);
   background:var(--surface-2);border-radius:999px;padding:4px 9px;white-space:nowrap}
@@ -179,8 +184,7 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .scene .b strong{display:block;font-size:15px}
 .scene .b em{display:block;font-style:normal;font-family:var(--zh);font-size:11.5px;color:var(--muted);
   margin-top:2px;font-variant-numeric:tabular-nums}
-.smini{display:block;height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:6px;max-width:190px}
-.smini i{display:block;height:100%;background:var(--sc);border-radius:2px;transition:width .4s}
+.smini{display:flex;height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:6px;max-width:190px}
 .scene .cnt{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 .scene[aria-pressed="true"]{border-color:var(--sc);background:var(--surface-2)}
 .scene .tick{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
@@ -2204,6 +2208,32 @@ function tally(filter){
   });
   return t;
 }
+/* 進度條。三段由強到弱排：已精通（綠）→ 已學會（藍）→ 學習中（黃），
+   這樣每升一級，顏色就往左邊推一點，看得出來是在往上爬。
+   t.known 本來就含 t.master，所以藍色那段要扣掉精通的數量，不然會重複算。*/
+/* 寬度 0 的區段乾脆不要畫，交界的那條白線才不會疊在一起 */
+function segs(t, cls){
+  var n = [['master',t.master],['known',t.known-t.master],['doing',t.started-t.known]], h='';
+  n.forEach(function(x){
+    if(x[1] > 0) h += '<i class="'+cls+' '+x[0]+'" style="width:'+(x[1]/t.total*100)+'%"></i>';
+  });
+  return h;
+}
+function progBar(t){
+  if(!t.total) return '<div class="pbar"></div>';
+  return '<div class="pbar">'+segs(t,'seg')+'</div>';
+}
+function progLegend(t){
+  return '<div class="plegend">'+
+    '<span><i class="dot master"></i>已精通 '+t.master+'</span>'+
+    '<span><i class="dot known"></i>已學會 '+(t.known-t.master)+'</span>'+
+    '<span><i class="dot doing"></i>學習中 '+(t.started-t.known)+'</span></div>';
+}
+/* 情境卡／分區標頭上的細進度條，同樣的三段配色 */
+function miniBar(t, cls){
+  if(!t.total) return '<span class="'+cls+'"></span>';
+  return '<span class="'+cls+'">'+segs(t,'mseg')+'</span>';
+}
 function todayCount(){ return ST.days[dayKey()]||0; }
 function dueList(){
   var a=[]; ITEMS.forEach(function(x){ var r=P[x.i];
@@ -2757,11 +2787,7 @@ function homeScreen(){
   h += '<div class="card progwrap">'+
     '<div class="prow"><span class="plabel">學習進度</span>'+
       '<span class="pnum">'+t.known+' <span class="muted">/ '+t.total+' 句已學會</span></span></div>'+
-    '<div class="pbar"><i class="seg known" style="width:'+(t.known/t.total*100)+'%"></i>'+
-      '<i class="seg doing" style="width:'+((t.started-t.known)/t.total*100)+'%"></i></div>'+
-    '<div class="plegend"><span><i class="dot known"></i>已學會 '+t.known+'</span>'+
-      '<span><i class="dot doing"></i>學習中 '+(t.started-t.known)+'</span>'+
-      '<span><i class="dot master"></i>已精通 '+t.master+'</span></div>'+
+    progBar(t)+progLegend(t)+
     '</div>';
 
   h += '<div class="stats">'+
@@ -2847,7 +2873,7 @@ function scenePickScreen(mode){
     h += '<div class="grp" data-g="'+g.id+'"'+(openGrp[g.id]?'':' data-shut="1"')+'>'+
       '<button class="grph" data-gt="'+g.id+'"><span class="gchev"></span>'+
         '<span class="gtx"><strong>'+esc(g.t)+'</strong><em>'+esc(g.d)+'</em>'+
-        '<span class="gbar"><i style="width:'+(gt.total?gt.known/gt.total*100:0)+'%"></i></span>'+
+        miniBar(gt,'gbar')+
         '<em class="gnum">'+gt.known+' / '+gt.total+' 已學會</em></span>'+
         '<span class="gcnt" data-gc="'+g.id+'"></span></button>'+
       '<div class="gbody"><div class="row tight">'+
@@ -2859,7 +2885,7 @@ function scenePickScreen(mode){
       h += '<button class="scene" data-s="'+s.id+'" aria-pressed="'+(pickSel[s.id]?'true':'false')+
         '" style="--sc:'+s.color+'"><span class="bar2"></span>'+
         '<span class="b"><strong>'+esc(s.label)+'</strong>'+
-          '<span class="smini"><i style="width:'+(t.known/t.total*100)+'%"></i></span>'+
+          miniBar(t,'smini')+
           '<em>'+t.known+' / '+t.total+' 已學會</em></span>'+
         '<span class="tick"></span></button>';
     });
@@ -3464,11 +3490,7 @@ function showResult(right,total,wrong,title,color,gained,ctx){
     h += '<div class="card progwrap">'+
       '<div class="prow"><span class="plabel">累計進度</span>'+
         '<span class="pnum">'+t.known+' <span class="muted">/ '+t.total+' 句已學會</span></span></div>'+
-      '<div class="pbar"><i class="seg known" style="width:'+(t.known/t.total*100)+'%"></i>'+
-        '<i class="seg doing" style="width:'+((t.started-t.known)/t.total*100)+'%"></i></div>'+
-      '<div class="plegend"><span><i class="dot known"></i>已學會 '+t.known+'</span>'+
-        '<span><i class="dot doing"></i>學習中 '+(t.started-t.known)+'</span>'+
-        '<span><i class="dot master"></i>已精通 '+t.master+'</span></div></div>';
+      progBar(t)+progLegend(t)+'</div>';
 
     if(wrong && wrong.length){
       h+='<div class="eyebrow">這幾句再看一次</div><div class="wronglist">';
@@ -3530,8 +3552,7 @@ function showSpeakResult(great,total,results,color,gained,ctx){
     h += '<div class="card progwrap">'+
       '<div class="prow"><span class="plabel">累計進度</span>'+
         '<span class="pnum">'+t.known+' <span class="muted">/ '+t.total+' 句已學會</span></span></div>'+
-      '<div class="pbar"><i class="seg known" style="width:'+(t.known/t.total*100)+'%"></i>'+
-        '<i class="seg doing" style="width:'+((t.started-t.known)/t.total*100)+'%"></i></div></div>';
+      progBar(t)+'</div>';
     h+='<div class="spacer"></div>';
     if(ctx.kind==='round'){
       var left = freshLeft(ctx.sel, ctx.mode);
