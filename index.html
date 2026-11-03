@@ -17,6 +17,7 @@ body{margin:0;font:14px system-ui,sans-serif;background:#fafaf9}
 img{max-width:100%}
 [hidden]{display:none!important}
 </style>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>日本旅行會話練習</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
@@ -141,6 +142,18 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .badge{display:inline-block;margin-left:7px;min-width:20px;padding:1px 6px;border-radius:9px;
   background:var(--warn);color:#fff;font-size:11px;font-weight:700;vertical-align:1px;
   font-variant-numeric:tabular-nums}
+/* 連續天數旁邊的果凍 */
+.jelly,.stat span .jelly,.note .jelly,.banner .jelly{display:inline-flex;align-items:center;
+  gap:1px;vertical-align:-2px;color:#E8502E}
+.jelly svg{width:15px;height:15px;display:block}
+.jelly.big svg{width:19px;height:19px}
+.jelly i{font-style:normal;font-size:11px;font-weight:700;margin-left:2px;color:var(--muted)}
+.banner.jellyban{align-items:center}
+.banner.jellyban .guide{flex:none}
+/* 被吃掉的時候晃一下 */
+@keyframes jwob{0%,100%{transform:rotate(0) scaleY(1)}25%{transform:rotate(-7deg) scaleY(.92)}
+  60%{transform:rotate(5deg) scaleY(1.05)}}
+.jelly.eat svg{animation:jwob .7s ease-in-out 2}
 .modes{display:flex;flex-direction:column;gap:9px}
 .mode{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--surface);
   border:1px solid var(--line);border-radius:12px;padding:14px 15px;box-shadow:var(--shadow)}
@@ -540,6 +553,7 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 <div class="sheet" id="sheet" hidden><div class="panel" id="sheetPanel"></div></div>
 
 <script>
+
 /* 日本旅行會話資料集
    j 欄位用 {漢字|假名} 標記注音：
      - 漢字模式 → <ruby>漢字<rt>假名</rt></ruby>
@@ -1131,6 +1145,7 @@ window.JPDATA = {
 
 /* 生活日常單字庫 —— 與 data.js 相同格式
    t:'w' 代表單字型，朗讀時會餵假名給語音引擎，不讓它自己猜漢字讀音 */
+
 window.JPVOCAB = {
   scenes: [
     { id:'vfood',  label:'食物',          jp:'たべもの',     color:'#E8502E' },
@@ -2224,6 +2239,7 @@ window.JPVOCAB = {
      d   聽解題：對話內容 [{w:'M'|'F', j:'…'}]
      q   聽解題：唸出來的提問
    ══════════════════════════════════════════════════════════════ */
+
 window.JPN5 = {
   /* 三個考試科目。min 是官方作答時間（分鐘） */
   sections: [
@@ -2541,7 +2557,7 @@ window.JPN5 = {
       o:['おいしくて','おいしいで','おいしいと','おいしいが'], a:0, z:'那家餐廳又好吃又便宜。' },
     { i:'g1_20', p:'g1', s:'わたしは いぬ（　）すきです。', r:'わたしは いぬが すきです。',
       o:['が','を','に','で'], a:0, z:'我喜歡狗。', n:'すき・きらい・じょうず 前面用 が。' },
-    { i:'g1_21', p:'g1', s:'この ほんを よんだ（　）、かえします。', r:'この ほんを よんでから、かえします。',
+    { i:'g1_21', p:'g1', lvl:'n4', s:'この ほんを よんだ（　）、かえします。', r:'この ほんを よんでから、かえします。',
       o:['あとで','まえに','ながら','ついでに'], a:0, z:'這本書看完後會還。' },
     { i:'g1_22', p:'g1', s:'きょうは しごとが ないので、どこ（　）いきません。', r:'きょうは しごとが ないので、どこへも いきません。',
       o:['へも','へか','へは','へが'], a:0, z:'今天沒工作，哪裡都不去。' },
@@ -2559,9 +2575,9 @@ window.JPN5 = {
       o:['では','くは','にも','とは'], a:0, z:'山田先生不是老師。' },
     { i:'g1_29', p:'g1', s:'にもつが おもいので、もって（　）ください。', r:'にもつが おもいので、もって きて ください。',
       o:['きて','いて','あって','みて'], a:0, z:'行李很重，請幫我拿過來。' },
-    { i:'g1_30', p:'g1', s:'あついですから、まどが あけて（　）。', r:'あついですから、まどが あけて あります。',
+    { i:'g1_30', p:'g1', lvl:'n4', s:'あついですから、まどが あけて（　）。', r:'あついですから、まどが あけて あります。',
       o:['あります','います','みます','おきます'], a:0, z:'因為很熱，窗戶開著。', n:'〜て ある：有人做了某事，結果留著。' },
-    { i:'g1_31', p:'g1', s:'あした あめが ふったら、どこ（　）いきません。', r:'あした あめが ふったら、どこへも いきません。',
+    { i:'g1_31', p:'g1', lvl:'n4', s:'あした あめが ふったら、どこ（　）いきません。', r:'あした あめが ふったら、どこへも いきません。',
       o:['へも','へか','にか','でも'], a:0, z:'明天如果下雨，哪裡都不去。' },
     { i:'g1_32', p:'g1', s:'この りんごは ひとつ 200えん（　）。', r:'この りんごは ひとつ 200えんです。',
       o:['です','でした','でしょう','だった'], a:0, z:'這個蘋果一顆兩百日圓。' },
@@ -2579,7 +2595,7 @@ window.JPN5 = {
       o:['や','を','も','に'], a:0, z:'教室裡有桌子和椅子等等。', n:'や 是舉例，不是全部列完。' },
     { i:'g1_39', p:'g1', s:'あの たてものは なに（　）か。', r:'あの たてものは なんですか。',
       o:['です','ます','あります','います'], a:0, z:'那棟建築物是什麼？' },
-    { i:'g1_40', p:'g1', s:'でかける まえに、でんきを けして（　）ください。', r:'でかける まえに、でんきを けして おいて ください。',
+    { i:'g1_40', p:'g1', lvl:'n4', s:'でかける まえに、でんきを けして（　）ください。', r:'でかける まえに、でんきを けして おいて ください。',
       o:['おいて','あって','みて','いて'], a:0, z:'出門前請先把燈關掉。', n:'〜て おく：事先做好。' },
 
     /* ══════════ 文法 問題2 文の組み立て（★） ══════════
@@ -3188,25 +3204,25 @@ window.JPN5 = {
       o:['と','に','を','が'], a:0, z:'和山田先生一起去。', n:'「〜と いっしょに」＝和～一起。' },
     { i:'g1_43', p:'g1', s:'がっこうは 9じ（　）3じまでです。', r:'がっこうは 9じから 3じまでです。',
       o:['から','まで','より','ほど'], a:0, z:'學校是九點到三點。' },
-    { i:'g1_44', p:'g1', s:'にちようびは ほんを よんだり おんがくを きい（　）します。',
+    { i:'g1_44', p:'g1', lvl:'n4', s:'にちようびは ほんを よんだり おんがくを きい（　）します。',
       r:'にちようびは ほんを{読|よ}んだり おんがくを{聞|き}いたり します。',
       o:['たり','ても','ては','たら'], a:0, z:'星期天看看書、聽聽音樂。', n:'〜たり〜たりする：列舉幾件事。' },
-    { i:'g1_45', p:'g1', s:'あした あめが（　）、いきません。', r:'あした あめが ふったら、いきません。',
+    { i:'g1_45', p:'g1', lvl:'n4', s:'あした あめが（　）、いきません。', r:'あした あめが ふったら、いきません。',
       o:['ふったら','ふって','ふるので','ふっても'], a:0, z:'明天如果下雨就不去。' },
     { i:'g1_46', p:'g1', s:'いっしょに えいがを（　）か。', r:'いっしょに えいがを{見|み}ませんか。',
       o:['みません','みます','みたい','みましょう'], a:0, z:'要不要一起看電影？', n:'〜ませんか 是邀請；〜ましょうか 是提議要不要我來做。' },
-    { i:'g1_47', p:'g1', s:'あたらしい かばんが（　）です。', r:'あたらしい かばんが ほしいです。',
+    { i:'g1_47', p:'g1', lvl:'n4', s:'あたらしい かばんが（　）です。', r:'あたらしい かばんが ほしいです。',
       o:['ほしい','したい','ください','あげたい'], a:0, z:'想要新的包包。', n:'ほしい 要東西；〜たい 要做某事。' },
-    { i:'g1_48', p:'g1', s:'さとうを いれ（　）。あまく なりました。', r:'さとうを いれすぎました。あまく なりました。',
+    { i:'g1_48', p:'g1', lvl:'n4', s:'さとうを いれ（　）。あまく なりました。', r:'さとうを いれすぎました。あまく なりました。',
       o:['すぎました','やすいです','にくいです','ました'], a:0, z:'糖放太多了，變太甜。' },
-    { i:'g1_49', p:'g1', s:'あした しけんが あるので、べんきょうし（　）。',
+    { i:'g1_49', p:'g1', lvl:'n4', s:'あした しけんが あるので、べんきょうし（　）。',
       r:'あした しけんが あるので、べんきょうしなければ なりません。',
       o:['なければ なりません','なくても いいです','ては いけません','ましょうか'], a:0, z:'明天有考試，非念書不可。' },
-    { i:'g1_50', p:'g1', s:'あしたは やすみですから、こ（　）いいです。', r:'あしたは やすみですから、こなくても いいです。',
+    { i:'g1_50', p:'g1', lvl:'n4', s:'あしたは やすみですから、こ（　）いいです。', r:'あしたは やすみですから、こなくても いいです。',
       o:['なくても','ないでも','なくて','ないと'], a:0, z:'明天放假，不用來也可以。' },
-    { i:'g1_51', p:'g1', s:'かぜですか。はやく ねた（　）いいですよ。', r:'かぜですか。はやく ねた ほうが いいですよ。',
+    { i:'g1_51', p:'g1', lvl:'n4', s:'かぜですか。はやく ねた（　）いいですよ。', r:'かぜですか。はやく ねた ほうが いいですよ。',
       o:['ほうが','ことが','ために','のに'], a:0, z:'感冒了嗎？早點睡比較好喔。' },
-    { i:'g1_52', p:'g1', s:'なつやすみは くにへ かえる（　）です。', r:'なつやすみは くにへ かえる つもりです。',
+    { i:'g1_52', p:'g1', lvl:'n4', s:'なつやすみは くにへ かえる（　）です。', r:'なつやすみは くにへ かえる つもりです。',
       o:['つもり','こと','よう','ところ'], a:0, z:'暑假打算回國。' },
     { i:'g1_53', p:'g1', s:'あの ひとは せんせいだ（　）おもいます。', r:'あの ひとは せんせいだと おもいます。',
       o:['と','を','が','に'], a:0, z:'我想那個人是老師。' },
@@ -3226,7 +3242,7 @@ window.JPN5 = {
       o:['など','だけ','ずつ','しか'], a:0, z:'桌上有書、筆記本之類的。' },
     { i:'g1_61', p:'g1', s:'おちゃ（　）いかがですか。', r:'おちゃでも いかがですか。',
       o:['でも','ても','しか','だけ'], a:0, z:'要不要喝杯茶之類的？' },
-    { i:'g1_62', p:'g1', s:'あめが ふっ（　）、いきます。', r:'あめが ふっても、いきます。',
+    { i:'g1_62', p:'g1', lvl:'n4', s:'あめが ふっ（　）、いきます。', r:'あめが ふっても、いきます。',
       o:['ても','たら','たり','ては'], a:0, z:'就算下雨也要去。' },
     { i:'g1_63', p:'g1', s:'たんじょうびに ともだちに はなを（　）。', r:'たんじょうびに ともだちに はなを あげました。',
       o:['あげました','くれました','もらいました','やりました'], a:0, z:'生日時送花給朋友。', n:'あげる＝我給人；くれる＝人給我；もらう＝我從人那裡得到。' },
@@ -3380,6 +3396,9 @@ var SVG = {
   small:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>',
   mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2"/><path d="M12 19v3"/></svg>',
   chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
+  /* 果凍：プク 的點心。畫成軟糖方塊——圓角的塊狀＋左上角一道反光，
+     13px 也看得出是糖果。之前畫成上窄下寬的梯形，縮小後像垃圾桶。*/
+  jelly:'<svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5.5" width="16" height="14" rx="5" fill="currentColor"/><rect x="6.6" y="8" width="5.2" height="3.6" rx="1.8" fill="#fff" opacity=".55"/><circle cx="16" cy="15.6" r="1.5" fill="#fff" opacity=".3"/></svg>',
   replay:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4"/><path d="M3 3v6h6"/></svg>'
 };
 
@@ -3393,7 +3412,9 @@ function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} 
 (function(){ var s=load('jp_set',{})||{}; for(var k in DEF) S[k]=(k in s)?s[k]:DEF[k];
   P = load('jp_prog',{})||{};
   ST = load('jp_stats',null) || {days:{},streak:0,last:''};
-  if(!ST.days) ST.days={}; })();
+  if(!ST.days) ST.days={};
+  if(!ST.shield) ST.shield={};
+  if(ST.cards==null) ST.cards=0; })();
 function saveSet(){ save('jp_set',S); }
 function saveProg(){ save('jp_prog',P); }
 function saveStats(){ save('jp_stats',ST); }
@@ -3408,16 +3429,105 @@ function pips(n){
 }
 function rec(id){ return P[id]||(P[id]={box:0,seen:0,wrong:0,right:0}); }
 function boxOf(id){ var r=P[id]; return r?r.box:0; }
-function dayKey(d){ d=d||new Date();
-  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
-function countDay(){
-  var t=dayKey();
-  if(ST.last!==t){
-    var ys=dayKey(new Date(Date.now()-86400000));
-    ST.streak = (ST.last===ys) ? (ST.streak||0)+1 : 1;
-    ST.last=t;
+/* ══════════ 連續天數 ══════════
+   以前這裡有兩個問題，都會讓「每天都有練」的人莫名其妙斷掉：
+
+   1) 一天的分界線卡在半夜 12 點。晚睡的人常常是凌晨一兩點在練，
+      那在日曆上已經算隔天了。例如週一 23:00 練一次、週二整天沒練、
+      週三 01:00 再練 —— 中間只隔 26 小時，感覺是連著的，
+      但日曆上「週二」是空的，連續天數就歸零。
+      → 把分界線移到凌晨 4 點，凌晨練的算前一天。
+
+   2) streak 是用「上次是不是昨天」一次次累加的，中間只要有一次沒記到
+      （例如那天只做了模擬測驗），數字就永久錯掉，之後也修不回來。
+      → 改成每次都從實際練習紀錄 ST.days 重算。只要紀錄還在，
+        哪天漏記了，下次打開就會自己修回來。                        */
+var DAY_CUT = 4;                 /* 一天從凌晨 4 點開始算 */
+var JELLY_NEED = 20;             /* 一天練滿幾題，プク 就得到一個果凍 */
+var JELLY_MAX  = 3;              /* 最多存幾個 */
+
+function pad2(n){ return (n<10?'0':'')+n; }
+function dayKey(d){
+  d = d ? new Date(d.getTime ? d.getTime() : d) : new Date();
+  if(d.getHours() < DAY_CUT) d.setDate(d.getDate()-1);
+  return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
+}
+function keyShift(key, n){
+  var a = key.split('-');
+  var d = new Date(+a[0], +a[1]-1, +a[2]);
+  d.setDate(d.getDate()+n);
+  return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
+}
+/* 舊版的 key 沒補零（2026-1-5），新版有（2026-01-05）。
+   不轉的話舊紀錄會對不上，連續天數還是會斷。*/
+function migrateDays(){
+  if(ST.v >= 2) return;
+  var out = {};
+  Object.keys(ST.days||{}).forEach(function(k){
+    var a = k.split('-');
+    var nk = a.length===3 ? a[0]+'-'+pad2(+a[1])+'-'+pad2(+a[2]) : k;
+    out[nk] = (out[nk]||0) + ST.days[k];
+  });
+  ST.days = out;
+  if(ST.last){ var b=ST.last.split('-');
+    if(b.length===3) ST.last = b[0]+'-'+pad2(+b[1])+'-'+pad2(+b[2]); }
+  ST.shield = ST.shield || {};
+  ST.cards  = ST.cards  || 0;
+
+  /* 一次性補償：用實際紀錄回推，把中間只缺一天的斷點補起來。
+     這些斷點幾乎都是上面那兩個 bug 造成的，不該算使用者沒練。*/
+  var cur = dayKey(), fixed = 0;
+  if(!ST.days[cur]) cur = keyShift(cur,-1);
+  while(fixed < 10){
+    if(ST.days[cur]){ cur = keyShift(cur,-1); continue; }
+    /* 這一天沒練，看看前一天有沒有 —— 有的話就是單日斷點，補掉 */
+    var prev = keyShift(cur,-1);
+    if(ST.days[prev]){ ST.shield[cur]=1; fixed++; cur=prev; }
+    else break;
   }
-  ST.days[t]=(ST.days[t]||0)+1;
+  ST.repaired = fixed;
+  /* 更新當下如果今天已經練夠題數了，卡直接給，不用再多答一題才發 */
+  var today = dayKey();
+  if((ST.days[today]||0) >= JELLY_NEED && ST.cardOn !== today && (ST.cards||0) < JELLY_MAX){
+    ST.cards = (ST.cards||0)+1; ST.cardOn = today;
+  }
+  ST.v = 2;
+  saveStats();
+}
+
+/* 從實際練習紀錄回推連續天數。保護卡蓋掉的那天也算有練。*/
+function calcStreak(){
+  var cur = dayKey(), n = 0;
+  if(!ST.days[cur] && !ST.shield[cur]) cur = keyShift(cur,-1);   /* 今天還沒練，從昨天起算 */
+  while(ST.days[cur] || (ST.shield && ST.shield[cur])){ n++; cur = keyShift(cur,-1); }
+  return n;
+}
+/* 如果昨天（或往前幾天）空著而手上有保護卡，就自動用掉一張把它補起來。
+   一次只補一天，連續缺兩天以上就是真的中斷了。*/
+function spendCard(){
+  var today = dayKey();
+  if(!ST.days[today]) return 0;              /* 今天自己要先有練才談得上延續 */
+  var y = keyShift(today,-1);
+  if(ST.days[y] || ST.shield[y]) return 0;   /* 昨天本來就有，不用補 */
+  var before = keyShift(y,-1);
+  if(!ST.days[before] && !ST.shield[before]) return 0;  /* 前天也空的，斷太久了 */
+  if((ST.cards||0) <= 0) return 0;
+  ST.cards--; ST.shield[y] = 1; ST.usedOn = today;
+  saveStats();
+  return 1;
+}
+function countDay(){
+  var t = dayKey();
+  ST.days[t] = (ST.days[t]||0) + 1;
+  ST.last = t;
+  /* 練滿一定題數就發一張保護卡，一天最多一張 */
+  if(ST.days[t] >= JELLY_NEED && ST.cardOn !== t && (ST.cards||0) < JELLY_MAX){
+    ST.cards = (ST.cards||0) + 1;
+    ST.cardOn = t;
+    ST.gotCard = t;
+  }
+  spendCard();
+  ST.streak = calcStreak();
   saveStats();
 }
 /* 答錯只退一級，不歸零——一次失誤不該抹掉之前累積的進度 */
@@ -3928,6 +4038,13 @@ function guideSVG(mood){
 
 
 var MOODCLS={idle:'idle',good:'good-anim',bad:'bad-anim',streak:'streak-anim',cele:'cele-anim'};
+/* 幾個果凍就畫幾個，零個的時候給一句話而不是空白 */
+function jellyRow(n, big){
+  if(!n) return '<span class="jelly"><i>還沒有果凍</i></span>';
+  var s2='';
+  for(var i=0;i<n;i++) s2 += SVG.jelly;
+  return '<span class="jelly'+(big?' big':'')+'" title="果凍 '+n+' 個">'+s2+'</span>';
+}
 function guide(mood,size){
   if(!S.guide) return '';
   return '<span class="guide g-'+(size||'sm')+' '+(MOODCLS[mood]||'idle')+'">'+guideSVG(mood)+'</span>';
@@ -4015,6 +4132,7 @@ function homeScreen(){
   wake(false);
   var t = tally(), due = dueList().length, ready = checkList().length;
   var pct = Math.round(t.known/t.total*100);
+  var stk = calcStreak(), cards = ST.cards||0;
   var h = '<div class="hero-row">'+guide('idle','md')+
     '<div class="hero"><div class="eyebrow">日本旅行會話</div>'+
     '<div class="t jp">にほん かいわ れんしゅう</div></div></div>';
@@ -4027,9 +4145,35 @@ function homeScreen(){
 
   h += '<div class="stats">'+
       '<div class="stat"><b>'+todayCount()+'</b><span>今天練了幾題</span></div>'+
-      '<div class="stat"><b style="color:'+(ST.streak>0?'var(--ok)':'var(--muted)')+'">'+(ST.streak||0)+'</b><span>連續天數</span></div>'+
+      '<div class="stat"><b style="color:'+(stk>0?'var(--ok)':'var(--muted)')+'">'+stk+'</b>'+
+        '<span>連續天數'+(cards?' '+jellyRow(cards):'')+'</span></div>'+
       '<div class="stat"><b style="color:'+(due?'var(--warn)':'var(--muted)')+'">'+due+'</b><span>待複習</span></div>'+
     '</div>';
+
+  /* 連續天數相關的通知，看過一次就收起來 */
+  if(ST.repaired){
+    h += '<div class="banner good"><span class="ic">✓</span><div>'+
+      '之前「每天有練卻斷掉」是計算方式的問題：一天的分界線卡在半夜 12 點，'+
+      '凌晨練的會被算成隔天。已經改成<b>凌晨 4 點才換日</b>，'+
+      '並用你的練習紀錄重算，<b>補回 '+ST.repaired+' 天</b>。</div></div>';
+    delete ST.repaired; saveStats();
+  }
+  if(ST.usedOn === dayKey()){
+    h += '<div class="banner jellyban">'+guide('good','sm')+
+      '<div>昨天沒練到，プク <b>吃掉一個果凍</b>，幫你把那天補起來了，連續紀錄沒斷。'+
+      '還剩 '+jellyRow(cards)+'。</div></div>';
+    delete ST.usedOn; saveStats();
+  }
+  if(ST.gotCard === dayKey()){
+    h += '<div class="banner good jellyban">'+guide('streak','sm')+
+      '<div>今天練滿 '+JELLY_NEED+' 題，<b>給プク一個果凍</b>！目前 '+jellyRow(cards)+
+      '（最多 '+JELLY_MAX+' 個）。哪天真的沒空，牠會自己吃掉一個幫你擋住。</div></div>';
+    delete ST.gotCard; saveStats();
+  } else if(stk>0 && cards<JELLY_MAX && todayCount()<JELLY_NEED){
+    h += '<div class="note zh">今天再練 <b>'+(JELLY_NEED-todayCount())+'</b> 題，就能再給プク一個果凍'+
+         '（目前 '+jellyRow(cards)+'，最多 '+JELLY_MAX+' 個）。'+
+         '漏掉一天的時候，牠會吃掉一個幫你補上。</div>';
+  }
 
   if(t.known===0 && t.started===0){
     h += '<div class="note zh">從「聽力選擇題」開始最輕鬆。每答對一次，那句話的熟練度就往上一級，'+
@@ -4448,7 +4592,10 @@ function n5MockPaper(){
         paper = paper.concat(groups[g]);
       });
     } else {
-      paper = paper.concat(shuffle(pool).slice(0, want));
+      /* 標成 lvl:'n4' 的是 N5 範圍外的句型（〜すぎる、〜なければならない 之類），
+         練習模式照常出，但模擬考不抽，免得難度比真的考試高。*/
+      var fair = pool.filter(function(x){ return x.lvl !== 'n4'; });
+      paper = paper.concat(shuffle(fair.length >= want ? fair : pool).slice(0, want));
     }
   });
   return paper;
@@ -4606,17 +4753,23 @@ function n5MockRun(paper){
         (ix===segs[segIx].to ? (segIx===segs.length-1?'交卷':'下一科') : '下一題')+'</button></div>';
     d.innerHTML = h;
 
+    /* 正式考試的聽解是「先唸問題 → 放對話 → 再唸一次問題」，而且唸得比一般對話慢。
+       之前這裡只放對話＋問題各一次、用正常語速，難度比真的考試高不少。*/
+    var MOCK_RATE = 0.88;
     function playAll(){
       stopSpeak();
       if(kind==='listen'){
-        var seq = o.d.map(function(t){ return { t:toKanji(t.j), opt:roleOpt(t.w==='M'?'me':'you') }; });
-        seq.push({ t:toKanji(o.q), opt:{} });
+        var seq = [{ t:toKanji(o.q), opt:{} }];                       /* 先唸問題 */
+        o.d.forEach(function(t){ seq.push({ t:toKanji(t.j), opt:roleOpt(t.w==='M'?'me':'you') }); });
+        seq.push({ t:toKanji(o.q), opt:{} });                         /* 再唸一次問題 */
         (function step(n){ if(n>=seq.length) return;
-          speak(seq[n].t, null, seq[n].opt).then(function(){ setTimeout(function(){ step(n+1); }, 260); }); })(0);
-      } else speak(toKanji(o.q||o.sit));
+          speak(seq[n].t, MOCK_RATE, seq[n].opt).then(function(){
+            setTimeout(function(){ step(n+1); }, n===0 ? 700 : 320); }); })(0);
+      } else speak(toKanji(o.q||o.sit), MOCK_RATE);
     }
     var pl=d.querySelector('#pl');
-    if(pl){ pl.onclick=playAll; setTimeout(playAll, 320); }
+    /* 真正的考試會留時間讓你先看選項，不要一進來就開始唸 */
+    if(pl){ pl.onclick=playAll; setTimeout(playAll, 1400); }
 
     d.querySelectorAll('.n5opt').forEach(function(b){
       b.onclick=function(){
@@ -4631,6 +4784,9 @@ function n5MockRun(paper){
 
   function finish(){
     stopSpeak(); clearInterval(timer);
+    /* 模擬測驗不影響熟練度，但「今天有沒有練」當然要算它一份，
+       不然整天只考模擬測驗的那天會被當成沒練，連續天數就斷了。*/
+    countDay();
     var r = n5Score(paper, ans);
     replace(function(){ return n5MockResult(paper, ans, r); }, '模擬測驗結果', '#B8860B');
   }
@@ -4752,7 +4908,7 @@ function openMode(m){
       return d;
     }, '驗收測驗'); }
     return startQuiz(ready.slice(0, Math.min(ready.length, Math.max(S.count,10))),
-                     'mix', '驗收測驗', '', {kind:'check'});
+                     'checkjp', '驗收測驗', '', {kind:'check'});
   }
   go(function(){ return scenePickScreen(m); }, MODES.filter(function(x){return x.id===m;})[0].t);
 }
@@ -4882,14 +5038,22 @@ function startQuiz(pool, mode, title, color, ctx){
   ctx = ctx || {};
   function render(){
     var item = pool[ix];
-    var kind = mode==='mix' ? (ix%2 ? 'produce':'listen') : mode;
+    /* 驗收測驗全程不出現中文：聽日文、從四個日文句子裡選。
+       沒有中文當柺杖，才看得出是不是真的記住這句話。*/
+    var kind = mode==='mix' ? (ix%2 ? 'produce':'listen')
+             : mode==='checkjp' ? 'listenjp' : mode;
     var opts = makeOptions(item, pool, kind);
     var answered=false, box=boxOf(item.i);
     var h = '<div class="prog"><span>'+(ix+1)+' / '+pool.length+
       (ctx.round>1?'　<b>第 '+ctx.round+' 輪</b>':'')+'</span>'+
       '<span class="track"><i class="fill" style="width:'+(ix/pool.length*100)+'%"></i></span>'+
       '<span class="lvl" style="color:'+LVLC[box]+'">'+LVL[box]+'</span></div>';
-    if(kind==='listen'){
+    if(kind==='listenjp'){
+      h += '<div class="stage"><div class="ask">聽完選出你聽到的那一句</div>'+
+        '<button class="speaker" id="spk" aria-label="播放">'+SVG.speaker+'</button>'+
+        '<div class="row2"><button class="replay" id="slow">'+SVG.replay+' 放慢・分段再聽一次</button></div>'+
+        '<div id="reveal" hidden></div></div>';
+    } else if(kind==='listen'){
       h += '<div class="stage"><div class="ask">聽聽看這句是什麼意思</div>'+
         '<button class="speaker" id="spk" aria-label="播放">'+SVG.speaker+'</button>'+
         '<div class="row2"><button class="replay" id="slow">'+SVG.replay+' 放慢・分段再聽一次</button></div>'+
@@ -4901,7 +5065,8 @@ function startQuiz(pool, mode, title, color, ctx){
     }
     h += '<div class="opts" id="opts">';
     opts.forEach(function(o,n){
-      var txt = kind==='listen' ? '<span class="zh">'+esc(o.z)+'</span>' : '<span class="jp" lang="ja">'+jpHTML(o.j)+'</span>';
+      var txt = kind==='listen' ? '<span class="zh">'+esc(o.z)+'</span>'
+                                : '<span class="jp" lang="ja">'+jpHTML(o.j)+'</span>';
       h += '<button class="opt" data-i="'+o.i+'"><span class="k">'+(n+1)+'</span><span class="txt">'+txt+'</span></button>';
     });
     h += '</div><div id="after"></div><div class="spacer"></div>';
@@ -4909,7 +5074,7 @@ function startQuiz(pool, mode, title, color, ctx){
     var spk = d.querySelector('#spk');
     function play(rate){ if(spk) spk.classList.add('playing');
       return speak(sayOf(item), rate).then(function(){ if(spk) spk.classList.remove('playing'); }); }
-    if(kind==='listen'){
+    if(kind==='listen' || kind==='listenjp'){
       spk.onclick=function(){ play(); };
       d.querySelector('#slow').onclick=function(){
         if(spk) spk.classList.add('playing');
@@ -4933,9 +5098,11 @@ function startQuiz(pool, mode, title, color, ctx){
         });
         var rv = d.querySelector('#reveal');
         rv.hidden=false;
-        rv.innerHTML = (kind==='listen'
-            ? '<div class="big-jp jp">'+jpHTML(item.j)+'</div><div class="sub-zh zh">'+esc(item.z)+'</div>'
-            : '<div class="sub-jp jp">'+jpHTML(item.j)+'</div>');
+        rv.innerHTML = (kind==='listenjp'
+            ? '<div class="big-jp jp" lang="ja">'+jpHTML(item.j)+'</div>'
+          : kind==='listen'
+            ? '<div class="big-jp jp" lang="ja">'+jpHTML(item.j)+'</div><div class="sub-zh zh">'+esc(item.z)+'</div>'
+            : '<div class="sub-jp jp" lang="ja">'+jpHTML(item.j)+'</div>');
         var af = d.querySelector('#after'), ah='';
         ah += '<div class="grow">'+guide(mood,'sm')+'<div class="gtext">'+
               '<div class="verdict '+(good?'ok':'no')+'"><span class="mk">'+(good?'✓':'✕')+'</span>'+
@@ -5425,7 +5592,8 @@ function showResult(right,total,wrong,title,color,gained,ctx){
     var nx = d.querySelector('#next');
     if(nx) nx.onclick=function(){ prime(); startRound(ctx.sel, ctx.mode, (ctx.round||1)+1); };
     var ag = d.querySelector('#again');
-    if(ag) ag.onclick=function(){ prime(); startQuiz(shuffle(wrong),'mix',title+'・錯題',color,{kind:'retry'}); };
+    if(ag) ag.onclick=function(){ prime();
+      startQuiz(shuffle(wrong), ctx.kind==='check'?'checkjp':'mix', title+'・錯題', color, {kind:ctx.kind}); };
     d.querySelector('#home').onclick=function(){ nav=[{r:homeScreen,t:'日本旅行會話',c:''}]; draw(); };
     return d;
   }, '練習結果', color);
@@ -5654,7 +5822,7 @@ function openSheet(focus){
   };
 
   PANEL.querySelector('#reset').onclick=function(){
-    P={}; ST={days:{},streak:0,last:''}; saveProg(); saveStats();
+    P={}; ST={days:{},streak:0,last:'',shield:{},cards:0,v:2}; saveProg(); saveStats();
     PANEL.querySelector('#reset').textContent='已清除';
     if(nav.length===1) draw();
   };
@@ -5673,6 +5841,10 @@ document.addEventListener('keydown',function(e){
   if(n>=1&&n<=4){ var b=MAIN.querySelectorAll('.opt')[n-1]; if(b&&b.tagName==='BUTTON') b.click(); }
   if(e.key==='Escape'&&nav.length>1) back();
 });
+migrateDays();
+spendCard();
+ST.streak = calcStreak();
+saveStats();
 nav=[{r:homeScreen,t:'日本旅行會話',c:''}];
 draw();
 })();
@@ -5686,5 +5858,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+</body></html>
 </body>
 </html>
