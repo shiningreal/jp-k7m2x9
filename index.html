@@ -4940,7 +4940,7 @@ function openMode(m){
       return d;
     }, '驗收測驗'); }
     return startQuiz(ready.slice(0, Math.min(ready.length, Math.max(S.count,10))),
-                     'checkjp', '驗收測驗', '', {kind:'check'});
+                     'listen', '驗收測驗', '', {kind:'check'});
   }
   go(function(){ return scenePickScreen(m); }, MODES.filter(function(x){return x.id===m;})[0].t);
 }
@@ -5070,22 +5070,15 @@ function startQuiz(pool, mode, title, color, ctx){
   ctx = ctx || {};
   function render(){
     var item = pool[ix];
-    /* 驗收測驗全程不出現中文：聽日文、從四個日文句子裡選。
-       沒有中文當柺杖，才看得出是不是真的記住這句話。*/
-    var kind = mode==='mix' ? (ix%2 ? 'produce':'listen')
-             : mode==='checkjp' ? 'listenjp' : mode;
+    /* 驗收測驗用 mode='listen'，所以整回都是「聽日文、選中文意思」。*/
+    var kind = mode==='mix' ? (ix%2 ? 'produce':'listen') : mode;
     var opts = makeOptions(item, pool, kind);
     var answered=false, box=boxOf(item.i);
     var h = '<div class="prog"><span>'+(ix+1)+' / '+pool.length+
       (ctx.round>1?'　<b>第 '+ctx.round+' 輪</b>':'')+'</span>'+
       '<span class="track"><i class="fill" style="width:'+(ix/pool.length*100)+'%"></i></span>'+
       '<span class="lvl" style="color:'+LVLC[box]+'">'+LVL[box]+'</span></div>';
-    if(kind==='listenjp'){
-      h += '<div class="stage"><div class="ask">聽完選出你聽到的那一句</div>'+
-        '<button class="speaker" id="spk" aria-label="播放">'+SVG.speaker+'</button>'+
-        '<div class="row2"><button class="replay" id="slow">'+SVG.replay+' 放慢・分段再聽一次</button></div>'+
-        '<div id="reveal" hidden></div></div>';
-    } else if(kind==='listen'){
+    if(kind==='listen'){
       h += '<div class="stage"><div class="ask">聽聽看這句是什麼意思</div>'+
         '<button class="speaker" id="spk" aria-label="播放">'+SVG.speaker+'</button>'+
         '<div class="row2"><button class="replay" id="slow">'+SVG.replay+' 放慢・分段再聽一次</button></div>'+
@@ -5106,7 +5099,7 @@ function startQuiz(pool, mode, title, color, ctx){
     var spk = d.querySelector('#spk');
     function play(rate){ if(spk) spk.classList.add('playing');
       return speak(sayOf(item), rate).then(function(){ if(spk) spk.classList.remove('playing'); }); }
-    if(kind==='listen' || kind==='listenjp'){
+    if(kind==='listen'){
       spk.onclick=function(){ play(); };
       d.querySelector('#slow').onclick=function(){
         if(spk) spk.classList.add('playing');
@@ -5130,9 +5123,7 @@ function startQuiz(pool, mode, title, color, ctx){
         });
         var rv = d.querySelector('#reveal');
         rv.hidden=false;
-        rv.innerHTML = (kind==='listenjp'
-            ? '<div class="big-jp jp" lang="ja">'+jpHTML(item.j)+'</div>'
-          : kind==='listen'
+        rv.innerHTML = (kind==='listen'
             ? '<div class="big-jp jp" lang="ja">'+jpHTML(item.j)+'</div><div class="sub-zh zh">'+esc(item.z)+'</div>'
             : '<div class="sub-jp jp" lang="ja">'+jpHTML(item.j)+'</div>');
         var af = d.querySelector('#after'), ah='';
@@ -5625,7 +5616,7 @@ function showResult(right,total,wrong,title,color,gained,ctx){
     if(nx) nx.onclick=function(){ prime(); startRound(ctx.sel, ctx.mode, (ctx.round||1)+1); };
     var ag = d.querySelector('#again');
     if(ag) ag.onclick=function(){ prime();
-      startQuiz(shuffle(wrong), ctx.kind==='check'?'checkjp':'mix', title+'・錯題', color, {kind:ctx.kind}); };
+      startQuiz(shuffle(wrong), ctx.kind==='check'?'listen':'mix', title+'・錯題', color, {kind:ctx.kind}); };
     d.querySelector('#home').onclick=function(){ nav=[{r:homeScreen,t:'日本旅行會話',c:''}]; draw(); };
     return d;
   }, '練習結果', color);
