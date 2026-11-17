@@ -4926,7 +4926,7 @@ function openMode(m){
       d.querySelector('#bk').onclick = back;
       return d;
     }, '錯題複習'); }
-    return startQuiz(due.slice(0,Math.max(S.count,10)), 'mix', '錯題複習', '', {kind:'review'});
+    return startQuiz(due.slice(0,Math.max(S.count,10)), 'listen', '錯題複習', '', {kind:'review'});
   }
   if(m==='check'){
     var ready = checkList();
@@ -5616,7 +5616,9 @@ function showResult(right,total,wrong,title,color,gained,ctx){
     if(nx) nx.onclick=function(){ prime(); startRound(ctx.sel, ctx.mode, (ctx.round||1)+1); };
     var ag = d.querySelector('#again');
     if(ag) ag.onclick=function(){ prime();
-      startQuiz(shuffle(wrong), ctx.kind==='check'?'listen':'mix', title+'・錯題', color, {kind:ctx.kind}); };
+      startQuiz(shuffle(wrong),
+        (ctx.kind==='check'||ctx.kind==='review') ? 'listen' : 'mix',
+        title+'・錯題', color, {kind:ctx.kind}); };
     d.querySelector('#home').onclick=function(){ nav=[{r:homeScreen,t:'日本旅行會話',c:''}]; draw(); };
     return d;
   }, '練習結果', color);
