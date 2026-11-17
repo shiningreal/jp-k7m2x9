@@ -672,6 +672,30 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 }
 
 
+
+/* ══════════ 衣櫃 ══════════ */
+.closethero{display:flex;flex-direction:column;align-items:center;gap:4px;padding:20px 16px}
+.closetname{font-size:19px;font-weight:700;margin-top:4px}
+.closetsub{font-size:12px;color:var(--muted);font-family:var(--zh)}
+.closetgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cloth{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:10px 8px 11px;
+  box-shadow:0 var(--lip) 0 var(--lipc);transition:transform .06s,box-shadow .06s,border-color .15s;
+  text-align:center;cursor:pointer}
+.cloth:active{transform:translateY(var(--lip));box-shadow:0 0 0 var(--lipc)}
+.clothpic{display:block;width:78px;height:98px}
+.clothpic svg{width:100%;height:100%;display:block;overflow:visible}
+.cloth b{font-size:13px;font-weight:700}
+.cloth em{font-style:normal;font-size:10.5px;color:var(--muted);font-family:var(--zh);line-height:1.45}
+.cloth.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
+.cloth.lock{opacity:.42;cursor:default;filter:grayscale(.85)}
+.cloth.lock:active{transform:none;box-shadow:0 var(--lip) 0 var(--lipc)}
+.clothlock{position:absolute;top:8px;right:9px;background:var(--muted);color:var(--surface);
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:7px;font-variant-numeric:tabular-nums}
+.clothon{position:absolute;top:8px;right:9px;background:var(--accent);color:var(--accent-ink);
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:7px;font-family:var(--zh)}
+.pukurow .guide{cursor:pointer}
+
 /* ══════════ 經驗條 ══════════ */
 .xpwrap{display:flex;flex-direction:column;gap:7px}
 .xphead{display:flex;align-items:baseline;gap:9px;font-family:var(--zh);font-size:12px;color:var(--muted)}
@@ -686,6 +710,7 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
   background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#6CC6E8));
   transition:width .95s cubic-bezier(.25,1,.4,1)}
 .xpnote{font-family:var(--zh);font-size:11.5px;color:var(--muted)}
+.xphome{cursor:pointer}
 .xpcard{padding:15px 16px;display:flex;flex-direction:column;gap:9px;position:relative}
 .xpplus{position:absolute;right:16px;top:13px;font-size:14px;font-weight:700;color:var(--ok);
   font-variant-numeric:tabular-nums;animation:xpup .7s .45s cubic-bezier(.2,1.6,.4,1) both}
@@ -3659,7 +3684,7 @@ var VPRESET = [
   ['1.28', 'プク（推薦）','聽得出是角色，但不刺耳'],
   ['1.42', 'プク 很明顯', '卡通感最重，有些人會覺得吵']
 ];
-var DEF = { display:'kanji', lively:false, vrev:0, lead:1, rate:0.8, voice:'', count:15, hands:false, model:true,
+var DEF = { display:'kanji', lively:false, vrev:0, lead:1, worn:null, rate:0.8, voice:'', count:15, hands:false, model:true,
             pace:3.2, strict:false, dlgZh:false, voiceOK:0, pitch:1, roles:true,
             sfx:true, guide:true, n5only:true };
 var S = {}, P = {}, ST = {};
@@ -3759,15 +3784,34 @@ function addXP(n){
 }
 /* プク 的配件照等級解鎖。這是數字之外看得到的成長。*/
 var PUKU_GEAR = [
-  { lv:1,  id:'',     t:'プク',           d:'剛認識你' },
-  { lv:5,  id:'band', t:'鉢巻のプク',     d:'綁上頭巾，開始認真了' },
-  { lv:12, id:'scarf',t:'マフラーのプク', d:'圍巾，冬天的日本用得上' },
-  { lv:20, id:'glass',t:'メガネのプク',   d:'眼鏡，看起來很會讀書' },
-  { lv:30, id:'cam',  t:'旅のプク',       d:'掛上相機，準備出發' },
-  { lv:40, id:'cap',  t:'学士のプク',     d:'學士帽，你已經很強了' }
+  { lv:1,  id:'',       t:'すっぴん',         d:'原本的樣子' },
+  { lv:3,  id:'happi',  t:'祭りの法被',       d:'夏祭り的藍染法被' },
+  { lv:6,  id:'cone',   t:'三角コーン',       d:'整個人變成三角錐。沒有要解釋' },
+  { lv:10, id:'salmon', t:'サーモン',         d:'一整條鮭魚，連尾鰭都有' },
+  { lv:14, id:'labo',   t:'白衣',             d:'白袍加眼鏡，看起來很會' },
+  { lv:18, id:'ramen',  t:'ラーメン',         d:'整隻泡在拉麵碗裡' },
+  { lv:22, id:'down',   t:'ダウンジャケット', d:'羽絨衣，冬天的日本靠它' },
+  { lv:26, id:'tako',   t:'たこ焼き',         d:'剛出爐，還在冒煙' },
+  { lv:30, id:'travel', t:'旅人',             d:'帽子相機都帶齊了' },
+  { lv:34, id:'onsen',  t:'温泉',             d:'泡在檜木桶裡，毛巾放頭上' },
+  { lv:38, id:'daruma', t:'だるま',           d:'紅通通，願望還沒實現' },
+  { lv:42, id:'fuji',   t:'富士山',           d:'整隻變成一座山' },
+  { lv:46, id:'sotsu',  t:'卒業',             d:'畢業袍。你已經很強了' },
+  { lv:50, id:'kin',    t:'金のプク',         d:'滿等。沒有人可以質疑你' }
 ];
 function gearOf(lv){ var g=PUKU_GEAR[0];
   PUKU_GEAR.forEach(function(x){ if(lv>=x.lv) g=x; }); return g; }
+function gearById(id){ for(var i=0;i<PUKU_GEAR.length;i++) if(PUKU_GEAR[i].id===id) return PUKU_GEAR[i]; return null; }
+/* 身上現在穿的那一件。自己挑過就照挑的，沒挑過就穿最新解鎖的。
+   清過紀錄之後等級會掉，這時要擋掉還沒解鎖的那件，不然會穿著不該有的衣服。*/
+function wornGear(){
+  var lv = levelOf(ST.xp||0);
+  if(S.worn != null){
+    var g = gearById(S.worn);
+    if(g && lv >= g.lv) return S.worn;
+  }
+  return gearOf(lv).id;
+}
 function nextGear(lv){ for(var i=0;i<PUKU_GEAR.length;i++) if(PUKU_GEAR[i].lv>lv) return PUKU_GEAR[i]; return null; }
 /* 每 10 等換一套升等動畫 */
 var LV_SHOW = [
@@ -3827,6 +3871,7 @@ function playLevelUps(levels, done){
 }
 function lvOverlay(lv, done){
   var sh = showOf(lv), gear = gearOf(lv), got = (gear.lv === lv);
+  if(got){ S.worn = gear.id; saveSet(); }   /* 解鎖新衣服就直接換上，之後想換再去衣櫃 */
   var el = document.createElement('div');
   el.className = 'lvup lv-' + sh.id;
   el.style.setProperty('--lc', sh.c);
@@ -3910,6 +3955,43 @@ function xpAnimate(card, levels){
       }, 780);
     }
   }, 420);
+}
+
+
+/* 衣櫃：自己挑要穿哪一件。沒解鎖的也看得到，才知道還有什麼可以拿。*/
+function closetScreen(){
+  var d = screen('');
+  function paint(){
+    var lv = levelOf(ST.xp||0), worn = wornGear(), have = 0;
+    PUKU_GEAR.forEach(function(g){ if(lv >= g.lv) have++; });
+    var h = '<div class="card closethero">'+
+      '<span class="guide g-lg idle">'+guideSVG('idle', worn)+'</span>'+
+      '<div class="closetname jp" lang="ja">'+esc(gearById(worn) ? gearById(worn).t : 'すっぴん')+'</div>'+
+      '<div class="closetsub">'+have+' / '+PUKU_GEAR.length+' 件已解鎖　目前 Lv.'+lv+'</div></div>';
+    h += '<div class="closetgrid">';
+    PUKU_GEAR.forEach(function(g){
+      var lock = lv < g.lv;
+      h += '<button class="cloth'+(lock?' lock':'')+(worn===g.id?' on':'')+'" data-g="'+g.id+'"'+
+        (lock?' disabled aria-disabled="true"':'')+'>'+
+        '<span class="clothpic">'+guideSVG('idle', g.id)+'</span>'+
+        '<b class="jp" lang="ja">'+esc(g.t)+'</b>'+
+        '<em>'+(lock ? 'Lv.'+g.lv+' 解鎖' : esc(g.d))+'</em>'+
+        (lock ? '<span class="clothlock">Lv.'+g.lv+'</span>' : '')+
+        (worn===g.id ? '<span class="clothon">穿著中</span>' : '')+
+        '</button>';
+    });
+    h += '</div>';
+    d.innerHTML = h;
+    d.querySelectorAll('.cloth:not(.lock)').forEach(function(b){
+      b.onclick = function(){
+        S.worn = b.dataset.g; saveSet();
+        if(S.sfx) sfxGood();
+        paint();
+      };
+    });
+  }
+  paint();
+  return d;
 }
 
 /* 熟練度 0–5：0 未學 ／ 1–2 學習中 ／ 3–4 已學會 ／ 5 已精通 */
@@ -4461,45 +4543,194 @@ var WHITE='#FFFFFF';
 
 /* プク 的配件。畫在 rig 裡面，所以會跟著所有既有動畫一起動。
    座標跟著身體走：頭中心 (100,128)、半徑 60、眼睛 y=108、眉毛 y=82。*/
-function gearSVG(id){
-  if(id==='band'){            /* 鉢巻 */
-    return '<g class="ggear">'+
-      '<path d="M 46,78 Q 100,56 154,78 L 154,90 Q 100,68 46,90 Z" fill="#E8502E"/>'+
-      '<path d="M 150,84 Q 178,82 190,100" stroke="#E8502E" stroke-width="8" stroke-linecap="round" fill="none"/>'+
-      '<path d="M 152,90 Q 176,96 182,116" stroke="#E8502E" stroke-width="7" stroke-linecap="round" fill="none"/>'+
-      '<circle cx="100" cy="76" r="7.5" fill="#FDF2DC"/></g>';
+/* 着ぐるみ：外殼罩住身體和刺，臉的位置挖洞讓五官露出來。
+   要像「真的穿著」而不是「貼了一張圖」，三件事缺一不可：
+     1. 袖子、手套、鞋子照當下的姿勢一起換成同一塊布 —— 橘色的鰭露在外面最出戲
+     2. 臉洞邊緣加一圈深色內緣，臉才像從兜帽裡探出來
+     3. 兜帽在額頭上投一點陰影
+   臉洞：圓心 (100,120) 半徑 42。細節都要閃開這一圈。*/
+var KIGU = 'M 100,40 C 152,40 178,84 178,134 C 178,184 146,210 100,210 C 54,210 22,184 22,134 C 22,84 48,40 100,40 Z';
+var HOLE = 'M 142,120 A 42,42 0 1,0 58,120 A 42,42 0 1,0 142,120 Z';
+
+/* 袖子與鞋子：姿勢要和身體那邊的鰭對得上，不然會多出第三隻手 */
+function kiguLimbs(fill, dark, mood){
+  var g = '';
+  if(mood==='cele'){
+    g += '<path d="M 50,118 Q 26,96 18,68" stroke="'+fill+'" stroke-width="18" stroke-linecap="round" fill="none"/>'+
+         '<path d="M 150,118 Q 174,96 182,68" stroke="'+fill+'" stroke-width="18" stroke-linecap="round" fill="none"/>'+
+         '<ellipse cx="16" cy="62" rx="17" ry="12" fill="'+dark+'" transform="rotate(-38 16 62)"/>'+
+         '<ellipse cx="184" cy="62" rx="17" ry="12" fill="'+dark+'" transform="rotate(38 184 62)"/>';
+  } else if(mood==='good'){
+    g += '<path d="M 52,120 Q 32,100 26,78" stroke="'+fill+'" stroke-width="18" stroke-linecap="round" fill="none"/>'+
+         '<path d="M 148,120 Q 168,100 174,78" stroke="'+fill+'" stroke-width="18" stroke-linecap="round" fill="none"/>'+
+         '<ellipse cx="24" cy="72" rx="16" ry="12" fill="'+dark+'" transform="rotate(-30 24 72)"/>'+
+         '<ellipse cx="176" cy="72" rx="16" ry="12" fill="'+dark+'" transform="rotate(30 176 72)"/>';
+  } else if(mood!=='bad' && mood!=='streak'){
+    g += '<path d="M 50,136 Q 34,148 30,166" stroke="'+fill+'" stroke-width="18" stroke-linecap="round" fill="none"/>'+
+         '<path d="M 150,136 Q 166,148 170,166" stroke="'+fill+'" stroke-width="18" stroke-linecap="round" fill="none"/>'+
+         '<ellipse cx="28" cy="172" rx="16" ry="12" fill="'+dark+'" transform="rotate(25 28 172)"/>'+
+         '<ellipse cx="172" cy="172" rx="16" ry="12" fill="'+dark+'" transform="rotate(-25 172 172)"/>';
   }
-  if(id==='scarf'){           /* マフラー */
-    return '<g class="ggear">'+
-      '<path d="M 52,170 Q 100,196 148,170 L 150,186 Q 100,212 50,186 Z" fill="#3F6FA8"/>'+
-      '<path d="M 128,182 Q 142,200 136,222 L 152,224 Q 160,198 146,176 Z" fill="#2F558A"/>'+
-      '</g>';
+  g += '<ellipse cx="84" cy="197" rx="17" ry="10.5" fill="'+dark+'"/>'+
+       '<ellipse cx="116" cy="197" rx="17" ry="10.5" fill="'+dark+'"/>';
+  return g;
+}
+/* 兜帽內緣 ＋ 額頭陰影。沒有這兩層，臉就只是被挖了一個洞 */
+function kiguHood(dark){
+  return '<circle cx="100" cy="120" r="42" fill="none" stroke="'+dark+'" stroke-width="8"/>'+
+         '<path d="M 58,120 A 42,42 0 0,0 142,120 Z" fill="#241A10" opacity=".09"/>';
+}
+function kiguBase(c, mood){
+  return kiguLimbs(c.fill, c.dark, mood)+
+    '<path d="'+(c.body||KIGU)+' '+HOLE+'" fill-rule="evenodd" fill="'+c.fill+'"/>'+
+    kiguHood(c.dark);
+}
+
+var KIGU_SET = {
+  happi:  { fill:'#23406B', dark:'#162B4A' },
+  cone:   { fill:'#F26522', dark:'#C9450F', body:'M 100,10 L 186,208 L 14,208 Z' },
+  salmon: { fill:'#F4845F', dark:'#D9674A' },
+  labo:   { fill:'#F4F7F9', dark:'#C3CDD4' },
+  down:   { fill:'#3F6FA8', dark:'#2A4B75' },
+  tako:   { fill:'#CC8E4F', dark:'#A8713B',
+            body:'M 100,34 C 156,34 182,82 182,134 C 182,186 148,212 100,212 C 52,212 18,186 18,134 C 18,82 44,34 100,34 Z' },
+  travel: { fill:'#D8C9A8', dark:'#AC9B76' },
+  daruma: { fill:'#C9342B', dark:'#8E2019',
+            body:'M 100,34 C 154,34 180,84 180,136 C 180,190 146,212 100,212 C 54,212 20,190 20,136 C 20,84 46,34 100,34 Z' },
+  fuji:   { fill:'#4A6FA5', dark:'#2F4868', body:'M 100,12 L 188,208 L 12,208 Z' },
+  sotsu:  { fill:'#2B2724', dark:'#141211' },
+  kin:    { fill:'#F2C14E', dark:'#C9941E' }
+};
+
+function gearSVG(id, mood){
+  if(!id) return '';
+  mood = mood || 'idle';
+  var c = KIGU_SET[id], g = '<g class="ggear">';
+  if(c) g += kiguBase(c, mood);
+
+  if(id==='happi'){                                    /* 祭りの法被 */
+    g += '<path d="M 100,164 L 86,210 L 70,210 L 86,160 Z" fill="#F7F3EA"/>'+
+         '<path d="M 100,164 L 114,210 L 130,210 L 114,160 Z" fill="#F7F3EA"/>'+
+         '<path d="M 30,178 Q 100,196 170,178 L 170,190 Q 100,208 30,190 Z" fill="#C9342B"/>'+
+         '<text x="100" y="207" font-size="20" font-weight="700" fill="#F7F3EA" text-anchor="middle" font-family="serif">祭</text>'+
+         '<path d="M 48,76 Q 100,54 152,76 L 152,88 Q 100,66 48,88 Z" fill="#C9342B"/>'+
+         '<path d="M 148,82 Q 176,80 188,98" stroke="#C9342B" stroke-width="8" stroke-linecap="round" fill="none"/>';
   }
-  if(id==='glass'){           /* メガネ */
-    return '<g class="ggear">'+
-      '<circle cx="72" cy="108" r="21" fill="none" stroke="#2B2724" stroke-width="5"/>'+
-      '<circle cx="128" cy="108" r="21" fill="none" stroke="#2B2724" stroke-width="5"/>'+
-      '<path d="M 93,106 Q 100,101 107,106" stroke="#2B2724" stroke-width="5" fill="none" stroke-linecap="round"/>'+
-      '<circle cx="66" cy="101" r="6" fill="#FFFFFF" opacity=".55"/>'+
-      '<circle cx="122" cy="101" r="6" fill="#FFFFFF" opacity=".55"/></g>';
+  else if(id==='cone'){                                /* 三角コーン */
+    g += '<path d="M 100,10 L 116,46 L 84,46 Z" fill="#FF8A4C"/>'+
+         '<path d="M 68,168 L 132,168 L 140,188 L 60,188 Z" fill="#FDF6E8"/>'+
+         '<rect x="8" y="200" width="184" height="15" rx="5" fill="#C9450F"/>';
   }
-  if(id==='cam'){             /* カメラ：掛在原本就有的背帶上 */
-    return '<g class="ggear">'+
-      '<rect x="80" y="160" width="42" height="29" rx="6" fill="#3A3733"/>'+
-      '<rect x="92" y="155" width="14" height="7" rx="2" fill="#3A3733"/>'+
-      '<circle cx="101" cy="175" r="11" fill="#5A5650"/>'+
-      '<circle cx="101" cy="175" r="6.5" fill="#8FC7E8"/>'+
-      '<circle cx="98.5" cy="172" r="2.4" fill="#FFFFFF" opacity=".75"/>'+
-      '<rect x="112" y="164" width="6" height="4" rx="1.4" fill="#F2C14E"/></g>';
+  else if(id==='salmon'){                              /* サーモン */
+    g += '<path d="M 174,110 L 206,86 L 199,134 L 206,182 L 174,158 Z" fill="#F4845F"/>'+
+         '<path d="M 174,110 L 206,86 L 199,134 Z" fill="#E8744F"/>'+
+         '<path d="M 100,40 Q 120,14 136,42 Z" fill="#E8744F"/>'+
+         '<path d="M 26,168 Q 100,198 174,168" stroke="#FFE2D2" stroke-width="10" fill="none" stroke-linecap="round"/>'+
+         '<path d="M 34,190 Q 100,216 166,190" stroke="#FFE2D2" stroke-width="9" fill="none" stroke-linecap="round"/>'+
+         '<path d="M 26,98 Q 20,64 48,50" stroke="#FFE2D2" stroke-width="9" fill="none" stroke-linecap="round"/>'+
+         '<path d="M 174,98 Q 180,64 152,50" stroke="#FFE2D2" stroke-width="9" fill="none" stroke-linecap="round"/>';
   }
-  if(id==='cap'){             /* 学士帽 */
-    return '<g class="ggear">'+
-      '<path d="M 100,40 L 164,62 L 100,84 L 36,62 Z" fill="#2B2724"/>'+
-      '<path d="M 66,72 L 66,92 Q 100,106 134,92 L 134,72 L 100,84 Z" fill="#1F1C1A"/>'+
-      '<path d="M 160,63 L 160,92" stroke="#F2C14E" stroke-width="4" stroke-linecap="round"/>'+
-      '<circle cx="160" cy="96" r="7" fill="#F2C14E"/></g>';
+  else if(id==='labo'){                                /* 白衣 */
+    g += '<path d="M 100,162 L 78,210 L 62,210 L 80,156 Z" fill="#DCE4EA"/>'+
+         '<path d="M 100,162 L 122,210 L 138,210 L 120,156 Z" fill="#DCE4EA"/>'+
+         '<rect x="130" y="170" width="26" height="24" rx="3" fill="#E6ECF0"/>'+
+         '<rect x="140" y="164" width="5" height="18" rx="2" fill="#2E7FB8"/>'+
+         '<circle cx="72" cy="108" r="21" fill="none" stroke="#2B2724" stroke-width="5"/>'+
+         '<circle cx="128" cy="108" r="21" fill="none" stroke="#2B2724" stroke-width="5"/>'+
+         '<path d="M 93,106 Q 100,101 107,106" stroke="#2B2724" stroke-width="5" fill="none" stroke-linecap="round"/>'+
+         '<circle cx="66" cy="101" r="6" fill="#FFFFFF" opacity=".55"/>'+
+         '<circle cx="122" cy="101" r="6" fill="#FFFFFF" opacity=".55"/>';
   }
-  return '';
+  else if(id==='down'){                                /* ダウンジャケット */
+    g += '<path d="M 26,152 Q 100,168 174,152" stroke="#2A4B75" stroke-width="5" fill="none"/>'+
+         '<path d="M 24,174 Q 100,192 176,174" stroke="#2A4B75" stroke-width="5" fill="none"/>'+
+         '<path d="M 30,194 Q 100,212 170,194" stroke="#2A4B75" stroke-width="5" fill="none"/>'+
+         '<path d="M 36,76 Q 100,50 164,76" stroke="#2A4B75" stroke-width="5" fill="none"/>'+
+         '<path d="M 100,160 L 100,210" stroke="#1F3A5C" stroke-width="5"/>'+
+         '<path d="M 44,148 Q 100,176 156,148 L 158,166 Q 100,194 42,166 Z" fill="#C9342B"/>'+
+         '<path d="M 140,162 Q 156,184 150,208 L 168,210 Q 176,182 160,156 Z" fill="#A82A24"/>';
+  }
+  else if(id==='tako'){                                /* たこ焼き */
+    g += '<circle cx="44" cy="88" r="9" fill="#DDA468" opacity=".7"/>'+
+         '<circle cx="158" cy="102" r="7" fill="#DDA468" opacity=".7"/>'+
+         '<path d="M 26,162 Q 100,198 174,162 Q 160,208 100,212 Q 40,208 26,162 Z" fill="#55341E"/>'+
+         '<path d="M 44,178 Q 68,192 56,206" stroke="#FFFBF2" stroke-width="5" fill="none" stroke-linecap="round"/>'+
+         '<path d="M 92,188 Q 116,200 104,212" stroke="#FFFBF2" stroke-width="5" fill="none" stroke-linecap="round"/>'+
+         '<path d="M 140,178 Q 160,188 150,202" stroke="#FFFBF2" stroke-width="5" fill="none" stroke-linecap="round"/>'+
+         '<circle cx="70" cy="198" r="3" fill="#4E7F3E"/><circle cx="124" cy="202" r="2.8" fill="#4E7F3E"/>'+
+         '<path d="M 70,34 Q 100,16 126,34 Q 100,27 70,34 Z" fill="#E8C9A8"/>'+
+         '<path d="M 112,26 Q 140,10 152,28 Q 128,20 112,26 Z" fill="#F0D7BB"/>';
+  }
+  else if(id==='travel'){                              /* 旅人 */
+    g += '<path d="M 100,160 L 84,210 L 68,210 L 84,154 Z" fill="#BFAE88"/>'+
+         '<path d="M 100,160 L 116,210 L 132,210 L 116,154 Z" fill="#BFAE88"/>'+
+         '<path d="M 32,112 Q 70,162 94,176" stroke="#6E5A3E" stroke-width="7" fill="none"/>'+
+         '<rect x="78" y="170" width="44" height="30" rx="6" fill="#3A3733"/>'+
+         '<circle cx="100" cy="186" r="11" fill="#5A5650"/><circle cx="100" cy="186" r="6.5" fill="#8FC7E8"/>'+
+         '<circle cx="97" cy="183" r="2.4" fill="#FFF" opacity=".8"/>'+
+         '<path d="M 22,58 Q 100,28 178,58 Q 100,78 22,58 Z" fill="#6E8B5A"/>'+
+         '<path d="M 52,52 Q 100,26 148,52 Q 100,42 52,52 Z" fill="#546E45"/>';
+  }
+  else if(id==='daruma'){                              /* だるま */
+    g += '<path d="M 32,72 Q 100,46 168,72" stroke="#F2C14E" stroke-width="6" fill="none"/>'+
+         '<path d="M 24,186 Q 100,208 176,186" stroke="#F2C14E" stroke-width="6" fill="none"/>'+
+         '<text x="100" y="204" font-size="23" font-weight="700" fill="#F2C14E" text-anchor="middle" font-family="serif">福</text>'+
+         '<path d="M 38,102 Q 28,122 38,142" stroke="#8E2019" stroke-width="4" fill="none"/>'+
+         '<path d="M 162,102 Q 172,122 162,142" stroke="#8E2019" stroke-width="4" fill="none"/>';
+  }
+  else if(id==='fuji'){                                /* 富士山 */
+    g += '<path d="M 100,12 L 128,74 Q 116,64 106,72 Q 96,60 84,72 Q 76,66 72,74 Z" fill="#FDFDFD"/>'+
+         '<path d="M 12,208 L 188,208" stroke="#2F4868" stroke-width="5"/>'+
+         '<circle cx="170" cy="50" r="15" fill="#E8502E" opacity=".92"/>'+
+         '<path d="M 22,178 Q 48,170 70,178" stroke="#6388BF" stroke-width="4" fill="none"/>'+
+         '<path d="M 132,188 Q 158,180 178,188" stroke="#6388BF" stroke-width="4" fill="none"/>';
+  }
+  else if(id==='sotsu'){                               /* 卒業 */
+    g += '<path d="M 100,158 L 76,210 L 58,210 L 80,152 Z" fill="#F7F3EA"/>'+
+         '<path d="M 100,158 L 124,210 L 142,210 L 120,152 Z" fill="#F7F3EA"/>'+
+         '<path d="M 100,158 L 92,198 L 108,198 Z" fill="#C9342B"/>'+
+         '<path d="M 100,22 L 170,46 L 100,70 L 30,46 Z" fill="#1A1817"/>'+
+         '<path d="M 62,58 L 62,80 Q 100,96 138,80 L 138,58 L 100,70 Z" fill="#0F0D0C"/>'+
+         '<path d="M 166,47 L 166,80" stroke="#F2C14E" stroke-width="4.5" stroke-linecap="round"/>'+
+         '<circle cx="166" cy="85" r="8" fill="#F2C14E"/>';
+  }
+  else if(id==='kin'){                                 /* 金のプク */
+    g += '<path d="M 44,66 Q 84,40 116,44" stroke="#FFF0C2" stroke-width="13" fill="none" stroke-linecap="round" opacity=".75"/>'+
+         '<path d="M 30,178 Q 100,208 170,178" stroke="#D9A62E" stroke-width="7" fill="none"/>'+
+         '<path d="M 24,150 Q 100,180 176,150" stroke="#D9A62E" stroke-width="6" fill="none"/>'+
+         '<path d="M 54,52 L 54,20 L 76,38 L 100,6 L 124,38 L 146,20 L 146,52 Z" fill="#F2C14E"/>'+
+         '<path d="M 54,52 L 146,52 L 146,62 L 54,62 Z" fill="#D9A62E"/>'+
+         '<circle cx="100" cy="42" r="6" fill="#C9342B"/>'+
+         '<circle cx="74" cy="46" r="4.5" fill="#3F6FA8"/><circle cx="126" cy="46" r="4.5" fill="#3F6FA8"/>'+
+         '<circle cx="54" cy="17" r="5.5" fill="#FFF0C2"/><circle cx="146" cy="17" r="5.5" fill="#FFF0C2"/>'+
+         '<circle cx="100" cy="4" r="6" fill="#FFF0C2"/>';
+  }
+  /* 這兩套不是穿在身上，是整隻泡在容器裡，所以沒有兜帽也不換手腳 */
+  else if(id==='ramen'){
+    g += '<path d="M 14,140 Q 100,120 186,140 L 170,200 Q 100,222 30,200 Z" fill="#C9342B"/>'+
+         '<path d="M 14,140 Q 100,120 186,140 L 186,153 Q 100,133 14,153 Z" fill="#F2E6D8"/>'+
+         '<path d="M 44,174 L 54,174 L 54,184 L 64,184" stroke="#F2E6D8" stroke-width="4" fill="none"/>'+
+         '<path d="M 136,184 L 146,184 L 146,174 L 156,174" stroke="#F2E6D8" stroke-width="4" fill="none"/>'+
+         '<path d="M 30,136 Q 46,122 40,108" stroke="#F0D98C" stroke-width="7" fill="none" stroke-linecap="round"/>'+
+         '<path d="M 170,136 Q 156,120 164,106" stroke="#F0D98C" stroke-width="7" fill="none" stroke-linecap="round"/>'+
+         '<rect x="150" y="96" width="22" height="30" rx="2" fill="#1F2B33"/>'+
+         '<ellipse cx="34" cy="128" rx="15" ry="12" fill="#FDF6E8"/><circle cx="34" cy="128" r="6.5" fill="#F0A830"/>';
+  }
+  else if(id==='onsen'){
+    g += '<path d="M 20,132 L 180,132 L 168,206 Q 100,220 32,206 Z" fill="#D9A869"/>'+
+         '<path d="M 20,132 L 180,132 L 178,144 L 22,144 Z" fill="#E8C292"/>'+
+         '<path d="M 60,136 L 54,210 M 100,136 L 100,214 M 140,136 L 146,210" stroke="#B8894F" stroke-width="2.5"/>'+
+         '<rect x="24" y="162" width="152" height="9" fill="#9A7B4F"/>'+
+         '<rect x="28" y="190" width="144" height="9" fill="#9A7B4F"/>'+
+         '<path d="M 20,128 Q 100,112 180,128 Q 100,146 20,128 Z" fill="#BFE3F2" opacity=".55"/>'+
+         '<rect x="62" y="46" width="76" height="22" rx="7" fill="#F4F8FA"/>'+
+         '<rect x="62" y="52" width="76" height="4" fill="#7FB4D4"/>'+
+         '<rect x="62" y="60" width="76" height="3" fill="#A8CDE3"/>'+
+         '<path d="M 70,38 Q 62,28 70,18 Q 78,8 70,0" stroke="#CFE2EC" stroke-width="4.5" fill="none" stroke-linecap="round" opacity=".85"/>'+
+         '<path d="M 100,36 Q 92,26 100,16 Q 108,6 100,-2" stroke="#CFE2EC" stroke-width="4.5" fill="none" stroke-linecap="round" opacity=".85"/>'+
+         '<path d="M 130,38 Q 122,28 130,18 Q 138,8 130,0" stroke="#CFE2EC" stroke-width="4.5" fill="none" stroke-linecap="round" opacity=".85"/>';
+  }
+  return g + '</g>';
 }
 
 function star(x,y,sc,fill,delay,cls){
@@ -4624,7 +4855,7 @@ function guideSVG(mood, gid){
     s.push('<rect x="101" y="134" width="6.5" height="6" rx="2" fill="'+WHITE+'"/>');
   }
   /* 配件畫在最後，蓋在五官之上，但仍在 rig/puff 裡面，所以跟著所有動畫一起動 */
-  if(gid) s.push(gearSVG(gid));
+  if(gid) s.push(gearSVG(gid, mood));
   s.push('</g></g>');
 
   /* 判定符號與特效 */
@@ -4678,7 +4909,7 @@ function pukuBubble(stk, today, t, size){
 }
 function guide(mood,size,gid){
   if(!S.guide) return '';
-  if(gid === undefined) gid = gearOf(levelOf(ST.xp||0)).id;
+  if(gid === undefined) gid = wornGear();
   return '<span class="guide g-'+(size||'sm')+' '+(MOODCLS[mood]||'idle')+'">'+guideSVG(mood,gid)+'</span>';
 }
 /* 音效：即時合成，沒有音檔，離線一樣有聲音 */
@@ -4756,6 +4987,13 @@ function draw(){
   MAIN.innerHTML = '';
   var node = cur.r();
   if(node) MAIN.appendChild(node);
+  /* 首頁點 プク 或經驗條就進衣櫃 —— 兩個都是人本來就會想戳的東西 */
+  if(node) node.querySelectorAll('.pukurow .guide, .xphome').forEach(function(x){
+    x.style.cursor = 'pointer';
+    x.setAttribute('role','button');
+    x.onclick = function(){ go(closetScreen, 'プクの衣装', '#8F76D6'); };
+  });
+
   /* 沒日文語音是會毀掉整個 app 的狀況，每一頁都要講，不能只放首頁 */
   var w = voiceWarnHTML();
   if(w && node){
@@ -4830,7 +5068,7 @@ function homeScreen(){
     progBar(t)+progLegend(t)+
     '</div>';
 
-  h += '<div class="card xpcard">'+xpBarHTML(ST.xp||0,{big:true})+'</div>';
+  h += '<div class="card xpcard xphome">'+xpBarHTML(ST.xp||0,{big:true})+'</div>';
   h += '<div class="stats">'+
       '<div class="stat"><b>'+todayCount()+'</b><span>今天練了幾題</span></div>'+
       '<div class="stat"><b style="color:'+(stk>0?'var(--ok)':'var(--muted)')+'">'+stk+'</b>'+
@@ -4951,7 +5189,7 @@ function n5HomeScreen(isHome){
     progBar(t)+progLegend(t)+'</div>';
 
   if(isHome){
-    h += '<div class="card xpcard">'+xpBarHTML(ST.xp||0,{big:true})+'</div>';
+    h += '<div class="card xpcard xphome">'+xpBarHTML(ST.xp||0,{big:true})+'</div>';
     h += '<div class="stats">'+
       '<div class="stat"><b>'+todayCount()+'</b><span>今天練了幾題</span></div>'+
       '<div class="stat"><b style="color:'+(stk>0?'var(--ok)':'var(--muted)')+'">'+stk+'</b>'+
