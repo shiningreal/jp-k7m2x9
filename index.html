@@ -4,11 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B6FA4">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="日文會話">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
@@ -375,7 +370,125 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .n5pbar i{display:block;height:100%;border-radius:4px}
 .n5pn{flex:none;font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted);width:34px;text-align:right}
 .n5skip{font-style:normal;color:var(--warn)}
+/* 聽力的「只用唸的」選項：編號留著，文字先藏起來 */
+.n5opts.blind .opt .txt{visibility:hidden}
+.n5opts.blind .opt .txt::after{content:"？？？";visibility:visible;color:var(--muted);
+  font-family:var(--zh);font-size:14px;letter-spacing:.1em}
 .n5bad{font-style:normal;color:var(--bad)}
+
+/* ══════════════════════════════════════════════════════════
+   立體感：每個可點的東西下面墊一條不模糊的深色「唇邊」，
+   按下去整顆往下沉、唇邊消失 —— 手指會覺得真的壓到東西。
+   唇邊用 box-shadow 不用 border，才不會把版面撐開。
+   ══════════════════════════════════════════════════════════ */
+:root{ --lip:4px; --lipc:rgba(16,23,32,.22); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --lipc:rgba(0,0,0,.55); } }
+:root[data-theme="dark"]{ --lipc:rgba(0,0,0,.55); }
+
+.pop{ box-shadow:0 var(--lip) 0 var(--lipc); transition:transform .06s, box-shadow .06s; }
+.pop:active{ transform:translateY(var(--lip)); box-shadow:0 0 0 var(--lipc); }
+.pop[disabled]{ box-shadow:0 var(--lip) 0 var(--lipc); transform:none; }
+
+/* 既有元件直接套上去 */
+.btn, .mode, .scene, .opt, .n5card, .n5mock, .grp, .iconbtn, .replay, .hintbtn{
+  box-shadow:0 var(--lip) 0 var(--lipc); transition:transform .06s, box-shadow .06s, border-color .15s; }
+.btn:active, .mode:active, .scene:active, .opt:active, .n5card:active,
+.n5mock:active, .iconbtn:active, .replay:active, .hintbtn:active{
+  transform:translateY(var(--lip)); box-shadow:0 0 0 var(--lipc); }
+.btn.primary{ --lipc:color-mix(in srgb, var(--accent) 55%, #000); }
+.btn[disabled]{ transform:none; }
+.grp{ box-shadow:0 var(--lip) 0 var(--lipc); }
+.grp:active{ transform:none; }
+
+/* 主要按鈕變厚、字變大，按鈕要看起來值得按 */
+.btn.primary{ padding:16px; font-size:17px; border-radius:14px; letter-spacing:.03em; }
+
+/* ── 顏色從小標籤變成滿版色磚 ── */
+.mode .n, .n5badge, .n5mi{
+  color:#fff; border:0; box-shadow:inset 0 -2px 0 rgba(0,0,0,.18); }
+.mode .n{ background:var(--mc,var(--accent)); width:46px; height:46px; border-radius:14px;
+  font-size:18px; font-weight:700; line-height:1.1; }
+.mode .n small{ font-size:10px; opacity:.85; font-weight:600 }
+/* N5 和模擬測驗的磚各自保留原本的顏色 */
+.n5badge{ background:#1B6FA8 } .n5mi{ background:#B8860B }
+/* 情境卡左邊那條色帶加粗，整張卡帶一點該場景的顏色 */
+.scene{ border-left:5px solid var(--sc); }
+.scene .bar2{ display:none; }
+.scene[aria-pressed="true"]{ background:color-mix(in srgb, var(--sc) 12%, var(--surface)); }
+
+/* ── 進度條：4px 髮絲線 → 看得見的量體 ── */
+.pbar{ height:14px; border-radius:8px; box-shadow:inset 0 2px 4px rgba(0,0,0,.16); }
+.pbar .seg{ transition:width .55s cubic-bezier(.3,1.2,.5,1); }
+.smini, .gbar{ height:7px; border-radius:4px; }
+.prog .track{ height:7px; border-radius:4px; }
+.prog .fill{ transition:width .45s cubic-bezier(.3,1.2,.5,1); }
+.n5scb{ height:13px; border-radius:7px; }
+
+/* ── 數字要有份量 ── */
+.stat b{ font-size:30px; letter-spacing:-.01em; }
+.stats{ border-radius:16px; }
+.pnum{ font-size:17px; }
+
+/* ── プク 的對話框 ── */
+.pukurow{ display:flex; align-items:flex-end; gap:12px; padding:4px 0 2px }
+.pukurow .guide{ flex:none }
+.bubble{ position:relative; flex:1; min-width:0; background:var(--surface);
+  border:1.5px solid var(--line); border-radius:16px; padding:13px 15px;
+  box-shadow:0 var(--lip) 0 var(--lipc); font-family:var(--zh); margin-bottom:10px }
+.bubble::before{ content:""; position:absolute; left:-9px; bottom:15px; width:0; height:0;
+  border:9px solid transparent; border-right-color:var(--line); border-left:0 }
+.bubble::after{ content:""; position:absolute; left:-6.5px; bottom:15px; width:0; height:0;
+  border:8px solid transparent; border-right-color:var(--surface); border-left:0 }
+.bubble b{ display:block; font-size:16px; font-weight:700; line-height:1.4 }
+.bubble span{ display:block; font-size:12.5px; color:var(--muted); margin-top:3px; line-height:1.5 }
+
+/* ══════════════════════════════════════════════════════════
+   作答回饋面板：從畫面底部滑上來、佔滿寬度、整片染成對或錯的顏色。
+   這是整個 app 最常被看到的一瞬間，值得做大。
+   用 fixed 定位，所以要同時把捲動區的底部墊高，免得選項被蓋住。
+   ══════════════════════════════════════════════════════════ */
+.fbpanel{ position:fixed; left:0; right:0; bottom:0; z-index:40;
+  padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));
+  border-top:2px solid var(--fbline); background:var(--fbbg);
+  animation:fbup .22s cubic-bezier(.2,.9,.3,1) both; }
+.fbpanel.ok{ --fbbg:color-mix(in srgb,var(--ok) 15%,var(--surface)); --fbline:var(--ok) }
+.fbpanel.no{ --fbbg:color-mix(in srgb,var(--bad) 13%,var(--surface)); --fbline:var(--bad) }
+@keyframes fbup{ from{ transform:translateY(100%) } to{ transform:translateY(0) } }
+.fbinner{ max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:11px }
+.fbhead{ display:flex; align-items:center; gap:12px }
+.fbhead .guide{ flex:none }
+.fbmk{ flex:none; width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+  font-size:21px; font-weight:700; color:#fff }
+.fbpanel.ok .fbmk{ background:var(--ok) } .fbpanel.no .fbmk{ background:var(--bad) }
+.fbttl{ flex:1; min-width:0; font-family:var(--zh); font-size:18px; font-weight:700 }
+.fbpanel.ok .fbttl{ color:var(--ok) } .fbpanel.no .fbttl{ color:var(--bad) }
+.fbbody{ font-family:var(--jp); font-size:19px; line-height:2 }
+.fbzh{ font-family:var(--zh); font-size:13.5px; color:var(--muted); margin-top:2px }
+.fbnote{ font-family:var(--zh); font-size:12.5px; color:var(--muted); line-height:1.65;
+  border-left:3px solid var(--fbline); padding-left:10px }
+/* プク 自己會帶一個 ○／✕ 記號，但面板已經有大大的勾叉了，重複又會戳出邊界，藏起來 */
+.fbpanel .guide .gmark{ display:none }
+/* 繼續按鈕跟著面板的顏色走，紅色面板配藍按鈕會打架 */
+.fbpanel .btn.primary{ background:var(--fbline); color:#fff;
+  --lipc:color-mix(in srgb, var(--fbline) 55%, #000); }
+.fbrow{ display:flex; align-items:center; gap:8px; font-family:var(--zh); font-size:12.5px;
+  color:var(--muted); flex-wrap:wrap }
+/* 面板蓋住畫面底部，捲動區要留出等高的空間 */
+.screen.hasfb{ padding-bottom:300px }
+
+/* ── 結算慶祝 ── */
+.score.cele{ position:relative; overflow:hidden; padding:30px 18px 26px }
+.score .pct{ font-size:64px; line-height:1; font-variant-numeric:tabular-nums }
+.score.hi .pct{ color:var(--ok) }
+.score .lbl{ font-size:14px; margin-top:9px }
+.confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden }
+.confetti i{ position:absolute; top:-14px; width:9px; height:14px; border-radius:2px;
+  animation-name:cfall; animation-timing-function:ease-in; animation-fill-mode:both }
+@keyframes cfall{
+  0%{ transform:translateY(-20px) rotate(0); opacity:0 }
+  12%{ opacity:1 }
+  100%{ transform:translateY(260px) rotate(540deg); opacity:0 } }
+@media (prefers-reduced-motion: reduce){ .confetti{ display:none } }
 
 /* ── 口說 ── */
 .mic{width:110px;height:110px;border-radius:50%;border:none;background:var(--accent);color:var(--accent-ink);
@@ -435,6 +548,24 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .toggle[aria-pressed="true"]{background:var(--ok)}
 .toggle[aria-pressed="true"]::after{transform:translateX(20px)}
 .voicelist{display:flex;flex-direction:column;gap:7px;max-height:230px;overflow-y:auto}
+.bkrow{display:flex;gap:8px}
+.bktxt{width:100%;min-height:92px;resize:vertical;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;
+  padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);
+  word-break:break-all}
+.bkrow .btn{flex:1;margin:0}
+.vpre{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.vrow2{display:flex;gap:8px;align-items:stretch;border:2px solid var(--line);border-radius:14px;
+  padding:4px;background:var(--card);transition:border-color .12s,background .12s}
+.vrow2.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--card))}
+.vpick{flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+  background:none;border:0;padding:8px 10px;text-align:left;cursor:pointer;color:var(--ink)}
+.vpick b{font-size:15px;font-weight:700}
+.vpick em{font-size:12px;font-style:normal;color:var(--muted);line-height:1.35}
+.vrow2.sel .vpick b{color:var(--accent)}
+.vtry{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:0 13px;cursor:pointer;
+  border:0;border-radius:11px;background:var(--chip);color:var(--ink);font-size:13px;font-weight:700}
+.vtry svg{width:15px;height:15px}
+.vtry:active{transform:scale(.95)}
 .vrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);
   border-radius:10px;background:var(--surface-2)}
 .vrow.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
@@ -459,6 +590,12 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 .banner.good{background:color-mix(in srgb,var(--ok) 11%,var(--surface));
   border-color:color-mix(in srgb,var(--ok) 32%,var(--line))}
 .banner .ic{flex:none;font-weight:700;color:var(--warn)}
+.banner.vwarn{background:color-mix(in srgb,var(--bad) 12%,var(--surface));
+  border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.banner.vwarn .ic{color:var(--bad)}
+.banner.vwarn .btn{display:inline-block;width:auto;padding:7px 13px;font-size:12px}
+.vdiag{margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--surface-2);
+  font-size:11.5px;line-height:1.6;color:var(--muted);word-break:break-all}
 .banner.good .ic{color:var(--ok)}
 
 /* ── 結果 ── */
@@ -533,6 +670,117 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 @media (prefers-reduced-motion: reduce){
   .rig,.gblink,.gmark,.gspark,.gdrop,.puff,.gconf,.spikes{animation:none!important}
 }
+
+
+/* ══════════ 經驗條 ══════════ */
+.xpwrap{display:flex;flex-direction:column;gap:7px}
+.xphead{display:flex;align-items:baseline;gap:9px;font-family:var(--zh);font-size:12px;color:var(--muted)}
+.xplv{font-size:14px;font-weight:700;color:var(--fg);flex:none}
+.xplv b{font-size:19px;font-variant-numeric:tabular-nums;color:var(--accent)}
+.xpgear{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-family:var(--jp);font-size:12.5px}
+.xpnum{flex:none;font-variant-numeric:tabular-nums;font-weight:700}
+.xptrack{height:14px;border-radius:8px;background:var(--line);overflow:hidden;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.16)}
+.xpfill{display:block;height:100%;border-radius:8px;
+  background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#6CC6E8));
+  transition:width .95s cubic-bezier(.25,1,.4,1)}
+.xpnote{font-family:var(--zh);font-size:11.5px;color:var(--muted)}
+.xpcard{padding:15px 16px;display:flex;flex-direction:column;gap:9px;position:relative}
+.xpplus{position:absolute;right:16px;top:13px;font-size:14px;font-weight:700;color:var(--ok);
+  font-variant-numeric:tabular-nums;animation:xpup .7s .45s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes xpup{0%{opacity:0;transform:translateY(10px) scale(.7)}100%{opacity:1;transform:none}}
+.xpwrap.big .xptrack{height:17px}
+.xpwrap.big .xplv b{font-size:24px}
+
+/* ══════════ 升等動畫 ══════════ */
+.lvup{position:fixed;inset:0;z-index:90;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(circle at 50% 42%, color-mix(in srgb,var(--lc) 34%,#06101a) 0%, #06101a 72%);
+  animation:lvin .3s ease both}
+.lvup.out{animation:lvout .26s ease both}
+@keyframes lvin{from{opacity:0}to{opacity:1}}
+@keyframes lvout{to{opacity:0}}
+.lvfx{position:absolute;inset:0;pointer-events:none}
+.lvfx i,.lvfx svg{position:absolute}
+.lvbox{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;
+  gap:5px;padding:20px;max-width:340px}
+.lvkanji{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:106px;font-weight:700;
+  color:var(--lc);opacity:.2;letter-spacing:.06em;pointer-events:none;white-space:nowrap;line-height:1}
+.lvpuku{animation:lvpop .7s cubic-bezier(.2,1.7,.4,1) both}
+@keyframes lvpop{0%{transform:scale(0) rotate(-20deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.lvttl{font-family:var(--jp);font-size:17px;font-weight:700;color:var(--lc);letter-spacing:.14em;
+  animation:lvrise .5s .18s ease both}
+.lvnum{display:flex;align-items:baseline;gap:5px;color:#fff;animation:lvrise .5s .28s ease both}
+.lvnum span{font-size:21px;font-weight:700;opacity:.75}
+.lvnum b{font-size:72px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;
+  text-shadow:0 0 26px color-mix(in srgb,var(--lc) 70%,transparent)}
+@keyframes lvrise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.lvgear{margin-top:7px;padding:9px 15px;border-radius:12px;background:rgba(255,255,255,.1);
+  border:1.5px solid var(--lc);color:#fff;font-family:var(--zh);font-size:14.5px;font-weight:700;
+  animation:lvrise .5s .42s ease both}
+.lvgear em{display:block;font-style:normal;font-size:11.5px;font-weight:400;opacity:.8;margin-top:3px}
+.lvnext{margin-top:7px;font-family:var(--zh);font-size:12px;color:rgba(255,255,255,.62);
+  animation:lvrise .5s .42s ease both}
+.lvup .lvok{margin-top:15px;width:190px;background:var(--lc);color:#06101a;
+  --lipc:color-mix(in srgb,var(--lc) 45%,#000);animation:lvrise .5s .55s ease both}
+
+/* ① 芽吹き ── 擴散的圈 ＋ 向外彈的葉片 */
+.lvring{left:50%;top:42%;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;
+  border:3px solid var(--lc);animation:lvringo 1.5s ease-out infinite}
+@keyframes lvringo{0%{transform:scale(.4);opacity:.85}100%{transform:scale(4.6);opacity:0}}
+.lvleaf{left:50%;top:42%;width:11px;height:16px;margin:-8px 0 0 -5px;background:var(--lc);
+  border-radius:11px 0 11px 0;animation:lvleafo 1.5s ease-out infinite}
+@keyframes lvleafo{0%{transform:rotate(var(--a)) translateY(0) scale(0);opacity:0}
+  25%{opacity:1}100%{transform:rotate(var(--a)) translateY(calc(var(--r)*-1)) scale(1) rotate(180deg);opacity:0}}
+
+/* ② 波 ── 水波紋 ＋ 上升的泡泡（河豚本來就住水裡）*/
+.lvripple{left:50%;top:44%;width:80px;height:80px;margin:-40px 0 0 -40px;border-radius:50%;
+  border:2.5px solid var(--lc);animation:lvrip 2.1s cubic-bezier(.2,.6,.3,1) infinite}
+@keyframes lvrip{0%{transform:scale(.3) scaleY(.5);opacity:.9}100%{transform:scale(5) scaleY(2.5);opacity:0}}
+.lvbub{bottom:-30px;width:var(--s);height:var(--s);border-radius:50%;
+  border:1.5px solid color-mix(in srgb,var(--lc) 75%,#fff);background:rgba(255,255,255,.1);
+  animation:lvbubo linear infinite}
+@keyframes lvbubo{0%{transform:translateY(0);opacity:0}
+  12%{opacity:.9}100%{transform:translateY(-105vh) translateX(16px);opacity:0}}
+
+/* ③ 花火 ── 四處炸開的火花 */
+.lvspark{width:5px;height:5px;border-radius:50%;background:var(--lc);
+  box-shadow:0 0 9px var(--lc);animation:lvspk 1.25s ease-out infinite}
+@keyframes lvspk{0%{transform:rotate(var(--a)) translateY(0) scale(1.5);opacity:0}
+  10%{opacity:1}100%{transform:rotate(var(--a)) translateY(calc(var(--r)*-1)) scale(.2);opacity:0}}
+
+/* ④ 雷 ── 白閃 ＋ 衝擊波 ＋ 落下的電光 */
+.lvflash{inset:0;background:#fff;animation:lvfl 2.4s steps(1) infinite}
+@keyframes lvfl{0%,4%{opacity:.5}5%,10%{opacity:0}11%,13%{opacity:.32}14%,100%{opacity:0}}
+.lvshock{left:50%;top:43%;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;
+  border:3px solid #fff;animation:lvsk 1.5s cubic-bezier(.1,.8,.2,1) infinite}
+@keyframes lvsk{0%{transform:scale(.3);opacity:.9;border-width:5px}100%{transform:scale(5.2);opacity:0;border-width:1px}}
+.lvbolt{top:-62px;width:26px;height:62px;fill:var(--lc);filter:drop-shadow(0 0 7px var(--lc));
+  animation:lvblt 1.9s ease-in infinite}
+@keyframes lvblt{0%{transform:translateY(0) scaleY(.6);opacity:0}
+  8%{opacity:1}42%{transform:translateY(102vh) scaleY(1.25);opacity:.95}44%,100%{opacity:0}}
+
+/* ⑤ 金 ── 旋轉光芒 ＋ 金幣雨 */
+.lvray{left:50%;top:30%;width:4px;height:52vh;margin-left:-2px;transform-origin:50% 0;
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--lc) 85%,transparent),transparent 72%);
+  transform:rotate(var(--a));animation:lvrayo 9s linear infinite}
+.lvup.lv-kin .lvfx{animation:lvspin 14s linear infinite}
+@keyframes lvspin{to{transform:rotate(360deg)}}
+@keyframes lvrayo{0%,100%{opacity:.26}50%{opacity:.62}}
+.lvcoin{top:-26px;width:var(--s);height:var(--s);border-radius:50%;background:var(--lc);
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.3),0 0 8px color-mix(in srgb,var(--lc) 60%,transparent);
+  animation:lvcn linear infinite}
+@keyframes lvcn{0%{transform:translateY(0) rotateY(0);opacity:0}
+  8%{opacity:1}100%{transform:translateY(106vh) rotateY(900deg);opacity:.15}}
+
+@media (prefers-reduced-motion: reduce){
+  .lvfx{display:none}
+  .lvpuku,.lvttl,.lvnum,.lvgear,.lvnext,.lvup .lvok{animation:none!important}
+}
+@media (max-height:620px){
+  .lvkanji{font-size:74px} .lvnum b{font-size:54px} .lvpuku{transform:scale(.8)}
+}
+
 .spacer{flex:1;min-height:8px}
 </style>
 
@@ -3403,21 +3651,266 @@ var SVG = {
 };
 
 /* ══════════ 設定與進度（localStorage best-effort） ══════════ */
-var DEF = { display:'kanji', rate:0.8, voice:'', count:15, hands:false, model:true,
+/* 朗讀音調的預設組。數字是 SpeechSynthesisUtterance.pitch。
+   1.45 是引擎還能聽的上限，再高就是明顯的變聲器。*/
+var VPRESET = [
+  ['1',    '原音',        '手機原本的日文聲音，最自然'],
+  ['1.15', 'プク 淡淡的', '稍微亮一點，還是像真人'],
+  ['1.28', 'プク（推薦）','聽得出是角色，但不刺耳'],
+  ['1.42', 'プク 很明顯', '卡通感最重，有些人會覺得吵']
+];
+var DEF = { display:'kanji', lively:false, vrev:0, lead:1, rate:0.8, voice:'', count:15, hands:false, model:true,
             pace:3.2, strict:false, dlgZh:false, voiceOK:0, pitch:1, roles:true,
             sfx:true, guide:true, n5only:true };
 var S = {}, P = {}, ST = {};
 function load(k,fb){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):fb; }catch(e){ return fb; } }
 function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 (function(){ var s=load('jp_set',{})||{}; for(var k in DEF) S[k]=(k in s)?s[k]:DEF[k];
+  /* 試過 プクの声 之後決定回到原音，所以把挑過的音調和起伏歸位一次。
+     之後要再調還是調得動，只是不再是預設。*/
+  if(S.vrev !== 1){ S.pitch = 1; S.lively = false; S.vrev = 1; save('jp_set', S); }
   P = load('jp_prog',{})||{};
   ST = load('jp_stats',null) || {days:{},streak:0,last:''};
   if(!ST.days) ST.days={};
   if(!ST.shield) ST.shield={};
-  if(ST.cards==null) ST.cards=0; })();
+  if(ST.cards==null) ST.cards=0;
+  if(ST.xp==null) ST.xp=0; })();
 function saveSet(){ save('jp_set',S); }
 function saveProg(){ save('jp_prog',P); }
 function saveStats(){ save('jp_stats',ST); }
+
+/* 進度存在瀏覽器的 localStorage 裡，是綁網域的：換手機、清瀏覽器資料、
+   或是用別的網址開，都會讀不到舊紀錄。所以要有一個自己存得下來的備份檔。*/
+/* artifact 預覽是跑在 iframe 沙箱裡的，下載一律被擋。
+   在那邊要給一條退路：直接把備份內容攤出來讓人複製。GitHub 上開就正常下載。*/
+function canDownload(){ try{ return window.self === window.top; }catch(e){ return false; } }
+function backupText(){
+  return JSON.stringify({ app:'jp-kaiwa', v:1, at:Date.now(), set:S, prog:P, stats:ST });
+}
+function doExport(){
+  var d = new Date();
+  var name = 'jp-progress-'+d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate())+'.json';
+  var body = backupText();
+  try{
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([body], {type:'application/json'}));
+    a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ try{ URL.revokeObjectURL(a.href); }catch(e){} }, 5000);
+    return name;
+  }catch(e){ return null; }
+}
+function applyBackup(txt, done){
+  var o; try{ o = JSON.parse(txt); }catch(e){ return done('內容打不開，可能不是備份檔'); }
+  if(!o || o.app !== 'jp-kaiwa' || !o.prog) return done('這不是這個 app 的進度備份檔');
+  var n = Object.keys(o.prog).length;
+  P = o.prog; saveProg();
+  if(o.stats){ ST = o.stats;
+    if(!ST.days) ST.days={}; if(!ST.shield) ST.shield={}; if(ST.cards==null) ST.cards=0;
+    saveStats(); }
+  if(o.set) for(var k in DEF) if(k in o.set) S[k] = o.set[k];
+  saveSet();
+  done(null, n);
+}
+function doImport(file, done){
+  var r = new FileReader();
+  r.onerror = function(){ done('檔案讀不到'); };
+  r.onload = function(){ applyBackup(r.result, done); };
+  r.readAsText(file);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   等級系統
+   XP 有兩條來源：
+     1. 每日作答（每題 +3，一天上限 150）—— 保證每天練都看得到條在動
+     2. 熟練度往上爬（無上限）—— 想升快只能去學新的，刷簡單題灌不動
+   曲線：第1天 Lv.3、第7天 Lv.8、第30天 Lv.16、第90天 Lv.27，
+   滿等 Lv.50 累計 88,311 XP（認真練半年拿得到約 13 萬，所以滿等做得到但要真的練）
+   ══════════════════════════════════════════════════════════ */
+var MAX_LV = 50, DAY_XP_CAP = 150, DAY_XP_EACH = 3;
+function xpNeed(L){ return Math.round(105 + 45*Math.pow(L-1, 1.12)); }
+var XP_CUM = (function(){ var a=[0], c=0;
+  for(var L=1; L<=MAX_LV; L++){ c += xpNeed(L); a.push(c); } return a; })();
+function levelOf(xp){ var L=1; while(L<=MAX_LV && xp>=XP_CUM[L]) L++; return L; }
+function levelBar(xp){
+  var L = levelOf(xp);
+  if(L > MAX_LV) return { lv:MAX_LV, cur:1, need:1, pct:100, max:true };
+  var base = XP_CUM[L-1], next = XP_CUM[L];
+  return { lv:L, cur:xp-base, need:next-base, pct:Math.round((xp-base)/(next-base)*100), max:false };
+}
+/* 每日作答 XP，吃到上限就不再給 —— 這是「不能刷等級」的那道閘門 */
+function dailyXP(){
+  var k = dayKey();
+  if(!ST.dxp || ST.dxp.d !== k) ST.dxp = { d:k, n:0 };
+  if(ST.dxp.n >= DAY_XP_CAP) return 0;
+  var give = Math.min(DAY_XP_EACH, DAY_XP_CAP - ST.dxp.n);
+  ST.dxp.n += give; return give;
+}
+var runXP = 0, runLvUp = [];
+function startRun(){ runXP = 0; runLvUp = []; }
+function addXP(n){
+  if(!n) return 0;
+  var was = levelOf(ST.xp||0);
+  ST.xp = (ST.xp||0) + n;
+  runXP += n;
+  var now = levelOf(ST.xp);
+  for(var L=was+1; L<=now; L++) runLvUp.push(L);
+  return n;
+}
+/* プク 的配件照等級解鎖。這是數字之外看得到的成長。*/
+var PUKU_GEAR = [
+  { lv:1,  id:'',     t:'プク',           d:'剛認識你' },
+  { lv:5,  id:'band', t:'鉢巻のプク',     d:'綁上頭巾，開始認真了' },
+  { lv:12, id:'scarf',t:'マフラーのプク', d:'圍巾，冬天的日本用得上' },
+  { lv:20, id:'glass',t:'メガネのプク',   d:'眼鏡，看起來很會讀書' },
+  { lv:30, id:'cam',  t:'旅のプク',       d:'掛上相機，準備出發' },
+  { lv:40, id:'cap',  t:'学士のプク',     d:'學士帽，你已經很強了' }
+];
+function gearOf(lv){ var g=PUKU_GEAR[0];
+  PUKU_GEAR.forEach(function(x){ if(lv>=x.lv) g=x; }); return g; }
+function nextGear(lv){ for(var i=0;i<PUKU_GEAR.length;i++) if(PUKU_GEAR[i].lv>lv) return PUKU_GEAR[i]; return null; }
+/* 每 10 等換一套升等動畫 */
+var LV_SHOW = [
+  { from:1,  id:'sprout', t:'芽吹き',  c:'#3DBE7A' },
+  { from:10, id:'wave',   t:'波',      c:'#2E9BD6' },
+  { from:20, id:'hanabi', t:'花火',    c:'#E8502E' },
+  { from:30, id:'kaminari',t:'雷',     c:'#8B5CF6' },
+  { from:40, id:'kin',    t:'金',      c:'#D4A017' }
+];
+function showOf(lv){ var s=LV_SHOW[0];
+  LV_SHOW.forEach(function(x){ if(lv>=x.from) s=x; }); return s; }
+
+
+/* ══════════════════════════════════════════════════════════
+   升等動畫：每 10 等換一套。全部用 CSS ＋ 即時產生的元素，
+   沒有圖檔也沒有函式庫，離線一樣跑得動。
+   ══════════════════════════════════════════════════════════ */
+function lvParticles(kind){
+  var h = '', i, n, a, r;
+  if(kind==='sprout'){
+    for(i=0;i<3;i++) h += '<i class="lvring" style="animation-delay:'+(i*.26)+'s"></i>';
+    for(i=0;i<14;i++){ a = i/14*360; r = 90+Math.random()*60;
+      h += '<i class="lvleaf" style="--a:'+a+'deg;--r:'+r+'px;animation-delay:'+(.15+Math.random()*.5)+'s"></i>'; }
+  } else if(kind==='wave'){
+    for(i=0;i<5;i++) h += '<i class="lvripple" style="animation-delay:'+(i*.22)+'s"></i>';
+    for(i=0;i<18;i++){ h += '<i class="lvbub" style="left:'+(6+Math.random()*88)+'%;'+
+      '--s:'+(5+Math.random()*13)+'px;animation-delay:'+(Math.random()*1.3)+'s;'+
+      'animation-duration:'+(1.5+Math.random()*1.1)+'s"></i>'; }
+  } else if(kind==='hanabi'){
+    for(n=0;n<4;n++){
+      var cx = 18+Math.random()*64, cy = 16+Math.random()*44, d = n*.34;
+      for(i=0;i<12;i++){ a = i/12*360;
+        h += '<i class="lvspark" style="left:'+cx+'%;top:'+cy+'%;--a:'+a+'deg;'+
+             '--r:'+(52+Math.random()*34)+'px;animation-delay:'+(d+Math.random()*.06)+'s"></i>'; }
+    }
+  } else if(kind==='kaminari'){
+    h += '<i class="lvflash"></i>';
+    for(i=0;i<3;i++) h += '<i class="lvshock" style="animation-delay:'+(.1+i*.18)+'s"></i>';
+    for(i=0;i<6;i++){ h += '<svg class="lvbolt" viewBox="0 0 24 60" style="left:'+(8+i*15)+'%;'+
+      'animation-delay:'+(.05+i*.09)+'s"><path d="M15 2L5 32h7L8 58l12-32h-7z"/></svg>'; }
+  } else {
+    for(i=0;i<16;i++) h += '<i class="lvray" style="--a:'+(i/16*360)+'deg"></i>';
+    for(i=0;i<22;i++){ h += '<i class="lvcoin" style="left:'+(4+Math.random()*92)+'%;'+
+      '--s:'+(7+Math.random()*9)+'px;animation-delay:'+(Math.random()*1.1)+'s;'+
+      'animation-duration:'+(1.5+Math.random()*1)+'s"></i>'; }
+  }
+  return h;
+}
+/* 一次升好幾級時排隊播，不要疊在一起 */
+function playLevelUps(levels, done){
+  if(!levels || !levels.length){ if(done) done(); return; }
+  var q = levels.slice();
+  (function nx(){
+    if(!q.length){ if(done) done(); return; }
+    lvOverlay(q.shift(), nx);
+  })();
+}
+function lvOverlay(lv, done){
+  var sh = showOf(lv), gear = gearOf(lv), got = (gear.lv === lv);
+  var el = document.createElement('div');
+  el.className = 'lvup lv-' + sh.id;
+  el.style.setProperty('--lc', sh.c);
+  el.innerHTML =
+    '<div class="lvfx">' + lvParticles(sh.id) + '</div>' +
+    '<div class="lvbox">' +
+      '<div class="lvkanji jp" lang="ja">' + esc(sh.t) + '</div>' +
+      '<div class="lvpuku">' + guide('cele','lg', gear.id) + '</div>' +
+      '<div class="lvttl">レベルアップ！</div>' +
+      '<div class="lvnum"><span>Lv.</span><b>' + lv + '</b></div>' +
+      (got ? '<div class="lvgear">' + esc(gear.t) + '<em>' + esc(gear.d) + '</em></div>'
+           : '<div class="lvnext">' + (nextGear(lv)
+               ? 'Lv.' + nextGear(lv).lv + ' 解鎖 ' + esc(nextGear(lv).t)
+               : '已經是最強的 プク 了') + '</div>') +
+      '<button class="btn primary lvok">繼續</button>' +
+    '</div>';
+  document.body.appendChild(el);
+  if(S.sfx) (lv % 10 === 0 ? sfxCele : sfxStreak)();
+  var shut = function(){
+    if(!el.parentNode) return;
+    el.classList.add('out');
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); if(done) done(); }, 260);
+  };
+  el.querySelector('.lvok').onclick = shut;
+  el.onclick = function(e){ if(e.target === el) shut(); };
+  setTimeout(shut, 7000);
+}
+
+
+/* 經驗條。做完一輪會從「這輪之前」跑到「現在」，升級的話跑滿再接動畫。*/
+function xpBarHTML(xp, opt){
+  opt = opt || {};
+  var b = levelBar(xp), g = gearOf(b.lv);
+  return '<div class="xpwrap'+(opt.big?' big':'')+'">'+
+    '<div class="xphead"><span class="xplv">Lv.<b>'+b.lv+'</b></span>'+
+      '<span class="xpgear">'+esc(g.t)+'</span>'+
+      '<span class="xpnum">'+(b.max ? 'MAX' : b.cur+' / '+b.need)+'</span></div>'+
+    '<div class="xptrack"><i class="xpfill" style="width:'+b.pct+'%"></i></div>'+
+    (opt.note===false ? '' :
+      '<div class="xpnote">'+(b.max ? '已經滿等了' :
+        (nextGear(b.lv) ? 'Lv.'+nextGear(b.lv).lv+' 解鎖 '+esc(nextGear(b.lv).t)
+                        : '再 '+(b.need-b.cur)+' XP 升到 Lv.'+(b.lv+1)))+'</div>')+
+    '</div>';
+}
+/* 結算畫面用：先畫「這輪之前」的狀態，再動畫跑到現在 */
+function xpGainHTML(gained){
+  var before = (ST.xp||0) - gained;
+  return '<div class="card xpcard" data-gain="'+gained+'" data-before="'+before+'">'+
+    xpBarHTML(before) +
+    (gained ? '<div class="xpplus">+'+gained+' XP</div>' : '')+
+    '</div>';
+}
+function xpAnimate(card, levels){
+  if(!card) return;
+  var gained = +card.dataset.gain, before = +card.dataset.before;
+  var after = before + gained;
+  if(!gained){ if(levels && levels.length) playLevelUps(levels); return; }
+  var b0 = levelBar(before), b1 = levelBar(after);
+  var fill = card.querySelector('.xpfill'), num = card.querySelector('.xpnum');
+  var lvl = card.querySelector('.xplv b');
+  setTimeout(function(){
+    if(b1.lv === b0.lv){                       /* 沒升級：直接跑到新位置 */
+      fill.style.width = b1.pct+'%';
+      num.textContent = b1.cur+' / '+b1.need;
+    } else {                                   /* 升級：先跑滿，再換等級接動畫 */
+      fill.style.width = '100%';
+      num.textContent = b0.need+' / '+b0.need;
+      setTimeout(function(){
+        playLevelUps(levels, function(){
+          fill.style.transition = 'none'; fill.style.width = '0%';
+          void fill.offsetWidth; fill.style.transition = '';
+          fill.style.width = b1.pct+'%';
+          num.textContent = b1.max ? 'MAX' : b1.cur+' / '+b1.need;
+          lvl.textContent = b1.lv;
+          var gw = card.querySelector('.xpgear'); if(gw) gw.textContent = gearOf(b1.lv).t;
+          var nt = card.querySelector('.xpnote');
+          if(nt) nt.textContent = b1.max ? '已經滿等了'
+            : (nextGear(b1.lv) ? 'Lv.'+nextGear(b1.lv).lv+' 解鎖 '+gearOf(nextGear(b1.lv).lv).t
+                               : '再 '+(b1.need-b1.cur)+' XP 升到 Lv.'+(b1.lv+1));
+        });
+      }, 780);
+    }
+  }, 420);
+}
 
 /* 熟練度 0–5：0 未學 ／ 1–2 學習中 ／ 3–4 已學會 ／ 5 已精通 */
 var LVL = ['未學','學習中','學習中','已學會','已學會','已精通'];
@@ -3536,8 +4029,17 @@ function mark(id,good){
   r.seen++;
   if(good){ r.right=(r.right||0)+1; r.box=Math.min(5,r.box+1); }
   else { r.wrong++; r.box=Math.max(0,r.box-1); }
-  countDay(); saveProg();
-  return { before:before, after:r.box, levelUp: (r.box>=3 && before<3) };
+  /* XP：熟練度真的往上爬才是大頭，作答本身只給一點點而且一天有上限 */
+  var xp = dailyXP();
+  if(good){
+    if(r.seen === 1)                      xp += 10;   /* 第一次見到就答對 */
+    if(r.box > before)                    xp += 15;   /* 升一個熟練度箱 */
+    if(r.box === 5 && before < 5)         xp += 30;   /* 升到已精通 */
+    else if(r.box === 5 && before === 5)  xp += 1;    /* 已精通的複習，灌不動 */
+  }
+  addXP(xp);
+  countDay(); saveProg(); saveStats();
+  return { before:before, after:r.box, levelUp:(r.box>=3 && before<3), xp:xp };
 }
 function tally(filter){
   var t={total:0,started:0,known:0,master:0};
@@ -3650,13 +4152,16 @@ function rankVoice(v){
   return sc;
 }
 function voiceTag(v){ return isNetVoice(v) ? '網路・自然' : '本機・較機械'; }
+var lastNoJa, allVoices = [];
 function loadVoices(){
   if(!TTS_OK) return;
   var all=[]; try{ all=synth.getVoices()||[]; }catch(e){ all=[]; }
+  allVoices = all;
   voicesJa = all.filter(function(v){ return /^ja/i.test(v.lang||'') || /japan/i.test(v.name||''); });
   voicesJa.sort(function(a,b){ return rankVoice(b)-rankVoice(a); });
   var want=null,i;
   if(S.voice) for(i=0;i<voicesJa.length;i++) if(voicesJa[i].voiceURI===S.voice) want=voicesJa[i];
+  var hadNone = (typeof lastNoJa === 'boolean') ? lastNoJa : null;
   theVoice = want || voicesJa[0] || null;
   /* 對話模式讓店員和你用不同的聲音，兩個角色才分得開 */
   altVoice = null;
@@ -3668,6 +4173,11 @@ function loadVoices(){
     if(!altVoice) for(i=0;i<voicesJa.length;i++)
       if(voicesJa[i].voiceURI!==theVoice.voiceURI){ altVoice=voicesJa[i]; break; }
   }
+  /* 語音是非同步載入的。狀態從「沒有」變「有」時要重畫，
+     不然警告會一直掛在那裡，或是反過來該警告卻沒出現。*/
+  var now = !voicesJa.length;
+  if(hadNone !== null && now !== lastNoJa && typeof draw === 'function' && nav && nav.length) draw();
+  lastNoJa = now;
 }
 if(TTS_OK){
   loadVoices();
@@ -3675,35 +4185,94 @@ if(TTS_OK){
   var tries=0, pv=setInterval(function(){ loadVoices();
     if(voicesJa.length || ++tries>24) clearInterval(pv); }, 250);
 }
+/* 找不到日文語音時，瀏覽器會拿系統預設的聲音硬讀日文 ——
+   在台灣的電腦上就是用中文發音去念漢字（「切手」唸成「ㄑㄧㄝˋ ㄕㄡˇ」）。
+   學發音的 app 讓這種事發生比不出聲還糟，所以寧可停掉，並且講清楚怎麼裝。*/
+function noJaVoice(){ return TTS_OK && !voicesJa.length; }
+function installHow(){
+  var ua = navigator.userAgent || '';
+  if(/Windows/i.test(ua))            return 'Windows：設定 → 時間與語言 → 語音 → 管理語音 → 新增語音 → 日文。裝完重新整理這個頁面。也可以直接改用 Chrome 或 Edge 開，它們連著網路時自帶日文語音。';
+  if(/Macintosh|Mac OS X/i.test(ua)) return 'Mac：系統設定 → 輔助使用 → 朗讀內容 → 系統聲音 → 管理聲音 → 日文。';
+  if(/Android/i.test(ua))            return 'Android：設定 → 系統 → 語言與輸入 → 文字轉語音輸出 → Google 文字轉語音 → 安裝語音資料 → 日本語。';
+  if(/iPhone|iPad|iPod/i.test(ua))   return 'iPhone：設定 → 輔助使用 → 朗讀內容 → 語音 → 日文。';
+  return '到系統的語音設定裡加裝日文語音，裝完重新整理這個頁面。';
+}
+function voiceWarnHTML(){
+  if(!noJaVoice()) return '';
+  return '<div class="banner vwarn"><span class="ic">！</span><div>'+
+    '<b>這台裝置沒有日文語音，朗讀先停用了。</b>'+
+    '不停的話瀏覽器會拿中文的聲音去唸日文漢字，發音是錯的，跟著練會練壞。<br>'+
+    esc(installHow())+
+    /* 直接把瀏覽器看得到的語音攤出來。只說「沒偵測到」會讓人不知道是裝錯了
+       還是瀏覽器根本讀不到語音清單 —— 看到「5 個，全是中文」就一目了然。*/
+    '<div class="vdiag">這個瀏覽器目前看得到 '+allVoices.length+' 個語音'+
+      (allVoices.length ? '：'+esc(allVoices.slice(0,6).map(function(v){
+          return (v.name||'?')+'（'+(v.lang||'?')+'）'; }).join('、'))+
+        (allVoices.length>6 ? ' …等' : '') : '（一個都沒有）')+
+      '，其中日文 '+voicesJa.length+' 個。</div>'+
+    '<button class="btn ghost sm" id="vrecheck" style="margin-top:9px">裝好了，重新偵測</button>'+
+    '</div></div>';
+}
+/* 第一次朗讀開頭會被切掉，是因為音訊輸出還是冷的：
+   引擎已經開始送聲音，但裝置還沒真的把輸出打開，前面那幾十到幾百毫秒就被吞掉。
+   兩個對策一起上：
+     1. 第一次互動時先送一段幾乎無聲的，把輸出打開（volume 0 有些引擎會整個跳過，所以用 0.01）
+     2. 隔了一段時間沒講話時，在句子前面墊一個頓號 —— 頓號只產生停頓不發音，
+        但引擎會為它開音訊，被切掉的就是這個墊片而不是第一個字 */
+var LEAD = ['', '、', '、、'];
+var lastSpokeAt = 0;
+function leadFor(){
+  var m = (S.lead == null) ? 1 : S.lead;
+  if(!m) return '';
+  if(Date.now() - lastSpokeAt < 1200) return '';   /* 連著播的時候管線是熱的，不用墊 */
+  return LEAD[m] || '';
+}
 function prime(){
   if(primed || !TTS_OK) return; primed = true;
-  try{ var u=new SpeechSynthesisUtterance(' '); u.volume=0; u.lang='ja-JP'; synth.speak(u); }catch(e){}
+  try{ var u=new SpeechSynthesisUtterance('、'); u.volume=0.01; u.lang='ja-JP'; u.rate=1;
+       synth.speak(u); }catch(e){}
   loadVoices();
 }
+/* 切到別的 app 再回來，音訊工作階段已經睡了，要重新暖機 */
+if(typeof document !== 'undefined') document.addEventListener('visibilitychange', function(){
+  if(!document.hidden){ primed = false; lastSpokeAt = 0; }
+});
 var speakToken = 0;
 function stopSpeak(){ speakToken++; if(TTS_OK){ try{ synth.cancel(); }catch(e){} } }
 function speak(text, rate, opt){
   var my = ++speakToken;
   opt = opt || {};
   return new Promise(function(res){
-    if(!TTS_OK || !text){ res(); return; }
+    if(!TTS_OK || !text || noJaVoice()){ res(); return; }
     try{ synth.cancel(); }catch(e){}
+    /* 音效還在響就等它響完，不然朗讀會被蓋掉或整段消失 */
+    var wait = Math.max(55, Math.min(900, sfxUntil - Date.now() + 40));
     setTimeout(function(){
       if(my!==speakToken){ res(); return; }
       var u;
-      try{ u = new SpeechSynthesisUtterance(text); }catch(e){ res(); return; }
+      try{ u = new SpeechSynthesisUtterance(leadFor() + text); }catch(e){ res(); return; }
       u.lang='ja-JP';
       var vv = opt.voice || theVoice;
       if(vv){ try{ u.voice=vv; }catch(e){} }
       u.rate = rate || S.rate;
+      var pit = opt.pitch || S.pitch || 1;
+      /* 人講話不會每次都一模一樣。加一點點隨機起伏，重聽時才不會像機器複讀。
+         幅度刻意很小（±0.035），大了就會聽起來忽高忽低像在飄。*/
+      if(S.lively !== false){
+        pit  += (Math.random()-0.5) * 0.07;
+        u.rate = Math.max(0.5, u.rate + (Math.random()-0.5) * 0.04);
+        /* 日文疑問句尾音會往上。引擎不一定做得出來，這裡補一點。*/
+        if(/[？?]\s*$/.test(text) || /か[。．.]?\s*$/.test(text)) pit += 0.06;
+      }
       /* 音調只開放小幅度：拉太高就會變成變聲器那種聲音 */
-      u.pitch = Math.max(0.7, Math.min(1.45, opt.pitch || S.pitch || 1));
+      u.pitch = Math.max(0.7, Math.min(1.45, pit));
       u.volume = 1;
-      var done=false, fin=function(){ if(done) return; done=true; clearTimeout(wd); res(); };
+      var done=false, fin=function(){ if(done) return; done=true; lastSpokeAt=Date.now();
+        clearTimeout(wd); res(); };
       u.onend=fin; u.onerror=fin;
       var wd=setTimeout(fin, 1200 + text.length*320);
       try{ synth.speak(u); }catch(e){ fin(); }
-    }, 55);
+    }, wait);
   });
 }
 /* 慢速重播：只在標點處斷句，一段一段放慢念、中間留白。
@@ -3889,6 +4458,50 @@ var BODY='#F2B544', BODY_D='#D4931F', BELLY='#FDF2DC', FIN='#E89A3C',
     MARU='#E8502E', BATSU='#3F6FA8', DROPC='#6CC6E8';
 var CONFETTI=['#E8502E','#F2C14E','#3F6FA8','#2BB673','#E07BA0','#7B4FB5'];
 var WHITE='#FFFFFF';
+
+/* プク 的配件。畫在 rig 裡面，所以會跟著所有既有動畫一起動。
+   座標跟著身體走：頭中心 (100,128)、半徑 60、眼睛 y=108、眉毛 y=82。*/
+function gearSVG(id){
+  if(id==='band'){            /* 鉢巻 */
+    return '<g class="ggear">'+
+      '<path d="M 46,78 Q 100,56 154,78 L 154,90 Q 100,68 46,90 Z" fill="#E8502E"/>'+
+      '<path d="M 150,84 Q 178,82 190,100" stroke="#E8502E" stroke-width="8" stroke-linecap="round" fill="none"/>'+
+      '<path d="M 152,90 Q 176,96 182,116" stroke="#E8502E" stroke-width="7" stroke-linecap="round" fill="none"/>'+
+      '<circle cx="100" cy="76" r="7.5" fill="#FDF2DC"/></g>';
+  }
+  if(id==='scarf'){           /* マフラー */
+    return '<g class="ggear">'+
+      '<path d="M 52,170 Q 100,196 148,170 L 150,186 Q 100,212 50,186 Z" fill="#3F6FA8"/>'+
+      '<path d="M 128,182 Q 142,200 136,222 L 152,224 Q 160,198 146,176 Z" fill="#2F558A"/>'+
+      '</g>';
+  }
+  if(id==='glass'){           /* メガネ */
+    return '<g class="ggear">'+
+      '<circle cx="72" cy="108" r="21" fill="none" stroke="#2B2724" stroke-width="5"/>'+
+      '<circle cx="128" cy="108" r="21" fill="none" stroke="#2B2724" stroke-width="5"/>'+
+      '<path d="M 93,106 Q 100,101 107,106" stroke="#2B2724" stroke-width="5" fill="none" stroke-linecap="round"/>'+
+      '<circle cx="66" cy="101" r="6" fill="#FFFFFF" opacity=".55"/>'+
+      '<circle cx="122" cy="101" r="6" fill="#FFFFFF" opacity=".55"/></g>';
+  }
+  if(id==='cam'){             /* カメラ：掛在原本就有的背帶上 */
+    return '<g class="ggear">'+
+      '<rect x="80" y="160" width="42" height="29" rx="6" fill="#3A3733"/>'+
+      '<rect x="92" y="155" width="14" height="7" rx="2" fill="#3A3733"/>'+
+      '<circle cx="101" cy="175" r="11" fill="#5A5650"/>'+
+      '<circle cx="101" cy="175" r="6.5" fill="#8FC7E8"/>'+
+      '<circle cx="98.5" cy="172" r="2.4" fill="#FFFFFF" opacity=".75"/>'+
+      '<rect x="112" y="164" width="6" height="4" rx="1.4" fill="#F2C14E"/></g>';
+  }
+  if(id==='cap'){             /* 学士帽 */
+    return '<g class="ggear">'+
+      '<path d="M 100,40 L 164,62 L 100,84 L 36,62 Z" fill="#2B2724"/>'+
+      '<path d="M 66,72 L 66,92 Q 100,106 134,92 L 134,72 L 100,84 Z" fill="#1F1C1A"/>'+
+      '<path d="M 160,63 L 160,92" stroke="#F2C14E" stroke-width="4" stroke-linecap="round"/>'+
+      '<circle cx="160" cy="96" r="7" fill="#F2C14E"/></g>';
+  }
+  return '';
+}
+
 function star(x,y,sc,fill,delay,cls){
   return '<g transform="translate('+x+','+y+') scale('+sc+')">'+
          '<path class="'+(cls||'gspark')+'" style="animation-delay:'+delay+'s" '+
@@ -3896,7 +4509,7 @@ function star(x,y,sc,fill,delay,cls){
 }
 
 /* 原創角色「プク」：河豚探險家，不戴帽子，靠身上的刺撐輪廓 */
-function guideSVG(mood){
+function guideSVG(mood, gid){
   var s=[], CX=100, CY=128, R=60;
   var happy=(mood==='good'), sad=(mood==='bad'),
       streak=(mood==='streak'), cele=(mood==='cele');
@@ -4010,6 +4623,8 @@ function guideSVG(mood){
     s.push('<rect x="93" y="134" width="6.5" height="6" rx="2" fill="'+WHITE+'"/>');
     s.push('<rect x="101" y="134" width="6.5" height="6" rx="2" fill="'+WHITE+'"/>');
   }
+  /* 配件畫在最後，蓋在五官之上，但仍在 rig/puff 裡面，所以跟著所有動畫一起動 */
+  if(gid) s.push(gearSVG(gid));
   s.push('</g></g>');
 
   /* 判定符號與特效 */
@@ -4045,15 +4660,36 @@ function jellyRow(n, big){
   for(var i=0;i<n;i++) s2 += SVG.jelly;
   return '<span class="jelly'+(big?' big':'')+'" title="果凍 '+n+' 個">'+s2+'</span>';
 }
-function guide(mood,size){
+/* プク 會講話。台詞照當下的狀態挑，不是隨機 —— 隨機講久了會穿幫。*/
+function pukuLine(stk, today, t){
+  if(today===0 && stk>0) return ['今天還沒開始喔','連續 '+stk+' 天了，別斷在今天'];
+  if(today===0)          return ['要開始了嗎','隨便挑一個大題都行'];
+  if(stk>=30)            return ['連續 '+stk+' 天！','你比我還有毅力'];
+  if(stk>=7)            return ['連續 '+stk+' 天','這個習慣養起來了'];
+  if(today>=60)          return ['今天 '+today+' 題','夠了啦，休息一下'];
+  if(today>=JELLY_NEED)  return ['今天 '+today+' 題','果凍拿到了，謝謝'];
+  if(t && t.known>0 && t.known===t.total) return ['全部都學會了','去考模擬測驗吧'];
+  return ['今天練了 '+today+' 題','再 '+(JELLY_NEED-today)+' 題就有果凍'];
+}
+function pukuBubble(stk, today, t, size){
+  var l = pukuLine(stk, today, t);
+  return '<div class="pukurow">'+guide('idle',size||'md')+
+    '<div class="bubble"><b>'+esc(l[0])+'</b><span>'+esc(l[1])+'</span></div></div>';
+}
+function guide(mood,size,gid){
   if(!S.guide) return '';
-  return '<span class="guide g-'+(size||'sm')+' '+(MOODCLS[mood]||'idle')+'">'+guideSVG(mood)+'</span>';
+  if(gid === undefined) gid = gearOf(levelOf(ST.xp||0)).id;
+  return '<span class="guide g-'+(size||'sm')+' '+(MOODCLS[mood]||'idle')+'">'+guideSVG(mood,gid)+'</span>';
 }
 /* 音效：即時合成，沒有音檔，離線一樣有聲音 */
 function ac(){ try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)();
   if(actx.state==='suspended') actx.resume(); return actx; }catch(e){ return null; } }
+/* 音效會響到什麼時候（毫秒時間戳）。朗讀會自己等過這個時間再開口，
+   因為 Android 上 Web Audio 和語音引擎共用一個輸出，重疊的話朗讀會被切掉。*/
+var sfxUntil = 0;
 function tone(freq,at,dur,type,vol,cutoff){
   var c=ac(); if(!c) return;
+  sfxUntil = Math.max(sfxUntil, Date.now() + (at+dur)*1000 + 90);
   try{
     var t0=c.currentTime+at, o=c.createOscillator(), g=c.createGain(), tail=g;
     o.type=type||'triangle'; o.frequency.setValueAtTime(freq,t0);
@@ -4066,6 +4702,12 @@ function tone(freq,at,dur,type,vol,cutoff){
     tail.connect(c.destination); o.start(t0); o.stop(t0+dur+0.03);
   }catch(e){}
 }
+/* 音效：即時合成，沒有音檔，離線一樣有聲音。
+
+   ⚠️ 這裡刻意保持簡短。Android 上 Web Audio 和語音朗讀會搶同一個音訊輸出，
+   音效只要拖太長、或在朗讀前後太近的時間播，朗讀就會被切掉或根本不出聲。
+   之前加了開場音、點按音、升級音，就是這樣把聽力弄壞的。
+   規則：音效總長控制在 0.4 秒內，而且不在「即將朗讀」的前後 0.5 秒內播。*/
 function sfxGood(){ if(!S.sfx) return;
   tone(523.25,0,.10,'triangle',.15); tone(659.25,.075,.10,'triangle',.15); tone(783.99,.15,.22,'triangle',.17); }
 /* ㄅㄟㄅㄟ：兩個略微錯開的方波低音疊出顫動，再過低通削掉刺耳的高頻 */
@@ -4079,6 +4721,7 @@ function sfxCele(){ if(!S.sfx) return;
   [[523.25,0,.13],[659.25,.09,.13],[783.99,.18,.13],[1046.50,.27,.13],[987.77,.40,.13],[1318.51,.50,.5]]
     .forEach(function(n){ tone(n[0],n[1],n[2],'triangle',.16); });
   tone(392.00,.27,.45,'sine',.09); }
+
 function sfxFor(mood){ ({good:sfxGood,bad:sfxBad,streak:sfxStreak,cele:sfxCele}[mood]||function(){})(); }
 
 /* ══════════ 畫面路由 ══════════ */
@@ -4113,6 +4756,19 @@ function draw(){
   MAIN.innerHTML = '';
   var node = cur.r();
   if(node) MAIN.appendChild(node);
+  /* 沒日文語音是會毀掉整個 app 的狀況，每一頁都要講，不能只放首頁 */
+  var w = voiceWarnHTML();
+  if(w && node){
+    var box = document.createElement('div');
+    box.innerHTML = w;
+    node.insertBefore(box.firstChild, node.firstChild);
+    var rb = node.querySelector('#vrecheck');
+    if(rb) rb.onclick = function(){
+      loadVoices();
+      if(noJaVoice()){ rb.textContent = '還是沒找到，請確認裝好後重新整理頁面'; }
+      else draw();
+    };
+  }
 }
 BACK.onclick = back;
 function screen(html){ var d=document.createElement('div'); d.className='screen'; d.innerHTML=html; return d; }
@@ -4174,6 +4830,7 @@ function homeScreen(){
     progBar(t)+progLegend(t)+
     '</div>';
 
+  h += '<div class="card xpcard">'+xpBarHTML(ST.xp||0,{big:true})+'</div>';
   h += '<div class="stats">'+
       '<div class="stat"><b>'+todayCount()+'</b><span>今天練了幾題</span></div>'+
       '<div class="stat"><b style="color:'+(stk>0?'var(--ok)':'var(--muted)')+'">'+stk+'</b>'+
@@ -4274,7 +4931,7 @@ function n5Stem(s){
 /* 把一題的「正解句」念出來 */
 function n5Say(o){
   var t = o.r ? toKanji(o.r) : (o.q ? toKanji(o.q) : '');
-  if(t) speak(t);
+  if(t) speak(t, null, examOpt());
 }
 
 /* ══════════ N5 首頁 ══════════ */
@@ -4282,9 +4939,11 @@ function n5HomeScreen(isHome){
   wake(false);
   var t = n5Tally();
   var stk = calcStreak(), jelly = ST.cards||0;
-  var h = '<div class="hero-row">'+guide('idle','md')+
-    '<div class="hero"><div class="eyebrow">JLPT N5</div>'+
-    '<div class="t jp" lang="ja">にほんご のうりょく しけん</div></div></div>';
+  var h = isHome
+    ? pukuBubble(stk, todayCount(), t, 'lg')
+    : '<div class="hero-row">'+guide('idle','md')+
+      '<div class="hero"><div class="eyebrow">JLPT N5</div>'+
+      '<div class="t jp" lang="ja">にほんご のうりょく しけん</div></div></div>';
 
   h += '<div class="card progwrap">'+
     '<div class="prow"><span class="plabel">N5 題庫進度</span>'+
@@ -4292,6 +4951,7 @@ function n5HomeScreen(isHome){
     progBar(t)+progLegend(t)+'</div>';
 
   if(isHome){
+    h += '<div class="card xpcard">'+xpBarHTML(ST.xp||0,{big:true})+'</div>';
     h += '<div class="stats">'+
       '<div class="stat"><b>'+todayCount()+'</b><span>今天練了幾題</span></div>'+
       '<div class="stat"><b style="color:'+(stk>0?'var(--ok)':'var(--muted)')+'">'+stk+'</b>'+
@@ -4306,8 +4966,8 @@ function n5HomeScreen(isHome){
     var st = n5Tally(function(x){ return N5P[x.p].s===s.id; });
     var ps = N5.parts.filter(function(p){ return p.s===s.id; });
     h += '<button class="mode" data-n5s="'+s.id+'" style="--mc:'+s.color+'">'+
-      '<span class="n jp" lang="ja" style="color:'+s.color+';font-size:13px;line-height:1.25">'+
-        esc(s.min)+'<br><small style="font-size:10px">分</small></span>'+
+      '<span class="n jp" lang="ja">'+
+        esc(s.min)+'<br><small>分</small></span>'+
       '<span class="b"><strong>'+esc(s.label)+'</strong>'+
         '<em class="zh">'+ps.length+' 個大題・'+st.total+' 題　|　已學會 '+st.known+'</em>'+
         miniBar(st,'smini')+'</span>'+
@@ -4409,6 +5069,7 @@ function n5Order(list){
 
 /* ══════════ 出題畫面 ══════════ */
 function n5Quiz(pool, title, color, ctx){
+  startRun();
   var ix=0, right=0, wrong=[], run=0;
   ctx = ctx || {};
   var d = screen('');
@@ -4475,22 +5136,20 @@ function n5Quiz(pool, title, color, ctx){
 
     /* 播放 */
     function playAll(rate){
-      stopSpeak();
       if(kind==='listen'){
-        var seq = o.d.map(function(t){ return { t:toKanji(t.j), opt:roleOpt(t.w==='M'?'me':'you') }; });
-        seq.push({ t:toKanji(o.q), opt:{} });
-        (function step(n){
-          if(n>=seq.length) return;
-          speak(seq[n].t, rate, seq[n].opt).then(function(){ setTimeout(function(){ step(n+1); }, 260); });
-        })(0);
+        var seq = o.d.map(function(t){ return { t:toKanji(t.j), opt:examOpt(t.w==='M'?'me':'you') }; });
+        seq.push({ t:toKanji(o.q), opt:examOpt() });
+        sayList(seq, rate, 260);
       } else {
-        speak(toKanji(o.q||o.sit), rate);
+        /* 題目 → 停一下 → 三個選項依序唸（問題3・4 的選項在考場上是用唸的）*/
+        sayList([{ t:toKanji(o.q||o.sit), opt:examOpt() }].concat(spokenOpts(o)),
+                rate, function(n){ return n===0 ? 650 : 420; });
       }
     }
     var pl=d.querySelector('#pl'); if(pl) pl.onclick=function(){ playAll(); };
-    var pl2=d.querySelector('#pl2'); if(pl2) pl2.onclick=function(){ speak(toKanji(o.sit)); };
+    var pl2=d.querySelector('#pl2'); if(pl2) pl2.onclick=function(){ playAll(); };
     var sl=d.querySelector('#slow'); if(sl) sl.onclick=function(){ playAll(0.72); };
-    if(pl) setTimeout(function(){ playAll(); }, 320);
+    if(pl || pl2) setTimeout(function(){ playAll(); }, 320);
 
     /* 作答 */
     d.querySelectorAll('.n5opt').forEach(function(b){
@@ -4509,10 +5168,13 @@ function n5Quiz(pool, title, color, ctx){
           x.disabled = true;
         });
 
-        /* 解說 */
-        var fh = '<div class="n5fb '+(good?'good':'bad')+'">'+
-          guide(good ? (run>=4?'streak':'good') : 'bad','sm')+
-          '<div><b>'+(good?'答對了':'答錯了')+'</b>';
+        /* 解說也改成底部面板，和一般練習一致 */
+        d.classList.add('hasfb');
+        var fh = '<div class="fbinner">';
+        fh += '<div class="fbhead">'+guide(good ? (run>=4?'streak':'good') : 'bad','sm')+
+          '<span class="fbmk">'+(good?'✓':'✕')+'</span>'+
+          '<span class="fbttl">'+(good?(run>=4?'連續答對 '+run+' 題！':'答對了'):'答錯了')+'</span></div>';
+        fh += '<div>';
         if(kind==='order'){
           /* 把正確的句子排出來給他看，★那一格標起來 */
           var built = o.ord.map(function(k,slot){
@@ -4521,28 +5183,31 @@ function n5Quiz(pool, title, color, ctx){
           var st2 = String(o.s), b0 = st2.search(/[＿★]/), b1 = st2.search(/[＿★](?![\s\S]*[＿★])/);
           fh += '<div class="n5built jp" lang="ja">'+esc(st2.slice(0,b0))+built+esc(st2.slice(b1+1))+'</div>';
         }
-        if(o.r) fh += '<div class="n5ans jp" lang="ja">'+toRuby(o.r)+
+        if(o.r) fh += '<div class="fbbody jp" lang="ja">'+toRuby(o.r)+
           ' <button class="replay" id="sa" aria-label="念一次">'+SVG.speaker+'</button></div>';
-        if(o.z) fh += '<div class="zh">'+esc(o.z)+'</div>';
-        if(o.n) fh += '<div class="zh n5tip">'+esc(o.n)+'</div>';
-        fh += '</div></div>';
-
-        fh += '<div class="lvlup"><span class="muted">熟練度</span>'+
+        if(o.z) fh += '<div class="fbzh">'+esc(o.z)+'</div>';
+        fh += '</div>';
+        if(o.n) fh += '<div class="fbnote">'+esc(o.n)+'</div>';
+        fh += '<div class="fbrow"><span>熟練度</span>'+
           '<span class="pips">'+pips(res.before)+'</span><span class="arrow">→</span>'+
           '<span class="pips">'+pips(res.after)+'</span>'+
           '<b style="color:'+LVLC[res.after]+'">'+LVL[res.after]+'</b></div>';
-        fh += '<button class="btn primary" id="next">'+(ix+1<pool.length?'下一題':'看結果')+'</button>';
-        d.querySelector('#fb').innerHTML = fh;
+        fh += '<button class="btn primary" id="next">'+(ix+1<pool.length?'繼續':'看結果')+'</button>';
+        fh += '</div>';
+        var fbEl = d.querySelector('#fb');
+        fbEl.className = 'fbpanel '+(good?'ok':'no');
+        fbEl.innerHTML = fh;
 
         var sa=d.querySelector('#sa'); if(sa) sa.onclick=function(){ n5Say(o); };
         if(!good && o.r) setTimeout(function(){ n5Say(o); }, 420);
 
         d.querySelector('#next').onclick=function(){
+          d.classList.remove('hasfb');
           ix++;
           if(ix<pool.length) render();
           else n5Result();
         };
-        d.querySelector('#fb').scrollIntoView({behavior:'smooth', block:'nearest'});
+
       };
     });
   }
@@ -4551,9 +5216,14 @@ function n5Quiz(pool, title, color, ctx){
     stopSpeak();
     var pct = Math.round(right/pool.length*100);
     var t = n5Tally(ctx.sid ? function(x){ return N5P[x.p].s===ctx.sid; } : null);
-    var h = '<div class="card score">'+guide(pct>=80?'cele':(pct>=60?'good':'idle'),'lg')+
-      '<div class="pct">'+pct+'%</div>'+
+    var h = '<div class="card score cele'+(pct>=80?' hi':'')+'">'+
+      (pct>=80 ? confettiHTML() : '')+
+      guide(pct>=80?'cele':(pct>=60?'good':'idle'),'lg')+
+      '<div class="pct" data-to="'+pct+'">0%</div>'+
       '<div class="lbl">'+pool.length+' 題中答對 '+right+' 題</div></div>';
+
+    var xpGot = runXP, xpUps = runLvUp.slice();
+    h += xpGainHTML(xpGot);
 
     h += '<div class="card progwrap"><div class="prow"><span class="plabel">累計進度</span>'+
       '<span class="pnum">'+t.known+' <span class="muted">/ '+t.total+' 題已學會</span></span></div>'+
@@ -4773,12 +5443,17 @@ function n5MockRun(paper){
     }
     if(o.s) h += '<div class="n5q jp" lang="ja">'+n5Stem(o.s)+'</div>';
 
-    h += '<div class="opts n5opts">';
+    /* 問題3・問題4 的選項在考場上只用唸的，考卷上沒有文字。
+       模擬測驗照這樣做，但留一顆按鈕可以攤開 —— 真的聽不出來時看一下，
+       總比卡在那裡不知道自己在選什麼好。*/
+    var voiceOnly = (o.p==='c3' || o.p==='c4');
+    h += '<div class="opts n5opts'+(voiceOnly?' blind':'')+'">';
     o.o.forEach(function(x,k){
       h += '<button class="opt n5opt'+(ans[ix]===k?' sel':'')+'" data-k="'+k+'">'+
         '<span class="k">'+(k+1)+'</span><span class="txt jp" lang="ja">'+esc(x)+'</span></button>';
     });
     h += '</div>';
+    if(voiceOnly) h += '<button class="n5zh" id="showopt">正式考試這裡沒有文字，聽不出來可以點開</button>';
     h += '<div class="row" style="margin-top:12px">'+
       (ix>segs[segIx].from ? '<button class="btn ghost" id="prev">上一題</button>' : '')+
       '<button class="btn primary" id="next">'+
@@ -4789,16 +5464,20 @@ function n5MockRun(paper){
        之前這裡只放對話＋問題各一次、用正常語速，難度比真的考試高不少。*/
     var MOCK_RATE = 0.88;
     function playAll(){
-      stopSpeak();
       if(kind==='listen'){
-        var seq = [{ t:toKanji(o.q), opt:{} }];                       /* 先唸問題 */
-        o.d.forEach(function(t){ seq.push({ t:toKanji(t.j), opt:roleOpt(t.w==='M'?'me':'you') }); });
-        seq.push({ t:toKanji(o.q), opt:{} });                         /* 再唸一次問題 */
-        (function step(n){ if(n>=seq.length) return;
-          speak(seq[n].t, MOCK_RATE, seq[n].opt).then(function(){
-            setTimeout(function(){ step(n+1); }, n===0 ? 700 : 320); }); })(0);
-      } else speak(toKanji(o.q||o.sit), MOCK_RATE);
+        var seq = [{ t:toKanji(o.q), opt:examOpt() }];                 /* 先唸問題 */
+        o.d.forEach(function(t){ seq.push({ t:toKanji(t.j), opt:examOpt(t.w==='M'?'me':'you') }); });
+        seq.push({ t:toKanji(o.q), opt:examOpt() });                   /* 再唸一次問題 */
+        sayList(seq, MOCK_RATE, function(n){ return n===0 ? 700 : 320; });
+      } else {
+        sayList([{ t:toKanji(o.q||o.sit), opt:examOpt() }].concat(spokenOpts(o)),
+                MOCK_RATE, function(n){ return n===0 ? 700 : 450; });
+      }
     }
+    var so=d.querySelector('#showopt');
+    if(so) so.onclick=function(){
+      d.querySelector('.n5opts').classList.remove('blind'); so.remove();
+    };
     var pl=d.querySelector('#pl');
     /* 真正的考試會留時間讓你先看選項，不要一進來就開始唸 */
     if(pl){ pl.onclick=playAll; setTimeout(playAll, 1400); }
@@ -4915,6 +5594,7 @@ function n5MockResult(paper, ans, r){
 }
 
 function openMode(m){
+  startRun();
   if(m==='dialog') return go(dialogPickScreen,'情境模擬');
   if(m==='pairs')  return go(pairPickScreen,'易混淆對照');
   if(m==='review'){
@@ -5121,32 +5801,34 @@ function startQuiz(pool, mode, title, color, ctx){
           else if(o===b) o.classList.add('bad');
           else o.classList.add('dim');
         });
-        var rv = d.querySelector('#reveal');
-        rv.hidden=false;
-        rv.innerHTML = (kind==='listen'
-            ? '<div class="big-jp jp" lang="ja">'+jpHTML(item.j)+'</div><div class="sub-zh zh">'+esc(item.z)+'</div>'
-            : '<div class="sub-jp jp" lang="ja">'+jpHTML(item.j)+'</div>');
+        /* 正解改到底部面板裡顯示，這裡就不重複了 */
         var af = d.querySelector('#after'), ah='';
-        ah += '<div class="grow">'+guide(mood,'sm')+'<div class="gtext">'+
-              '<div class="verdict '+(good?'ok':'no')+'"><span class="mk">'+(good?'✓':'✕')+'</span>'+
-              (good ? (run>=3 ? '連續答對 '+run+' 題' : '答對了') : '正確答案是上面綠色那個')+'</div></div></div>';
-        /* 讓每一次作答都看得到熟練度的變化 */
-        ah += '<div class="lvlup"><span class="muted">熟練度</span>'+
+        af.className = 'fbpanel '+(good?'ok':'no');
+        d.classList.add('hasfb');
+        ah += '<div class="fbinner">';
+        ah += '<div class="fbhead">'+guide(mood,'sm')+
+              '<span class="fbmk">'+(good?'✓':'✕')+'</span>'+
+              '<span class="fbttl">'+
+              (good ? (run>=3 ? '連續答對 '+run+' 題！' : '答對了') : '答錯了')+'</span></div>';
+        /* 不管對錯都把正解攤出來，錯的時候更需要看 */
+        ah += '<div><div class="fbbody jp" lang="ja">'+jpHTML(item.j)+'</div>'+
+              '<div class="fbzh">'+esc(item.z)+'</div></div>';
+        if(item.n) ah += '<div class="fbnote"><b>用法：</b>'+esc(item.n)+'</div>';
+        ah += '<div class="fbrow"><span>熟練度</span>'+
               '<span class="pips">'+pips(mv.before)+'</span><span class="arrow">→</span>'+
               '<span class="pips">'+pips(mv.after)+'</span>'+
-              '<b style="color:'+LVLC[mv.after]+'">'+LVL[mv.after]+'</b></div>';
-        if(mv.levelUp) ah += '<div class="banner good" style="margin-top:9px"><span class="ic">✓</span>'+
-              '<div>這句算你<b>學會了</b>。再答對兩次就會變成「已精通」。</div></div>';
-        if(item.n) ah += '<div class="note zh"><b>用法：</b>'+esc(item.n)+'</div>';
-        ah += '<button class="btn primary" id="next" style="margin-top:12px">'+
-              (ix+1>=pool.length?'看結果':'下一題')+'</button>';
+              '<b style="color:'+LVLC[mv.after]+'">'+LVL[mv.after]+'</b>'+
+              (mv.levelUp ? '<b style="color:var(--ok)">　升級了</b>' : '')+'</div>';
+        ah += '<button class="btn primary" id="next">'+
+              (ix+1>=pool.length?'看結果':'繼續')+'</button>';
+        ah += '</div>';
         af.innerHTML = ah;
         af.querySelector('#next').onclick=function(){
           ix++; if(ix>=pool.length) showResult(right,pool.length,wrong,title,color,gained,ctx);
           else replace(render,title,color);
         };
         if(kind!=='listen') setTimeout(play, 420);
-        setTimeout(function(){ af.scrollIntoView({block:'nearest',behavior:'smooth'}); },60);
+
       };
     });
     return d;
@@ -5364,6 +6046,41 @@ function dialogPickScreen(){
   return d;
 }
 /* 店員一個聲音、你一個聲音。有兩個日文語音就各用一個，只有一個就用音調區分。 */
+/* 正式考試放的是一般成人的錄音。N5 聽解和模擬測驗不跟著 プクの声 走，
+   不然練了半年習慣角色聲，上考場那天會聽不慣。男女還是要分得出來。*/
+/* 正式考試裡，問題3 発話表現 和 問題4 即時応答 的三個選項是用唸的，
+   考卷上只有一張圖、沒有文字。所以這兩個大題播放時要把選項一起唸出來。
+   問題1・2 的選項本來就印在考卷上，維持只看文字。*/
+var NUM_JA = ['いち', 'に', 'さん', 'よん'];
+
+/* 連著唸好幾句時，一定要有一個「這次播放」的編號。
+   speak() 被新的呼叫取消之後，它的 promise 還是會 resolve，
+   所以舊的那條鏈會自己繼續往下跑 —— 播到一半按重播就變成兩條鏈交錯，
+   每句唸兩次還互相蓋掉。編號對不上就整條停掉。*/
+var playRun = 0;
+function sayList(seq, rate, gap){
+  stopSpeak();
+  var mine = ++playRun;
+  (function step(n){
+    if(n >= seq.length || mine !== playRun) return;
+    speak(seq[n].t, rate, seq[n].opt).then(function(){
+      if(mine !== playRun) return;
+      setTimeout(function(){ if(mine === playRun) step(n+1); },
+                 typeof gap === 'function' ? gap(n) : (gap || 300));
+    });
+  })(0);
+}
+function spokenOpts(o){
+  if(o.p !== 'c3' && o.p !== 'c4') return [];
+  return o.o.map(function(x, k){
+    return { t: NUM_JA[k] + '、' + toKanji(x), opt: examOpt() };
+  });
+}
+function examOpt(who){
+  var o = (S.roles && who) ? { voice: (who==='me' ? (altVoice||theVoice) : theVoice) } : {};
+  o.pitch = 1 + ((S.roles && who==='me' && !altVoice) ? 0.12 : 0);
+  return o;
+}
 function roleOpt(who){
   if(!S.roles) return {};
   if(who==='me') return { voice: altVoice||theVoice, pitch: (S.pitch||1) + (altVoice?0:0.16) };
@@ -5555,6 +6272,26 @@ function startPair(p, col){
 }
 
 /* ══════════ 結果 ══════════ */
+/* 結算的彩帶。純 CSS 動畫，不佔檔案也不卡效能 */
+function confettiHTML(){
+  var c=['#E8502E','#1C8A57','#0B6FA4','#E0B458','#C0392B','#8F76D6'], h='<div class="confetti">';
+  for(var i=0;i<18;i++){
+    h += '<i style="left:'+(4+i*5.4)+'%;background:'+c[i%c.length]+
+         ';animation-delay:'+(i*0.07).toFixed(2)+'s;animation-duration:'+(1.5+(i%4)*0.35).toFixed(2)+'s"></i>';
+  }
+  return h+'</div>';
+}
+/* 數字從 0 跑到目標值，比直接顯示有感覺得多 */
+function countUp(el, to, dur){
+  if(!el) return;
+  var t0=performance.now(); dur=dur||900;
+  (function tick(now){
+    var k=Math.min(1,(now-t0)/dur);
+    var e=1-Math.pow(1-k,3);                       /* ease-out，最後慢下來 */
+    el.textContent = Math.round(to*e)+'%';
+    if(k<1) requestAnimationFrame(tick);
+  })(t0);
+}
 function showResult(right,total,wrong,title,color,gained,ctx){
   ctx = ctx || {}; gained = gained || 0;
   replace(function(){
@@ -5563,7 +6300,10 @@ function showResult(right,total,wrong,title,color,gained,ctx){
     /* 分數低的時候給中性的待機表情，不給沮喪臉——答得差已經夠難受了 */
     var mood = (ctx.kind==='check' && pct>=80) || pct===100 ? 'cele'
              : pct>=80 ? 'streak' : pct>=60 ? 'good' : 'idle';
-    var h='<div class="card score">'+guide(mood,'lg')+'<div class="pct">'+pct+'%</div>'+
+    var h='<div class="card score cele'+(pct>=80?' hi':'')+'">'+
+      (pct>=80 ? confettiHTML() : '')+
+      guide(mood,'lg')+
+      '<div class="pct" data-to="'+pct+'">0%</div>'+
       '<div class="lbl">'+total+' 題中答對 '+right+' 題</div></div>';
 
     /* 這一輪到底換到了什麼 —— 不是只給一個分數就結束 */
@@ -5576,6 +6316,10 @@ function showResult(right,total,wrong,title,color,gained,ctx){
     } else if(gained){
       h += '<div class="banner good"><span class="ic">✓</span><div>這一輪你<b>新學會 '+gained+' 句</b>。</div></div>';
     }
+
+    /* 這一輪拿到多少 XP —— 做完一輪就看到條在動，是整個等級系統的回饋點 */
+    var xpGot = runXP, xpUps = runLvUp.slice();
+    h += xpGainHTML(xpGot);
 
     h += '<div class="card progwrap">'+
       '<div class="prow"><span class="plabel">累計進度</span>'+
@@ -5610,6 +6354,9 @@ function showResult(right,total,wrong,title,color,gained,ctx){
     }
     var d=screen(h);
     sfxFor(mood==='idle'?'':mood);
+    countUp(d.querySelector('.pct'), pct);
+    xpAnimate(d.querySelector('.xpcard'), xpUps);
+    startRun();
     d.querySelectorAll('.wrongrow button').forEach(function(b){
       b.onclick=function(){ speak(sayOf(BY_ID[b.dataset.i])); }; });
     var nx = d.querySelector('#next');
@@ -5642,6 +6389,10 @@ function showSpeakResult(great,total,results,color,gained,ctx){
     } else h+='<div class="banner good"><span class="ic">✓</span><div>這一輪都念對了。</div></div>';
     if(gained) h+='<div class="banner good"><span class="ic">✓</span><div>這一輪你<b>新學會 '+gained+' 句</b>。</div></div>';
     var t = tally();
+    /* 這一輪拿到多少 XP —— 做完一輪就看到條在動，是整個等級系統的回饋點 */
+    var xpGot = runXP, xpUps = runLvUp.slice();
+    h += xpGainHTML(xpGot);
+
     h += '<div class="card progwrap">'+
       '<div class="prow"><span class="plabel">累計進度</span>'+
         '<span class="pnum">'+t.known+' <span class="muted">/ '+t.total+' 句已學會</span></span></div>'+
@@ -5717,10 +6468,29 @@ function openSheet(focus){
        return '<button data-v="'+r[0]+'" aria-pressed="'+(String(S.rate)===r[0])+'">'+r[1]+'</button>';
      }).join('')+'</div></div>';
 
-  h+='<div class="set"><label>聲音高低</label><div class="seg" id="segT">'+
-     [['0.85','低沉'],['1','標準'],['1.2','輕快'],['1.35','更高']].map(function(r){
-       return '<button data-v="'+r[0]+'" aria-pressed="'+(String(S.pitch)===r[0])+'">'+r[1]+'</button>';
-     }).join('')+'</div><div class="hint">調高會比較像卡通角色的語氣。超過這個範圍就會開始像變聲器，所以我沒有開放更高。</div></div>';
+  /* 聲音是用手機內建的語音引擎，沒辦法合成一個真的「河豚的聲音」，
+     能調的只有音調高低。每個選項都附試聽，讓人自己挑 —— 我沒辦法替使用者判斷好不好聽。*/
+  h+='<div class="set"><label>プクの声（朗讀音調）</label><div class="vpre" id="vpre">'+
+     VPRESET.map(function(r){
+       return '<div class="vrow2'+(String(S.pitch)===r[0]?' sel':'')+'" data-v="'+r[0]+'">'+
+         '<button class="vpick" data-v="'+r[0]+'"><b>'+esc(r[1])+'</b><em>'+esc(r[2])+'</em></button>'+
+         '<button class="vtry" data-t="'+r[0]+'" aria-label="試聽">'+SVG.small+' 試聽</button></div>';
+     }).join('')+'</div>'+
+     '<div class="hint">用的是手機內建的日文語音，只能調音調，沒辦法換成真人配音的角色聲。'+
+     '調太高會開始像變聲器，所以最高只開到這裡。<b>N5 聽解和模擬測驗一律用原音</b>——'+
+     '正式考試是一般成人的聲音，拿角色聲練會練歪。</div></div>';
+
+  h+='<div class="set"><label>開頭留白</label><div class="seg" id="segL">'+
+     [['0','關閉'],['1','標準'],['2','加長']].map(function(r){
+       return '<button data-v="'+r[0]+'" aria-pressed="'+(String(S.lead==null?1:S.lead)===r[0])+'">'+r[1]+'</button>';
+     }).join('')+'</div>'+
+     '<div class="hint">第一句話的開頭常常會被手機切掉，因為音訊輸出還沒開好。'+
+     '這裡會在句子前面先墊一小段停頓，被吃掉的就變成停頓而不是第一個字。'+
+     '還是會切就調「加長」。<b>按上面「プクの声」的試聽可以當場比較</b>。</div></div>';
+
+  h+='<div class="sw"><div class="l"><strong>自然起伏</strong>'+
+     '<em>每次朗讀的音調和語速給一點點隨機變化，聽起來比較像人在講話，不像機器複讀。</em></div>'+
+     '<button class="toggle" id="tgLv" aria-pressed="'+(S.lively!==false?'true':'false')+'" aria-label="自然起伏"></button></div>';
 
   h+='<div class="set"><label>每輪題數</label><div class="seg" id="segC">'+
      [['10','10'],['15','15'],['25','25'],['0','全部']].map(function(r){
@@ -5765,6 +6535,20 @@ function openSheet(focus){
      '螢幕恆亮：'+(('wakeLock' in navigator)?'可用':'不支援（請自己把螢幕休眠時間調長）')+
      '</div></div>';
 
+  /* 進度只存在這台瀏覽器裡，沒有雲端。換手機或清資料就沒了，所以要能自己存檔。*/
+  h+='<div class="set"><label>進度備份</label>'+
+     '<div class="bkrow">'+
+       '<button class="btn ghost" id="bkOut">'+(canDownload()?'存出備份檔':'顯示備份內容')+'</button>'+
+       '<button class="btn ghost" id="bkIn">'+(canDownload()?'讀入備份檔':'貼上備份內容')+'</button>'+
+     '</div>'+
+     '<textarea id="bkTxt" class="bktxt" spellcheck="false" hidden '+
+       'placeholder="把之前存下來的備份內容整段貼進來，然後按下面的「套用」"></textarea>'+
+     '<button class="btn ghost" id="bkGo" hidden>套用貼上的內容</button>'+
+     '<input type="file" id="bkFile" accept="application/json,.json" hidden>'+
+     '<div class="hint" id="bkMsg">練習紀錄存在這台瀏覽器裡，沒有上傳到任何地方——換手機、'+
+     '清瀏覽器資料、或改用別的網址開，舊紀錄就讀不到了。先存一個備份檔放雲端硬碟或自己的信箱，'+
+     '之後在新手機上讀回來就接得回去。<b>更新 app 本身不會影響紀錄</b>，網址一樣就會留著。</div></div>';
+
   h+='<div class="set"><button class="btn ghost" id="reset">清除練習紀錄</button></div>'+
      '<button class="btn primary" id="close">完成</button>';
 
@@ -5778,17 +6562,30 @@ function openSheet(focus){
       };
     });
   }
-  seg('#segD','display',String); seg('#segR','rate',Number);
+  seg('#segD','display',String); seg('#segR','rate',Number); seg('#segL','lead',Number);
   seg('#segC','count',Number);   seg('#segP','pace',Number);
-  seg('#segT','pitch',Number);
-  var segT = PANEL.querySelector('#segT');
-  if(segT) segT.querySelectorAll('button').forEach(function(b){
-    b.addEventListener('click', function(){ speak('すみません、ちょっといいですか。'); });
+  /* プクの声：選了就立刻用那個音調唸一句給人聽，不然看字看不出差別 */
+  var SAMPLE = '{今日|きょう}は いい {天気|てんき}ですね。';
+  PANEL.querySelectorAll('#vpre .vpick').forEach(function(b){
+    b.onclick = function(){
+      S.pitch = Number(b.dataset.v); saveSet();
+      PANEL.querySelectorAll('#vpre .vrow2').forEach(function(r){
+        r.classList.toggle('sel', r.dataset.v === b.dataset.v); });
+      speechSynthesis.cancel();
+      speak(toKana(SAMPLE), null, { pitch: S.pitch });
+    };
+  });
+  PANEL.querySelectorAll('#vpre .vtry').forEach(function(b){
+    b.onclick = function(e){
+      e.stopPropagation();                       /* 只試聽，不改設定 */
+      speechSynthesis.cancel();
+      speak(toKana(SAMPLE), null, { pitch: Number(b.dataset.t) });
+    };
   });
   function tog(id,key){ var b=PANEL.querySelector(id); if(!b) return;
     b.onclick=function(){ S[key]=!S[key]; saveSet(); b.setAttribute('aria-pressed',S[key]?'true':'false'); }; }
   tog('#tgH','hands'); tog('#tgM','model'); tog('#tgS','strict'); tog('#tgZ','dlgZh'); tog('#tgR','roles');
-  tog('#tgF','sfx'); tog('#tgG','guide');
+  tog('#tgF','sfx'); tog('#tgG','guide'); tog('#tgLv','lively');
   var bN5=PANEL.querySelector('#tgN5');
   if(bN5) bN5.onclick=function(){
     S.n5only=!S.n5only; saveSet();
@@ -5855,6 +6652,51 @@ function openSheet(focus){
     show();
   };
 
+  var bkMsg = PANEL.querySelector('#bkMsg');
+  function bkSay(t, bad){
+    if(!bkMsg) return;
+    bkMsg.innerHTML = '<b style="color:var(--'+(bad?'warn':'ok')+')">'+esc(t)+'</b>';
+  }
+  var bkTxt = PANEL.querySelector('#bkTxt'), bkGo = PANEL.querySelector('#bkGo');
+  var bkOut = PANEL.querySelector('#bkOut');
+  if(bkOut) bkOut.onclick = function(){
+    if(canDownload()){
+      var n = doExport();
+      return bkSay(n ? '已存出 '+n+'，找一下你的「下載」資料夾。'
+                     : '這個瀏覽器不讓下載，改用下面的文字框複製。', !n);
+    }
+    bkTxt.hidden = false; bkGo.hidden = true;
+    bkTxt.value = backupText(); bkTxt.focus(); bkTxt.select();
+    bkSay('整段複製起來貼到記事本或自己的信箱存著。要還原時按旁邊那顆貼回來。');
+  };
+  var bkFile = PANEL.querySelector('#bkFile'), bkIn = PANEL.querySelector('#bkIn');
+  if(bkGo) bkGo.onclick = function(){
+    applyBackup(bkTxt.value.trim(), function(err, n){
+      if(err) return bkSay(err, true);
+      bkSay('讀回 '+n+' 筆練習紀錄了。');
+      bkTxt.hidden = true; bkGo.hidden = true;
+      nav=[{r:homeScreen,t:S.n5only?'JLPT N5 題庫':'日本旅行會話',c:''}]; draw();
+    });
+  };
+  if(bkIn && bkFile){
+    bkIn.onclick = function(){
+      if(!canDownload()){
+        bkTxt.hidden = false; bkGo.hidden = false; bkTxt.value = ''; bkTxt.focus();
+        return bkSay('把備份內容整段貼進下面的框，再按「套用」。');
+      }
+      bkFile.click();
+    };
+    bkFile.onchange = function(){
+      var f = bkFile.files && bkFile.files[0]; if(!f) return;
+      doImport(f, function(err, n){
+        if(err) return bkSay(err, true);
+        bkSay('讀回 '+n+' 筆練習紀錄了。');
+        nav=[{r:homeScreen,t:S.n5only?'JLPT N5 題庫':'日本旅行會話',c:''}]; draw();
+      });
+      bkFile.value = '';
+    };
+  }
+
   PANEL.querySelector('#reset').onclick=function(){
     P={}; ST={days:{},streak:0,last:'',shield:{},cards:0,v:2}; saveProg(); saveStats();
     PANEL.querySelector('#reset').textContent='已清除';
@@ -5884,14 +6726,6 @@ draw();
 })();
 </script>
 
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {});
-  });
-}
-</script>
 </body></html>
 </body>
 </html>
