@@ -673,6 +673,16 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 
 
 
+
+/* ══════════ 雲端同步 ══════════ */
+.cloudbox{display:flex;align-items:center;gap:11px;padding:12px 13px;border-radius:13px;
+  border:1.5px solid var(--line);background:var(--surface-2)}
+.cloudbox.on{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 8%,var(--surface))}
+.cloudwho{flex:1;min-width:0;font-family:var(--zh)}
+.cloudwho b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cloudwho em{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:2px}
+.cloudbox .btn{flex:none;width:auto;margin:0;padding:9px 15px;font-size:13px;border-radius:11px}
+
 /* ══════════ 衣櫃 ══════════ */
 .closethero{display:flex;flex-direction:column;align-items:center;gap:4px;padding:20px 16px}
 .closetname{font-size:19px;font-weight:700;margin-top:4px}
@@ -3699,7 +3709,22 @@ function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} 
   if(!ST.days) ST.days={};
   if(!ST.shield) ST.shield={};
   if(ST.cards==null) ST.cards=0;
-  if(ST.xp==null) ST.xp=0; })();
+  if(ST.xp==null) ST.xp=0;
+  /* 等級是後來才加的。老使用者直接從 Lv.1 開始很怪 —— 練習進度明明就在那裡。
+     用同一套 XP 規則把已經累積的熟練度換算回去。這不是送分，是補發已經賺到的。*/
+  if(ST.xpSeed !== 1){
+    var seed = 0;
+    for(var pk in P){ var pr = P[pk];
+      if(!pr || !pr.seen) continue;
+      if(pr.right > 0) seed += 10;          /* 曾經答對過 */
+      seed += (pr.box||0) * 15;             /* 每爬一箱 */
+      if(pr.box >= 5) seed += 30;           /* 已精通 */
+    }
+    ST.xp = (ST.xp||0) + seed;
+    ST.xpSeed = 1;
+    if(seed > 0) ST.xpFrom = seed;          /* 首頁說明一次就好 */
+    save('jp_stats', ST);
+  } })();
 function saveSet(){ save('jp_set',S); }
 function saveProg(){ save('jp_prog',P); }
 function saveStats(){ save('jp_stats',ST); }
@@ -3721,6 +3746,7 @@ function doExport(){
     a.href = URL.createObjectURL(new Blob([body], {type:'application/json'}));
     a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function(){ try{ URL.revokeObjectURL(a.href); }catch(e){} }, 5000);
+    ST.bk = Date.now(); saveStats();
     return name;
   }catch(e){ return null; }
 }
@@ -3994,6 +4020,165 @@ function closetScreen(){
   return d;
 }
 
+
+/* ══════════════════════════════════════════════════════════
+   雲端同步（Firebase）
+   為什麼要有：進度只存在瀏覽器的 localStorage，清掉網站資料、換手機、
+   重裝就全沒了，而且沒有任何辦法救回來。登入之後每練完一輪自動上雲，
+   手機和電腦也會互相同步。
+   設計原則：
+     1. 沒填設定、沒登入、沒網路 → 完全照原本的方式跑，一行行為都不變
+     2. SDK 等到使用者按「登入」才去載，離線優先的特性不受影響
+     3. localStorage 永遠是當下的真相，雲端只是副本＋跨裝置的橋
+   ══════════════════════════════════════════════════════════ */
+var FBCFG = {
+  apiKey:            'AIzaSyAznUeExQ2u_N5T7WXhHg3nVbEzM6WkNig',
+  authDomain:        'jppractice.firebaseapp.com',
+  projectId:         'jppractice',
+  storageBucket:     'jppractice.firebasestorage.app',
+  messagingSenderId: '689602594926',
+  appId:             '1:689602594926:web:d795990dabe409a5a57e7f'
+};
+function fbOn(){ return !!(FBCFG && FBCFG.apiKey && FBCFG.projectId); }
+
+var FB = { ready:false, user:null, busy:false, err:'', last:0 };
+var _fbMod = null;
+function fbLoad(){
+  if(_fbMod) return _fbMod;
+  _fbMod = (async function(){
+    var V = 'https://www.gstatic.com/firebasejs/10.12.2/';
+    var a = await import(V+'firebase-app.js');
+    var u = await import(V+'firebase-auth.js');
+    var f = await import(V+'firebase-firestore.js');
+    var app = a.initializeApp(FBCFG);
+    return { auth:u, fs:f, A:u.getAuth(app), D:f.getFirestore(app) };
+  })().catch(function(e){ _fbMod = null; throw e; });
+  return _fbMod;
+}
+
+/* 存檔壓縮：1736 題用物件存大約 104KB，Firestore 單一文件上限 1MB。
+   改成陣列、省掉欄位名，壓到 40KB 以內，之後題庫再長也還有餘裕。*/
+function packProg(){
+  var o = {};
+  for(var k in P){ var r = P[k];
+    o[k] = [r.box|0, r.seen|0, r.wrong|0, r.right|0, r.due||0, r.last||0]; }
+  return o;
+}
+function unpackProg(o){
+  var out = {};
+  for(var k in o){ var a = o[k];
+    if(!a) continue;
+    out[k] = Array.isArray(a)
+      ? { box:a[0]|0, seen:a[1]|0, wrong:a[2]|0, right:a[3]|0, due:a[4]||0, last:a[5]||0 }
+      : a;                                   /* 舊格式也吃得下 */
+  }
+  return out;
+}
+/* 設定只同步「跟人走」的那幾項。語音、語速、音高、開頭留白是跟裝置走的，
+   電腦和手機的引擎不一樣，同步過去只會互相打架。*/
+var SYNC_SET = ['worn','display','count','n5only','dlgZh','model','strict'];
+
+/* 合併：手機離線練、電腦線上練都不能互相洗掉。
+   每一題取「最後練過的時間」比較新的那筆；真的同時就取熟練度高的。*/
+function mergeSave(remote){
+  if(!remote) return 0;
+  var changed = 0;
+  var rp = unpackProg(remote.prog || {});
+  for(var k in rp){
+    var a = P[k], b = rp[k];
+    if(!a){ P[k] = b; changed++; continue; }
+    if((b.last||0) > (a.last||0) || ((b.last||0) === (a.last||0) && (b.box||0) > (a.box||0))){
+      P[k] = b; changed++;
+    }
+  }
+  var rs = remote.stats || {};
+  if(rs.days) for(var d in rs.days)
+    ST.days[d] = Math.max(ST.days[d]||0, rs.days[d]||0);
+  if(rs.shield){ ST.shield = ST.shield||{};
+    for(var sd in rs.shield) ST.shield[sd] = rs.shield[sd]; }
+  ST.cards = Math.max(ST.cards||0, rs.cards||0);
+  ST.xp    = Math.max(ST.xp||0,    rs.xp||0);
+  ST.bk    = Math.max(ST.bk||0,    rs.bk||0);
+  if(rs.xpSeed) ST.xpSeed = 1;               /* 別在另一台又補發一次 */
+  var rset = remote.set || {};
+  SYNC_SET.forEach(function(k){ if(k in rset) S[k] = rset[k]; });
+  saveProg(); saveStats(); saveSet();
+  return changed;
+}
+function cloudDoc(m){ return m.fs.doc(m.D, 'users', FB.user.uid); }
+
+async function fbPush(){
+  if(!fbOn() || !FB.user) return false;
+  try{
+    var m = await fbLoad();
+    var body = { v:1, at:Date.now(), prog:packProg(),
+      stats:{ days:ST.days||{}, shield:ST.shield||{}, cards:ST.cards||0,
+              xp:ST.xp||0, bk:ST.bk||0, xpSeed:ST.xpSeed||0 },
+      set:{} };
+    SYNC_SET.forEach(function(k){ body.set[k] = S[k]; });
+    await m.fs.setDoc(cloudDoc(m), body);
+    FB.last = Date.now(); FB.err = '';
+    ST.cloudAt = FB.last; saveStats();
+    return true;
+  }catch(e){ FB.err = String(e && e.message || e); return false; }
+}
+async function fbPull(){
+  if(!fbOn() || !FB.user) return null;
+  try{
+    var m = await fbLoad();
+    var snap = await m.fs.getDoc(cloudDoc(m));
+    return snap.exists() ? snap.data() : null;
+  }catch(e){ FB.err = String(e && e.message || e); return null; }
+}
+/* 登入之後：先把雲端拉下來跟本機合併，再把合併後的結果推上去。
+   這樣兩邊都不會掉東西。*/
+async function fbSync(){
+  var got = await fbPull();
+  var n = mergeSave(got);
+  await fbPush();
+  return n;
+}
+async function fbSignIn(){
+  if(!fbOn()) return;
+  FB.busy = true; FB.err = ''; draw();
+  try{
+    var m = await fbLoad();
+    var prov = new m.auth.GoogleAuthProvider();
+    var res = await m.auth.signInWithPopup(m.A, prov);
+    FB.user = res.user; FB.ready = true;
+    var n = await fbSync();
+    FB.busy = false;
+    nav = [{ r:homeScreen, t:S.n5only?'JLPT N5 題庫':'日本旅行會話', c:'' }];
+    ST.cloudMsg = n ? ('從雲端接回 '+n+' 題的進度') : '進度已經同步到雲端';
+    saveStats(); draw();
+  }catch(e){
+    FB.busy = false;
+    var msg = String(e && e.code || e && e.message || e);
+    FB.err = /popup-blocked/.test(msg) ? '瀏覽器擋掉了登入視窗，請允許彈出視窗再試一次'
+           : /unauthorized-domain/.test(msg) ? '這個網址還沒加到 Firebase 的授權網域清單'
+           : /network/.test(msg) ? '連不到網路，登入需要連線'
+           : msg;
+    draw();
+  }
+}
+async function fbSignOut(){
+  try{ var m = await fbLoad(); await m.auth.signOut(m.A); }catch(e){}
+  FB.user = null; FB.err = ''; draw();
+}
+/* 開 app 時如果之前登入過，靜靜地把雲端拉下來合併。失敗就當作沒這回事。*/
+function fbResume(){
+  if(!fbOn()) return;
+  fbLoad().then(function(m){
+    m.auth.onAuthStateChanged(m.A, function(u){
+      FB.ready = true; FB.user = u || null;
+      if(u) fbSync().then(function(n){ if(n){ draw(); } });
+      else draw();
+    });
+  }).catch(function(){});
+}
+/* 練完一輪就上傳。失敗不吵使用者，下一輪會再試。*/
+function fbAuto(){ if(fbOn() && FB.user) fbPush(); }
+
 /* 熟練度 0–5：0 未學 ／ 1–2 學習中 ／ 3–4 已學會 ／ 5 已精通 */
 var LVL = ['未學','學習中','學習中','已學會','已學會','已精通'];
 var LVLC = ['var(--muted)','var(--warn)','var(--warn)','var(--accent)','var(--accent)','var(--ok)'];
@@ -4022,6 +4207,14 @@ var JELLY_NEED = 20;             /* 一天練滿幾題，プク 就得到一個�
 var JELLY_MAX  = 3;              /* 最多存幾個 */
 
 function pad2(n){ return (n<10?'0':'')+n; }
+function fromNow(t){
+  if(!t) return '—';
+  var m = Math.floor((Date.now()-t)/60000);
+  if(m < 1) return '剛剛';
+  if(m < 60) return m+' 分鐘前';
+  var hr = Math.floor(m/60); if(hr < 24) return hr+' 小時前';
+  return Math.floor(hr/24)+' 天前';
+}
 function dayKey(d){
   d = d ? new Date(d.getTime ? d.getTime() : d) : new Date();
   if(d.getHours() < DAY_CUT) d.setDate(d.getDate()-1);
@@ -4987,6 +5180,15 @@ function draw(){
   MAIN.innerHTML = '';
   var node = cur.r();
   if(node) MAIN.appendChild(node);
+  var bkn = node && node.querySelector('#bknow');
+  if(bkn) bkn.onclick = function(){
+    openSheet();
+    setTimeout(function(){
+      var t = PANEL && PANEL.querySelector('#bkOut');
+      if(t) t.scrollIntoView({block:'center', behavior:'smooth'});
+    }, 120);
+  };
+
   /* 首頁點 プク 或經驗條就進衣櫃 —— 兩個都是人本來就會想戳的東西 */
   if(node) node.querySelectorAll('.pukurow .guide, .xphome').forEach(function(x){
     x.style.cursor = 'pointer';
@@ -5025,12 +5227,39 @@ var MODES = [
 /* 連續天數／果凍的通知，看過一次就收起來。首頁和 N5 首頁共用。 */
 function n5Notices(stk, cards){
   var h = '';
+  if(ST.cloudMsg){
+    h += '<div class="banner good"><span class="ic">☁</span><div><b>'+esc(ST.cloudMsg)+'</b>　'+
+      '之後每練完一輪都會自動存到雲端，清瀏覽器資料或換手機都救得回來。</div></div>';
+    delete ST.cloudMsg; saveStats();
+  }
+  if(ST.xpFrom){
+    var lv0 = levelOf(ST.xp||0);
+    h += '<div class="banner good"><span class="ic">★</span><div>'+
+      '新增了等級系統。你之前練出來的進度已經換算成經驗值，'+
+      '<b>直接從 Lv.'+lv0+' 開始</b>（'+ST.xpFrom.toLocaleString()+' XP），不用從零再來。'+
+      '點首頁的 プク 或經驗條可以進<b>衣櫃</b>挑衣服。</div></div>';
+    delete ST.xpFrom; saveStats();
+  }
   if(ST.repaired){
     h += '<div class="banner good"><span class="ic">✓</span><div>'+
       '之前「每天有練卻斷掉」是計算方式的問題：一天的分界線卡在半夜 12 點，'+
       '凌晨練的會被算成隔天。已經改成<b>凌晨 4 點才換日</b>，'+
       '並用你的練習紀錄重算，<b>補回 '+ST.repaired+' 天</b>。</div></div>';
     delete ST.repaired; saveStats();
+  }
+  /* 進度只存在這台瀏覽器裡。清掉網站資料、換手機、重裝 app 都會一起消失，
+     而備份檔是唯一跨得過去的東西。練了一段時間卻從沒存過就提醒一次。*/
+  var bkDays = Object.keys(ST.days||{}).length;
+  if(!ST.bk && bkDays >= 5 && ST.bkNag !== dayKey()){
+    var nagged = ST.bkNag ? (Date.now() - (ST.bkNagAt||0)) < 7*86400000 : false;
+    if(!nagged){
+      h += '<div class="banner"><span class="ic">！</span><div>'+
+        '你已經練了 <b>'+bkDays+' 天</b>，但還沒存過備份。'+
+        '進度只存在這台瀏覽器裡——<b>清掉網站資料、換手機、重裝 app 都會全部消失</b>，沒有雲端可以救。'+
+        '到<b>設定最下面</b>存一份放雲端硬碟或自己的信箱，一分鐘的事。'+
+        '<button class="btn ghost sm" id="bknow" style="margin-top:9px">現在就去存</button></div></div>';
+      ST.bkNag = dayKey(); ST.bkNagAt = Date.now(); saveStats();
+    }
   }
   if(ST.usedOn === dayKey()){
     h += '<div class="banner jellyban">'+guide('good','sm')+
@@ -6595,6 +6824,8 @@ function showResult(right,total,wrong,title,color,gained,ctx){
     countUp(d.querySelector('.pct'), pct);
     xpAnimate(d.querySelector('.xpcard'), xpUps);
     startRun();
+    fbAuto();
+    fbAuto();
     d.querySelectorAll('.wrongrow button').forEach(function(b){
       b.onclick=function(){ speak(sayOf(BY_ID[b.dataset.i])); }; });
     var nx = d.querySelector('#next');
@@ -6773,6 +7004,24 @@ function openSheet(focus){
      '螢幕恆亮：'+(('wakeLock' in navigator)?'可用':'不支援（請自己把螢幕休眠時間調長）')+
      '</div></div>';
 
+  if(fbOn()){
+    var cu = FB.user;
+    h+='<div class="set"><label>雲端同步</label>'+
+      '<div class="cloudbox'+(cu?' on':'')+'">'+
+        (cu
+          ? '<div class="cloudwho"><b>'+esc(cu.displayName || cu.email || '已登入')+'</b>'+
+            '<em>'+(ST.cloudAt ? '上次同步：'+fromNow(ST.cloudAt) : '尚未同步')+'</em></div>'+
+            '<button class="btn ghost sm" id="fbOut">登出</button>'
+          : '<div class="cloudwho"><b>還沒登入</b><em>進度只存在這台裝置</em></div>'+
+            '<button class="btn primary sm" id="fbIn"'+(FB.busy?' disabled':'')+'>'+
+            (FB.busy?'登入中…':'用 Google 登入')+'</button>')+
+      '</div>'+
+      (FB.err ? '<div class="hint"><b style="color:var(--bad)">'+esc(FB.err)+'</b></div>' : '')+
+      '<div class="hint">登入之後，<b>每練完一輪會自動把進度存到你的 Google 帳號</b>。'+
+      '清掉瀏覽器資料、換手機、重灌都救得回來，手機和電腦也會互相同步。'+
+      '沒登入的話一切照舊，離線也完全不受影響。</div></div>';
+  }
+
   /* 進度只存在這台瀏覽器裡，沒有雲端。換手機或清資料就沒了，所以要能自己存檔。*/
   h+='<div class="set"><label>進度備份</label>'+
      '<div class="bkrow">'+
@@ -6783,7 +7032,11 @@ function openSheet(focus){
        'placeholder="把之前存下來的備份內容整段貼進來，然後按下面的「套用」"></textarea>'+
      '<button class="btn ghost" id="bkGo" hidden>套用貼上的內容</button>'+
      '<input type="file" id="bkFile" accept="application/json,.json" hidden>'+
-     '<div class="hint" id="bkMsg">練習紀錄存在這台瀏覽器裡，沒有上傳到任何地方——換手機、'+
+     '<div class="hint" id="bkMsg">'+
+     (ST.bk ? '<b style="color:var(--ok)">上次備份：'+
+        (function(){ var dd=Math.floor((Date.now()-ST.bk)/86400000);
+          return dd<=0 ? '今天' : dd+' 天前'; })()+'</b><br>' : '<b style="color:var(--warn)">還沒備份過。</b><br>')+
+     '練習紀錄存在這台瀏覽器裡，沒有上傳到任何地方——換手機、'+
      '清瀏覽器資料、或改用別的網址開，舊紀錄就讀不到了。先存一個備份檔放雲端硬碟或自己的信箱，'+
      '之後在新手機上讀回來就接得回去。<b>更新 app 本身不會影響紀錄</b>，網址一樣就會留著。</div></div>';
 
@@ -6890,6 +7143,9 @@ function openSheet(focus){
     show();
   };
 
+  var fbI = PANEL.querySelector('#fbIn'); if(fbI) fbI.onclick = function(){ closeSheet(); fbSignIn(); };
+  var fbO = PANEL.querySelector('#fbOut'); if(fbO) fbO.onclick = function(){ fbSignOut(); openSheet(); };
+
   var bkMsg = PANEL.querySelector('#bkMsg');
   function bkSay(t, bad){
     if(!bkMsg) return;
@@ -6905,6 +7161,7 @@ function openSheet(focus){
     }
     bkTxt.hidden = false; bkGo.hidden = true;
     bkTxt.value = backupText(); bkTxt.focus(); bkTxt.select();
+    ST.bk = Date.now(); saveStats();
     bkSay('整段複製起來貼到記事本或自己的信箱存著。要還原時按旁邊那顆貼回來。');
   };
   var bkFile = PANEL.querySelector('#bkFile'), bkIn = PANEL.querySelector('#bkIn');
