@@ -4229,6 +4229,26 @@ function applyRestoreLink(o){
       k = keyShift(k, -1);
     }
   }
+  /* 整個群組一起還原。只有「那一區全滿」才用得上 ——
+     全滿是完整資訊（集合被講完了），不像「1154 題精通」要猜是哪些。
+     刻意只到第 4 箱（已學會）不到第 5 箱（精通）：熟練度 5 的題會被
+     buildBatch 和 checkList 同時排除，等於退出練習。既然無法確定她
+     真正精通的是哪些，就讓它們留在輪替裡，精通由她自己答對賺回來。*/
+  if(o.g){
+    var gnow = Date.now();
+    GROUPS.forEach(function(G){
+      var box = +o.g[G.id];
+      if(!(box > 0)) return;
+      box = Math.min(4, box);
+      ITEMS.forEach(function(x){
+        if(!G.ids[x.s]) return;
+        var r = P[x.i];
+        if(r && r.box >= box) return;            /* 已經更高就別往下拉 */
+        P[x.i] = { box:box, seen:Math.max(r?r.seen:0, box+3), wrong:(r&&r.wrong)||1,
+                   right:Math.max(r?r.right:0, box+2), due:gnow, last:gnow };
+      });
+    });
+  }
   if(o.worn != null && gearById(o.worn)) S.worn = o.worn;
   ST.streak = calcStreak();
   saveStats(); saveProg(); saveSet();
@@ -4246,11 +4266,20 @@ function restoreScreen(o){
       (o.streak ?     '<div class="rrow"><span>連續天數</span><b>'+o.streak+' 天</b></div>' : '')+
       (o.cards != null ? '<div class="rrow"><span>果凍</span><b>'+jellyRow(Math.min(JELLY_MAX,+o.cards)) +'</b></div>' : '')+
       '<div class="rrow"><span>衣服</span><b class="jp" lang="ja">'+esc(g.t)+'</b></div>'+
+      (o.g ? GROUPS.map(function(G){
+          var box = +o.g[G.id]; if(!(box>0)) return '';
+          var n = 0; ITEMS.forEach(function(x){ if(G.ids[x.s]) n++; });
+          return '<div class="rrow"><span>'+esc(G.t)+'</span><b>'+n+' 題 → 已學會</b></div>';
+        }).join('') : '')+
     '</div>'+
-    '<div class="note zh"><b>題目進度不會被動到。</b>'+
-      (t.started
-        ? '你目前已經練過 '+t.started+' 題，這些紀錄會原封不動留著。'
-        : '這條連結只補回上面那幾項，題目要自己重新練回來。')+
+    '<div class="note zh">'+
+      (o.g
+        ? '<b>標示的那幾區會整區設成「已學會」</b>，但不會標成「已精通」—— '+
+          '精通的題會退出練習輪替，哪幾題真的精通只有原本的紀錄知道，'+
+          '所以留給你自己答對賺回來。其他區塊的進度不動。'
+        : '<b>題目進度不會被動到。</b>'+(t.started
+            ? '你目前已經練過 '+t.started+' 題，這些紀錄會原封不動留著。'
+            : '這條連結只補回上面那幾項，題目要自己重新練回來。'))+
       '</div>'+
     '<div class="note zh" style="border-left-color:var(--warn)">'+
       '只有你信任的人給你的連結才按確定。陌生連結可能會改掉你的數值。</div>'+
@@ -6234,7 +6263,10 @@ function scenePickScreen(mode){
       var list = SCENES.filter(function(s){ return g.ids[s.id]; });
       var on = list.filter(function(s){ return pickSel[s.id]; }).length;
       var el = d.querySelector('[data-gc="'+g.id+'"]');
-      if(el) el.textContent = on ? on+' / '+list.length : '未選';
+      /* 這顆藥丸講的是「選了幾個分類要練」，跟學習進度無關。
+         本來寫「10 / 10」，擺在「0 / 310 已學會」正上方會被當成進度，所以講明白。*/
+      if(el) el.textContent = !on ? '未選'
+            : (on === list.length ? '全部 '+list.length+' 類' : '已選 '+on+' / '+list.length+' 類');
       if(el) el.className = 'gcnt'+(on?' on':'');
     });
     var any = SCENES.some(function(s){ return pickSel[s.id]; });
