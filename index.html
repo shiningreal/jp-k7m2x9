@@ -7315,6 +7315,10 @@ var _rl = readRestoreLink();
 nav = _rl ? [{ r:function(){ return restoreScreen(_rl); }, t:'還原連結', c:'#8F76D6' }]
           : [{ r:homeScreen, t:S.n5only?'JLPT N5 題庫':'日本旅行會話', c:'' }];
 draw();
+
+/* 之前登入過就自動恢復，並把雲端拉下來合併。
+   這行一定要在 IIFE 裡面 —— 外面抓不到 fbOn / fbResume。*/
+if(fbOn()) fbResume();
 })();
 </script>
 
