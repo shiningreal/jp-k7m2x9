@@ -674,6 +674,17 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
 
 
 
+
+/* ══════════ 還原連結 ══════════ */
+.restorecard{padding:22px 18px;display:flex;flex-direction:column;gap:13px}
+.restorecard h1{font-size:19px}
+.restorelist{display:flex;flex-direction:column;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.rrow{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--surface);padding:12px 14px;font-family:var(--zh);font-size:13.5px;color:var(--muted)}
+.rrow b{font-size:17px;color:var(--fg);display:inline-flex;align-items:center;gap:3px}
+.restorecard .btn{margin-top:2px}
+
 /* ══════════ 雲端同步 ══════════ */
 .cloudbox{display:flex;align-items:center;gap:11px;padding:12px 13px;border-radius:13px;
   border:1.5px solid var(--line);background:var(--surface-2)}
@@ -4179,6 +4190,90 @@ function fbResume(){
 /* 練完一輪就上傳。失敗不吵使用者，下一輪會再試。*/
 function fbAuto(){ if(fbOn() && FB.user) fbPush(); }
 
+
+/* ══════════════════════════════════════════════════════════
+   還原連結  ?r=<base64url>
+   用途：使用者清掉瀏覽器資料之後，從截圖看得出來的那幾樣（等級、連續天數、
+   果凍、衣服）可以用一條連結補回去，不用傳檔案也不用碰 Firestore 主控台。
+   刻意只帶這幾個值，不帶整包題目進度 —— 網址有長度限制，而且哪一題精通
+   是截圖看不出來的，猜了只會把假資料塞進間隔重複的排程裡。
+   一定要有確認畫面：點到連結就被改掉進度，那是陷阱不是功能。
+   ══════════════════════════════════════════════════════════ */
+function b64urlDec(t){
+  t = String(t).replace(/-/g,'+').replace(/_/g,'/');
+  while(t.length % 4) t += '=';
+  return decodeURIComponent(escape(atob(t)));
+}
+function readRestoreLink(){
+  var m = /[?&]r=([A-Za-z0-9\-_]+)/.exec(location.search || '');
+  if(!m) return null;
+  try{
+    var o = JSON.parse(b64urlDec(m[1]));
+    if(!o || o.a !== 'jp') return null;
+    return o;
+  }catch(e){ return null; }
+}
+function clearRestoreLink(){
+  try{ history.replaceState(null, '', location.pathname + location.hash); }catch(e){}
+}
+function applyRestoreLink(o){
+  if(o.xp != null){ ST.xp = Math.max(ST.xp||0, +o.xp||0); ST.xpSeed = 1; }
+  if(o.cards != null) ST.cards = Math.max(ST.cards||0, Math.min(JELLY_MAX, +o.cards||0));
+  if(o.streak > 0){
+    /* 連續天數是從練習紀錄回推的，不是一個欄位。補 N 天、結束在昨天，
+       今天留空 —— 這樣他今天一練就接到 N+1，不會因為「今天算過了」而斷掉。*/
+    ST.days = ST.days || {};
+    var k = keyShift(dayKey(), -1);
+    for(var i=0; i<o.streak; i++){
+      if(!ST.days[k]) ST.days[k] = JELLY_NEED;
+      k = keyShift(k, -1);
+    }
+  }
+  if(o.worn != null && gearById(o.worn)) S.worn = o.worn;
+  ST.streak = calcStreak();
+  saveStats(); saveProg(); saveSet();
+  if(typeof fbAuto === 'function') fbAuto();     /* 有登入就順便推上雲端 */
+}
+function restoreScreen(o){
+  var lv = levelOf(Math.max(ST.xp||0, +o.xp||0));
+  var g  = o.worn && gearById(o.worn) ? gearById(o.worn) : gearOf(lv);
+  var t  = tally(function(){ return true; });
+  var h  = '<div class="card restorecard">'+
+    '<div class="eyebrow">還原連結</div>'+
+    '<h1>要套用這些數值嗎？</h1>'+
+    '<div class="restorelist">'+
+      (o.xp != null ? '<div class="rrow"><span>等級</span><b>Lv.'+lv+'</b></div>' : '')+
+      (o.streak ?     '<div class="rrow"><span>連續天數</span><b>'+o.streak+' 天</b></div>' : '')+
+      (o.cards != null ? '<div class="rrow"><span>果凍</span><b>'+jellyRow(Math.min(JELLY_MAX,+o.cards)) +'</b></div>' : '')+
+      '<div class="rrow"><span>衣服</span><b class="jp" lang="ja">'+esc(g.t)+'</b></div>'+
+    '</div>'+
+    '<div class="note zh"><b>題目進度不會被動到。</b>'+
+      (t.started
+        ? '你目前已經練過 '+t.started+' 題，這些紀錄會原封不動留著。'
+        : '這條連結只補回上面那幾項，題目要自己重新練回來。')+
+      '</div>'+
+    '<div class="note zh" style="border-left-color:var(--warn)">'+
+      '只有你信任的人給你的連結才按確定。陌生連結可能會改掉你的數值。</div>'+
+    '<button class="btn primary" id="rok">確定套用</button>'+
+    '<button class="btn ghost" id="rno">不要，維持原樣</button>'+
+  '</div>';
+  var d = screen(h);
+  d.querySelector('#rok').onclick = function(){
+    applyRestoreLink(o); clearRestoreLink();
+    if(S.sfx) sfxCele();
+    ST.cloudMsg = '還原完成：Lv.'+levelOf(ST.xp||0)+'、連續 '+calcStreak()+' 天';
+    saveStats();
+    nav = [{ r:homeScreen, t:S.n5only?'JLPT N5 題庫':'日本旅行會話', c:'' }];
+    draw();
+  };
+  d.querySelector('#rno').onclick = function(){
+    clearRestoreLink();
+    nav = [{ r:homeScreen, t:S.n5only?'JLPT N5 題庫':'日本旅行會話', c:'' }];
+    draw();
+  };
+  return d;
+}
+
 /* 熟練度 0–5：0 未學 ／ 1–2 學習中 ／ 3–4 已學會 ／ 5 已精通 */
 var LVL = ['未學','學習中','學習中','已學會','已學會','已精通'];
 var LVLC = ['var(--muted)','var(--warn)','var(--warn)','var(--accent)','var(--accent)','var(--ok)'];
@@ -7216,7 +7311,9 @@ migrateDays();
 spendCard();
 ST.streak = calcStreak();
 saveStats();
-nav=[{r:homeScreen,t:S.n5only?'JLPT N5 題庫':'日本旅行會話',c:''}];
+var _rl = readRestoreLink();
+nav = _rl ? [{ r:function(){ return restoreScreen(_rl); }, t:'還原連結', c:'#8F76D6' }]
+          : [{ r:homeScreen, t:S.n5only?'JLPT N5 題庫':'日本旅行會話', c:'' }];
 draw();
 })();
 </script>
