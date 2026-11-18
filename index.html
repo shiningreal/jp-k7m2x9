@@ -3737,8 +3737,8 @@ function save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} 
     save('jp_stats', ST);
   } })();
 function saveSet(){ save('jp_set',S); }
-function saveProg(){ save('jp_prog',P); }
-function saveStats(){ save('jp_stats',ST); }
+function saveProg(){ save('jp_prog',P); schedulePush(); }
+function saveStats(){ save('jp_stats',ST); schedulePush(); }
 
 /* 進度存在瀏覽器的 localStorage 裡，是綁網域的：換手機、清瀏覽器資料、
    或是用別的網址開，都會讀不到舊紀錄。所以要有一個自己存得下來的備份檔。*/
@@ -4189,6 +4189,35 @@ function fbResume(){
 }
 /* 練完一輪就上傳。失敗不吵使用者，下一輪會再試。*/
 function fbAuto(){ if(fbOn() && FB.user) fbPush(); }
+
+/* 與其在每個結算畫面各補一次上傳（漏掉一個就是那種路徑的進度永遠不上雲），
+   不如讓「存檔」這個動作自己安排上傳。debounce 2.5 秒把一輪裡的幾十次存檔
+   併成一次，不會每答一題就打一次 Firestore。
+   pushing 這個旗標是必要的：fbPush 成功後會寫 ST.cloudAt 並存檔，
+   沒擋的話會自己觸發下一次上傳，無限迴圈。*/
+var pushTimer = 0, pushing = false;
+function schedulePush(){
+  if(!fbOn() || !FB.user || pushing) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(function(){
+    pushing = true;
+    var done = function(){ pushing = false; };
+    try{ fbPush().then(done, done); }catch(e){ done(); }
+  }, 2500);
+}
+/* 關掉分頁／切到背景時，把還沒送出去的那一次立刻送出 */
+if(typeof document !== 'undefined'){
+  var flush = function(){
+    if(!fbOn() || !FB.user || pushing) return;
+    if(!pushTimer) return;
+    clearTimeout(pushTimer); pushTimer = 0;
+    pushing = true;
+    var done = function(){ pushing = false; };
+    try{ fbPush().then(done, done); }catch(e){ done(); }
+  };
+  document.addEventListener('visibilitychange', function(){ if(document.hidden) flush(); });
+  window.addEventListener('pagehide', flush);
+}
 
 
 /* ══════════════════════════════════════════════════════════
@@ -6951,7 +6980,6 @@ function showResult(right,total,wrong,title,color,gained,ctx){
     countUp(d.querySelector('.pct'), pct);
     xpAnimate(d.querySelector('.xpcard'), xpUps);
     startRun();
-    fbAuto();
     fbAuto();
     d.querySelectorAll('.wrongrow button').forEach(function(b){
       b.onclick=function(){ speak(sayOf(BY_ID[b.dataset.i])); }; });
