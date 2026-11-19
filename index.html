@@ -4349,15 +4349,16 @@ function applyRestoreLink(o){
   }
   /* 整個群組一起還原。只有「那一區全滿」才用得上 ——
      全滿是完整資訊（集合被講完了），不像「1154 題精通」要猜是哪些。
-     刻意只到第 4 箱（已學會）不到第 5 箱（精通）：熟練度 5 的題會被
-     buildBatch 和 checkList 同時排除，等於退出練習。既然無法確定她
-     真正精通的是哪些，就讓它們留在輪替裡，精通由她自己答對賺回來。*/
+     可以指定到第 5 箱（已精通）。要知道的後果：第 5 箱的題不在
+     buildBatch 的三個桶裡、驗收測驗也不考，所以會退出常規輪替 ——
+     但那正是「已經學會的東西不用一直複習」該有的行為，而且題庫不夠湊滿
+     一輪時還是會被抽回來，不是永久消失。*/
   if(o.g){
     var gnow = Date.now();
     GROUPS.forEach(function(G){
       var box = +o.g[G.id];
       if(!(box > 0)) return;
-      box = Math.min(4, box);
+      box = Math.min(5, box);
       ITEMS.forEach(function(x){
         if(!G.ids[x.s]) return;
         var r = P[x.i];
@@ -4387,14 +4388,15 @@ function restoreScreen(o){
       (o.g ? GROUPS.map(function(G){
           var box = +o.g[G.id]; if(!(box>0)) return '';
           var n = 0; ITEMS.forEach(function(x){ if(G.ids[x.s]) n++; });
-          return '<div class="rrow"><span>'+esc(G.t)+'</span><b>'+n+' 題 → 已學會</b></div>';
+          return '<div class="rrow"><span>'+esc(G.t)+'</span><b>'+n+' 題 → '+
+            (box>=5?'已精通':'已學會')+'</b></div>';
         }).join('') : '')+
     '</div>'+
     '<div class="note zh">'+
       (o.g
-        ? '<b>標示的那幾區會整區設成「已學會」</b>，但不會標成「已精通」—— '+
-          '精通的題會退出練習輪替，哪幾題真的精通只有原本的紀錄知道，'+
-          '所以留給你自己答對賺回來。其他區塊的進度不動。'
+        ? '<b>標示的那幾區會整區設成上面寫的熟練度。</b>'+
+          '設成「已精通」的那區會退出常規練習輪替（這是刻意的，學會的東西不用一直複習），'+
+          '但題庫不夠湊滿一輪時還是會被抽回來。其他區塊的進度不動。'
         : '<b>題目進度不會被動到。</b>'+(t.started
             ? '你目前已經練過 '+t.started+' 題，這些紀錄會原封不動留著。'
             : '這條連結只補回上面那幾項，題目要自己重新練回來。'))+
