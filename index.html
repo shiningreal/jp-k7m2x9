@@ -16,6 +16,11 @@ img{max-width:100%}
 <title>日本旅行會話練習</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<!-- 裝成 App 要的三件事。少了 manifest，Android 就只是個網頁捷徑、不會問「要不要安裝」。
+     （Claude 預覽版沒有這些檔案，抓不到只會在主控台留個警告，不影響功能。）-->
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<link rel="icon" href="./icon-192.png">
 <style>
 /* 版面概念：日本車站告示板 —— 左側線路色條、資訊分層、大字可遠讀；下方為拇指操作區 */
 :root{
@@ -732,6 +737,61 @@ ruby rt{font-size:.48em;font-weight:400;opacity:.78;letter-spacing:0}
   transition:width .95s cubic-bezier(.25,1,.4,1)}
 .xpnote{font-family:var(--zh);font-size:11.5px;color:var(--muted)}
 .xphome{cursor:pointer}
+
+/* ── 每日任務 ── */
+.qtoast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:70;
+  transform:translateX(-50%);display:flex;align-items:center;gap:9px;
+  background:var(--ok);color:#fff;border-radius:999px;padding:9px 16px 9px 11px;
+  box-shadow:0 8px 22px rgba(0,0,0,.26);max-width:min(92vw,360px);
+  animation:qtin .34s cubic-bezier(.2,1.5,.4,1) both}
+.qtoast.out{animation:qtout .3s ease-in forwards}
+.qtoast .qtic{flex:none;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.26);
+  display:grid;place-items:center;font-size:13px;font-weight:700}
+.qtoast b{display:block;font-family:var(--zh);font-size:13px;line-height:1.25}
+.qtoast em{display:block;font-family:var(--zh);font-size:11.5px;font-style:normal;opacity:.9;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@keyframes qtin{from{opacity:0;transform:translate(-50%,-16px) scale(.9)}
+  to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes qtout{to{opacity:0;transform:translate(-50%,-10px)}}
+@media(prefers-reduced-motion:reduce){ .qtoast{animation:none} }
+.quests{padding:13px 14px 12px;display:flex;flex-direction:column;gap:9px}
+.qhead{display:flex;align-items:center;justify-content:space-between}
+.qhead .eyebrow{margin:0}
+.qcnt{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted);
+  background:var(--line);border-radius:999px;padding:2px 10px}
+.qcnt.all{background:var(--ok);color:#fff}
+.qrow{display:flex;align-items:center;gap:10px}
+.qic{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+  background:var(--line);color:var(--ink);font-size:14px;font-weight:700}
+.qrow.full .qic{background:color-mix(in srgb,var(--ok) 22%,var(--surface));color:var(--ok)}
+.qrow.got .qic{background:var(--ok);color:#fff}
+.qmid{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.qmid b{font-family:var(--zh);font-size:13px;font-weight:600;line-height:1.3}
+.qrow.got .qmid b{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.qtrack{height:6px;border-radius:4px;background:var(--line);overflow:hidden}
+.qtrack i{display:block;height:100%;border-radius:4px;background:var(--accent);
+  transition:width .6s cubic-bezier(.25,1,.4,1)}
+.qrow.full .qtrack i,.qrow.got .qtrack i{background:var(--ok)}
+.qn{flex:none;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;min-width:44px;
+  text-align:right}
+.qn small{font-size:11px;color:var(--muted);font-weight:600}
+.qok{flex:none;min-width:44px;text-align:right;color:var(--ok);font-size:17px;font-weight:700}
+.qget{flex:none;border:0;border-radius:9px;background:var(--ok);color:#fff;cursor:pointer;
+  font-family:var(--zh);font-size:12px;font-weight:700;padding:7px 10px;line-height:1.15;
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  animation:qpulse 1.5s ease-in-out infinite}
+.qget small{font-size:10px;opacity:.9;font-variant-numeric:tabular-nums}
+.qget:active{transform:scale(.95)}
+@keyframes qpulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 45%,transparent)}
+  60%{box-shadow:0 0 0 7px color-mix(in srgb,var(--ok) 0%,transparent)}}
+.qbn{border:0;width:100%;border-radius:11px;cursor:pointer;padding:10px;
+  font-family:var(--zh);font-size:12.5px;font-weight:700;color:#fff;
+  background:linear-gradient(90deg,#B8860B,#D9A520);animation:qpulse 1.6s ease-in-out infinite}
+.qbn:active{transform:scale(.98)}
+.qbn.got{background:none;color:var(--muted);font-weight:600;animation:none;cursor:default;
+  text-align:center;padding:6px 0 2px}
+.qfoot{font-family:var(--zh);font-size:11px;color:var(--muted);text-align:center;padding-top:1px}
+@media(prefers-reduced-motion:reduce){ .qget,.qbn{animation:none} }
 .xpcard{padding:15px 16px;display:flex;flex-direction:column;gap:9px;position:relative}
 .xpplus{position:absolute;right:16px;top:13px;font-size:14px;font-weight:700;color:var(--ok);
   font-variant-numeric:tabular-nums;animation:xpup .7s .45s cubic-bezier(.2,1.6,.4,1) both}
@@ -1109,7 +1169,7 @@ window.JPDATA = {
     { i:'k07', s:'conbini', t:'p', j:'ポイントカードはありません。', z:'我沒有集點卡' },
     { i:'k08', s:'conbini', t:'p', j:'{別|べつ}の{袋|ふくろ}に{入|い}れてください。', z:'請裝在不同的袋子' },
     { i:'k09', s:'conbini', t:'p', j:'ここで{食|た}べてもいいですか。', z:'可以在這裡吃嗎' },
-    { i:'k10', s:'conbini', t:'p', j:'ATMはありますか。', z:'有提款機嗎' },
+    { i:'k10', s:'conbini', t:'p', j:'ATMはありますか。', z:'有提款機嗎', r:'エーティーエムはありますか。' },
     { i:'k11', s:'conbini', t:'p', j:'コピー{機|き}を{使|つか}いたいです。', z:'我想用影印機' },
     { i:'k12', s:'conbini', t:'p', j:'{切手|きって}はありますか。', z:'有賣郵票嗎' },
     { i:'k13', s:'conbini', t:'p', j:'{宅配|たくはい}をお{願|ねが}いします。', z:'我要寄宅配' },
@@ -1139,7 +1199,7 @@ window.JPDATA = {
     { i:'t11', s:'transit', t:'p', j:'{乗|の}り{換|か}えはどこですか。', z:'在哪裡換車' },
     { i:'t12', s:'transit', t:'p', j:'{乗|の}り{換|か}えは{必要|ひつよう}ですか。', z:'需要換車嗎' },
     { i:'t13', s:'transit', t:'p', j:'{切符|きっぷ}はどこで{買|か}いますか。', z:'車票在哪裡買' },
-    { i:'t14', s:'transit', t:'p', j:'ICカードはチャージできますか。', z:'IC卡可以儲值嗎' },
+    { i:'t14', s:'transit', t:'p', j:'ICカードはチャージできますか。', z:'IC卡可以儲值嗎', r:'アイシーカードはチャージできますか。' },
     { i:'t15', s:'transit', t:'p', j:'チャージしたいです。', z:'我要儲值' },
     { i:'t16', s:'transit', t:'p', j:'{一日乗車券|いちにちじょうしゃけん}はありますか。', z:'有一日券嗎' },
     { i:'t17', s:'transit', t:'p', j:'{次|つぎ}の{電車|でんしゃ}は{何時|なんじ}ですか。', z:'下一班電車幾點' },
@@ -1178,7 +1238,7 @@ window.JPDATA = {
     { i:'h03', s:'hotel', t:'p', j:'チェックアウトは{何時|なんじ}ですか。', z:'退房是幾點' },
     { i:'h04', s:'hotel', t:'p', j:'{荷物|にもつ}を{預|あず}かってもらえますか。', z:'可以幫我寄放行李嗎' },
     { i:'h05', s:'hotel', t:'p', j:'{荷物|にもつ}を{取|と}りに{来|き}ました。', z:'我來拿行李' },
-    { i:'h06', s:'hotel', t:'p', j:'Wi-Fiのパスワードを{教|おし}えてください。', z:'請告訴我 Wi-Fi 密碼' },
+    { i:'h06', s:'hotel', t:'p', j:'Wi-Fiのパスワードを{教|おし}えてください。', z:'請告訴我 Wi-Fi 密碼', r:'ワイファイのパスワードを教えてください。' },
     { i:'h07', s:'hotel', t:'p', j:'{朝食|ちょうしょく}は{何時|なんじ}からですか。', z:'早餐幾點開始' },
     { i:'h08', s:'hotel', t:'p', j:'{朝食|ちょうしょく}はどこで{食|た}べますか。', z:'早餐在哪裡吃' },
     { i:'h09', s:'hotel', t:'p', j:'タオルをもう{一枚|いちまい}ください。', z:'請再給我一條毛巾' },
@@ -1241,10 +1301,10 @@ window.JPDATA = {
     { i:'x16', s:'trouble', t:'p', j:'{中国語|ちゅうごくご}が{話|はな}せる{人|ひと}はいますか。', z:'有人會說中文嗎' },
     { i:'x17', s:'trouble', t:'p', j:'{大使館|たいしかん}に{連絡|れんらく}したいです。', z:'我想聯絡辦事處' },
     { i:'x18', s:'trouble', t:'p', j:'スマホの{充電|じゅうでん}ができますか。', z:'可以充手機嗎' },
-    { i:'x19', s:'trouble', t:'p', j:'Wi-Fiは{使|つか}えますか。', z:'可以用 Wi-Fi 嗎' },
+    { i:'x19', s:'trouble', t:'p', j:'Wi-Fiは{使|つか}えますか。', z:'可以用 Wi-Fi 嗎', r:'ワイファイは使えますか。' },
     { i:'x20', s:'trouble', t:'p', j:'{電波|でんぱ}が{入|はい}りません。', z:'沒有訊號' },
     { i:'x21', s:'trouble', t:'p', j:'{両替|りょうがえ}できますか。', z:'可以換錢嗎' },
-    { i:'x22', s:'trouble', t:'p', j:'ATMはどこですか。', z:'提款機在哪裡' },
+    { i:'x22', s:'trouble', t:'p', j:'ATMはどこですか。', z:'提款機在哪裡', r:'エーティーエムはどこですか。' },
     { i:'x23', s:'trouble', t:'p', j:'カードが{使|つか}えません。', z:'卡刷不過' },
     { i:'x24', s:'trouble', t:'p', j:'{電車|でんしゃ}が{止|と}まっています。', z:'電車停駛了' },
     { i:'x25', s:'trouble', t:'p', j:'{傘|かさ}をなくしました。', z:'我傘不見了' },
@@ -1546,7 +1606,15 @@ window.JPVOCAB = {
     { id:'vwork',  label:'學校・工作',     jp:'がっこう・しごと', color:'#4A6FA5' },
     { id:'vmood',  label:'心情・狀態',     jp:'きもち',       color:'#D6749B' },
     { id:'vlife',  label:'日常生活',       jp:'せいかつ',     color:'#5D8A3A' },
-    { id:'vcolor', label:'顏色・形狀・方位', jp:'いろ・かたち',  color:'#8B5E3C' }
+    { id:'vcolor', label:'顏色・形狀・方位', jp:'いろ・かたち',  color:'#8B5E3C' },
+
+    /* ── 以下為新增分類 ── */
+    { id:'vanim',  label:'動物・植物',     jp:'どうぶつ・しょくぶつ', color:'#3E8E41' },
+    { id:'vfun',   label:'運動・興趣',     jp:'スポーツ・しゅみ', color:'#E07A1F' },
+    { id:'vnet',   label:'電話・網路',     jp:'でんわ・ネット', color:'#4C6EF5' },
+    { id:'vnum',   label:'數量・單位',     jp:'すうりょう',   color:'#7A5C99' },
+    { id:'vadv',   label:'副詞・接續',     jp:'ふくし',       color:'#A0522D' },
+    { id:'vtrip',  label:'旅行・觀光',     jp:'りょこう',     color:'#0E8A8A' }
   ],
 
   items: [
@@ -1554,7 +1622,7 @@ window.JPVOCAB = {
     { i:'wf001', s:'vfood', t:'w', j:'ご{飯|はん}', z:'飯' },
     { i:'wf002', s:'vfood', t:'w', j:'{米|こめ}', z:'米' },
     { i:'wf003', s:'vfood', t:'w', j:'パン', z:'麵包' },
-    { i:'wf004', s:'vfood', t:'w', j:'{麺|めん}', z:'麵' },
+    { i:'wf004', s:'vfood', t:'w', j:'{麺|めん}', z:'麵', n:'吃的麵。同音的「綿」是棉布材質' },
     { i:'wf005', s:'vfood', t:'w', j:'うどん', z:'烏龍麵' },
     { i:'wf006', s:'vfood', t:'w', j:'そば', z:'蕎麥麵' },
     { i:'wf007', s:'vfood', t:'w', j:'ラーメン', z:'拉麵' },
@@ -1596,8 +1664,8 @@ window.JPVOCAB = {
     { i:'wf043', s:'vfood', t:'w', j:'{魚|さかな}', z:'魚' },
     { i:'wf044', s:'vfood', t:'w', j:'えび', z:'蝦子' },
     { i:'wf045', s:'vfood', t:'w', j:'かに', z:'螃蟹' },
-    { i:'wf046', s:'vfood', t:'w', j:'{貝|かい}', z:'貝類' },
-    { i:'wf047', s:'vfood', t:'w', j:'いか', z:'花枝' },
+    { i:'wf046', s:'vfood', t:'w', j:'{貝|かい}', z:'貝類', n:'貝類，海鮮店、味噌湯裡的那個。同音的「階」是樓層' },
+    { i:'wf047', s:'vfood', t:'w', j:'いか', z:'花枝', n:'海鮮的花枝，壽司店、居酒屋菜單常見。同音的「以下」是數字以下' },
     { i:'wf048', s:'vfood', t:'w', j:'たこ', z:'章魚' },
     { i:'wf049', s:'vfood', t:'w', j:'{鮭|さけ}', z:'鮭魚' },
     { i:'wf050', s:'vfood', t:'w', j:'まぐろ', z:'鮪魚' },
@@ -1633,7 +1701,7 @@ window.JPVOCAB = {
     { i:'wf080', s:'vfood', t:'w', j:'パイナップル', z:'鳳梨' },
     { i:'wf081', s:'vfood', t:'w', j:'レモン', z:'檸檬' },
     { i:'wf082', s:'vfood', t:'w', j:'{柿|かき}', z:'柿子' },
-    { i:'wf083', s:'vfood', t:'w', j:'{塩|しお}', z:'鹽' },
+    { i:'wf083', s:'vfood', t:'w', j:'{塩|しお}', z:'鹽', n:'調味的鹽：塩を入れる。同音的「潮」是海水的潮' },
     { i:'wf084', s:'vfood', t:'w', j:'{砂糖|さとう}', z:'糖' },
     { i:'wf085', s:'vfood', t:'w', j:'{醤油|しょうゆ}', z:'醬油' },
     { i:'wf086', s:'vfood', t:'w', j:'{味噌|みそ}', z:'味噌' },
@@ -1685,7 +1753,7 @@ window.JPVOCAB = {
     { i:'wd037', s:'vdrink', t:'w', j:'せんべい', z:'仙貝' },
     { i:'wd038', s:'vdrink', t:'w', j:'ポテトチップス', z:'洋芋片' },
     { i:'wd039', s:'vdrink', t:'w', j:'ガム', z:'口香糖' },
-    { i:'wd040', s:'vdrink', t:'w', j:'{飴|あめ}', z:'糖果' },
+    { i:'wd040', s:'vdrink', t:'w', j:'{飴|あめ}', z:'糖果', n:'吃的糖果，伴手禮區常看到。同音的「雨」是下雨，看前後文就能分' },
     { i:'wd041', s:'vdrink', t:'w', j:'パフェ', z:'聖代' },
     { i:'wd042', s:'vdrink', t:'w', j:'かき{氷|ごおり}', z:'刨冰' },
     { i:'wd043', s:'vdrink', t:'w', j:'ヨーグルト', z:'優格' },
@@ -1701,11 +1769,11 @@ window.JPVOCAB = {
     { i:'wb001', s:'vbody', t:'w', j:'{頭|あたま}', z:'頭' },
     { i:'wb002', s:'vbody', t:'w', j:'{顔|かお}', z:'臉' },
     { i:'wb003', s:'vbody', t:'w', j:'{目|め}', z:'眼睛' },
-    { i:'wb004', s:'vbody', t:'w', j:'{鼻|はな}', z:'鼻子' },
+    { i:'wb004', s:'vbody', t:'w', j:'{鼻|はな}', z:'鼻子', n:'鼻子，身體部位。同音的「花」是花' },
     { i:'wb005', s:'vbody', t:'w', j:'{口|くち}', z:'嘴巴' },
     { i:'wb006', s:'vbody', t:'w', j:'{耳|みみ}', z:'耳朵' },
     { i:'wb007', s:'vbody', t:'w', j:'{歯|は}', z:'牙齒' },
-    { i:'wb008', s:'vbody', t:'w', j:'{舌|した}', z:'舌頭' },
+    { i:'wb008', s:'vbody', t:'w', j:'{舌|した}', z:'舌頭', n:'舌頭，身體部位。同音的「下」是下面，超常用' },
     { i:'wb009', s:'vbody', t:'w', j:'{首|くび}', z:'脖子' },
     { i:'wb010', s:'vbody', t:'w', j:'{肩|かた}', z:'肩膀' },
     { i:'wb011', s:'vbody', t:'w', j:'{腕|うで}', z:'手臂' },
@@ -1729,7 +1797,7 @@ window.JPVOCAB = {
     { i:'wb029', s:'vbody', t:'w', j:'{胃|い}', z:'胃' },
     { i:'wb030', s:'vbody', t:'w', j:'{声|こえ}', z:'聲音' },
     { i:'wb031', s:'vbody', t:'w', j:'{病気|びょうき}', z:'生病' },
-    { i:'wb032', s:'vbody', t:'w', j:'{風邪|かぜ}', z:'感冒' },
+    { i:'wb032', s:'vbody', t:'w', j:'{風邪|かぜ}', z:'感冒', n:'生病的感冒：風邪をひく（得感冒）。同音的「風」是吹的風，差一個漢字' },
     { i:'wb033', s:'vbody', t:'w', j:'{咳|せき}', z:'咳嗽' },
     { i:'wb034', s:'vbody', t:'w', j:'{鼻水|はなみず}', z:'鼻水' },
     { i:'wb035', s:'vbody', t:'w', j:'{頭痛|ずつう}', z:'頭痛' },
@@ -1824,9 +1892,9 @@ window.JPVOCAB = {
     /* ══════════ 家・家具家電 ══════════ */
     { i:'wh001', s:'vhome', t:'w', j:'{家|いえ}', z:'家' },
     { i:'wh002', s:'vhome', t:'w', j:'{部屋|へや}', z:'房間' },
-    { i:'wh003', s:'vhome', t:'w', j:'{玄関|げんかん}', z:'玄關' },
+    { i:'wh003', s:'vhome', t:'w', j:'{玄関|げんかん}', z:'玄關', n:'日式住宅進門脫鞋的那塊玄關，住宿、拜訪時會用到。同音的「厳寒」是嚴寒，少用' },
     { i:'wh004', s:'vhome', t:'w', j:'{台所|だいどころ}', z:'廚房' },
-    { i:'wh005', s:'vhome', t:'w', j:'{居間|いま}', z:'客廳' },
+    { i:'wh005', s:'vhome', t:'w', j:'{居間|いま}', z:'客廳', n:'家裡的客廳，講房子格局時用。日常講 いま 幾乎都是「今（現在）」' },
     { i:'wh006', s:'vhome', t:'w', j:'{寝室|しんしつ}', z:'臥室' },
     { i:'wh007', s:'vhome', t:'w', j:'お{風呂|ふろ}', z:'浴室・泡澡' },
     { i:'wh008', s:'vhome', t:'w', j:'{洗面所|せんめんじょ}', z:'盥洗室' },
@@ -1898,7 +1966,7 @@ window.JPVOCAB = {
     { i:'wt002', s:'vtown', t:'w', j:'{道|みち}', z:'道路' },
     { i:'wt003', s:'vtown', t:'w', j:'{通|とお}り', z:'街道' },
     { i:'wt004', s:'vtown', t:'w', j:'{橋|はし}', z:'橋' },
-    { i:'wt005', s:'vtown', t:'w', j:'{川|かわ}', z:'河川' },
+    { i:'wt005', s:'vtown', t:'w', j:'{川|かわ}', z:'河川', n:'河川、河流。同音的「革」是皮革材質' },
     { i:'wt006', s:'vtown', t:'w', j:'{公園|こうえん}', z:'公園' },
     { i:'wt007', s:'vtown', t:'w', j:'{広場|ひろば}', z:'廣場' },
     { i:'wt008', s:'vtown', t:'w', j:'{建物|たてもの}', z:'建築物' },
@@ -1942,7 +2010,7 @@ window.JPVOCAB = {
     { i:'wt046', s:'vtown', t:'w', j:'{温泉|おんせん}', z:'溫泉' },
     { i:'wt047', s:'vtown', t:'w', j:'{神社|じんじゃ}', z:'神社' },
     { i:'wt048', s:'vtown', t:'w', j:'お{寺|てら}', z:'寺廟' },
-    { i:'wt049', s:'vtown', t:'w', j:'{城|しろ}', z:'城堡' },
+    { i:'wt049', s:'vtown', t:'w', j:'{城|しろ}', z:'城堡', n:'城堡，觀光景點：大阪城。同音的「白」是白色' },
     { i:'wt050', s:'vtown', t:'w', j:'ホテル', z:'飯店' },
     { i:'wt051', s:'vtown', t:'w', j:'{旅館|りょかん}', z:'日式旅館' },
     { i:'wt052', s:'vtown', t:'w', j:'{交番|こうばん}', z:'派出所' },
@@ -1963,7 +2031,7 @@ window.JPVOCAB = {
     { i:'wt067', s:'vtown', t:'w', j:'{都会|とかい}', z:'都市' },
     { i:'wt068', s:'vtown', t:'w', j:'{地下|ちか}', z:'地下' },
     { i:'wt069', s:'vtown', t:'w', j:'{屋上|おくじょう}', z:'頂樓' },
-    { i:'wt070', s:'vtown', t:'w', j:'{階|かい}', z:'樓層' },
+    { i:'wt070', s:'vtown', t:'w', j:'{階|かい}', z:'樓層', n:'樓層，接在數字後面：3階。同音的「貝」是貝類' },
 
     /* ══════════ 交通工具 ══════════ */
     { i:'wr001', s:'vride', t:'w', j:'{電車|でんしゃ}', z:'電車' },
@@ -2021,10 +2089,10 @@ window.JPVOCAB = {
     { i:'ws001', s:'vsky', t:'w', j:'{天気|てんき}', z:'天氣' },
     { i:'ws002', s:'vsky', t:'w', j:'{晴|は}れ', z:'晴天' },
     { i:'ws003', s:'vsky', t:'w', j:'{曇|くも}り', z:'陰天' },
-    { i:'ws004', s:'vsky', t:'w', j:'{雨|あめ}', z:'雨' },
+    { i:'ws004', s:'vsky', t:'w', j:'{雨|あめ}', z:'雨', n:'天氣的雨：雨が降る。同音的「飴」是糖果' },
     { i:'ws005', s:'vsky', t:'w', j:'{雪|ゆき}', z:'雪' },
-    { i:'ws006', s:'vsky', t:'w', j:'{風|かぜ}', z:'風' },
-    { i:'ws007', s:'vsky', t:'w', j:'{雲|くも}', z:'雲' },
+    { i:'ws006', s:'vsky', t:'w', j:'{風|かぜ}', z:'風', n:'吹的風：風が強い。同音的「風邪」是感冒，記「ひく」就是感冒' },
+    { i:'ws007', s:'vsky', t:'w', j:'{雲|くも}', z:'雲', n:'天上的雲：雲が多い。同音的「くも」是蜘蛛' },
     { i:'ws008', s:'vsky', t:'w', j:'{空|そら}', z:'天空' },
     { i:'ws009', s:'vsky', t:'w', j:'{太陽|たいよう}', z:'太陽' },
     { i:'ws010', s:'vsky', t:'w', j:'{月|つき}', z:'月亮' },
@@ -2032,7 +2100,7 @@ window.JPVOCAB = {
     { i:'ws012', s:'vsky', t:'w', j:'{虹|にじ}', z:'彩虹' },
     { i:'ws013', s:'vsky', t:'w', j:'{雷|かみなり}', z:'雷' },
     { i:'ws014', s:'vsky', t:'w', j:'{台風|たいふう}', z:'颱風' },
-    { i:'ws015', s:'vsky', t:'w', j:'{地震|じしん}', z:'地震' },
+    { i:'ws015', s:'vsky', t:'w', j:'{地震|じしん}', z:'地震', n:'地震，日本很常用到，避難廣播會聽到。同音的「自信」是有信心' },
     { i:'ws016', s:'vsky', t:'w', j:'{津波|つなみ}', z:'海嘯' },
     { i:'ws017', s:'vsky', t:'w', j:'{霧|きり}', z:'霧' },
     { i:'ws018', s:'vsky', t:'w', j:'{気温|きおん}', z:'氣溫' },
@@ -2047,7 +2115,7 @@ window.JPVOCAB = {
     { i:'ws027', s:'vsky', t:'w', j:'{季節|きせつ}', z:'季節' },
     { i:'ws028', s:'vsky', t:'w', j:'{桜|さくら}', z:'櫻花' },
     { i:'ws029', s:'vsky', t:'w', j:'{紅葉|こうよう}', z:'紅葉' },
-    { i:'ws030', s:'vsky', t:'w', j:'{花|はな}', z:'花' },
+    { i:'ws030', s:'vsky', t:'w', j:'{花|はな}', z:'花', n:'花。同音的「鼻」是鼻子，兩個都很常用，靠前後文分' },
     { i:'ws031', s:'vsky', t:'w', j:'{木|き}', z:'樹' },
     { i:'ws032', s:'vsky', t:'w', j:'{葉|は}っぱ', z:'葉子' },
     { i:'ws033', s:'vsky', t:'w', j:'{草|くさ}', z:'草' },
@@ -2128,7 +2196,7 @@ window.JPVOCAB = {
 
     /* ══════════ 時間・日期 ══════════ */
     { i:'wi001', s:'vtime', t:'w', j:'{時間|じかん}', z:'時間' },
-    { i:'wi002', s:'vtime', t:'w', j:'{今|いま}', z:'現在' },
+    { i:'wi002', s:'vtime', t:'w', j:'{今|いま}', z:'現在', n:'現在，超常用。同音的「居間」是客廳，只在聊房子時出現' },
     { i:'wi003', s:'vtime', t:'w', j:'{朝|あさ}', z:'早上' },
     { i:'wi004', s:'vtime', t:'w', j:'{昼|ひる}', z:'中午・白天' },
     { i:'wi005', s:'vtime', t:'w', j:'{夕方|ゆうがた}', z:'傍晚' },
@@ -2192,21 +2260,21 @@ window.JPVOCAB = {
     { i:'wv001', s:'vverb', t:'w', j:'{食|た}べます', z:'吃' },
     { i:'wv002', s:'vverb', t:'w', j:'{飲|の}みます', z:'喝' },
     { i:'wv003', s:'vverb', t:'w', j:'{行|い}きます', z:'去' },
-    { i:'wv004', s:'vverb', t:'w', j:'{来|き}ます', z:'來' },
+    { i:'wv004', s:'vverb', t:'w', j:'{来|き}ます', z:'來', n:'來：友達が来ます。同音的「着ます」是穿上半身衣服' },
     { i:'wv005', s:'vverb', t:'w', j:'{帰|かえ}ります', z:'回去' },
     { i:'wv006', s:'vverb', t:'w', j:'{見|み}ます', z:'看' },
     { i:'wv007', s:'vverb', t:'w', j:'{聞|き}きます', z:'聽・問' },
     { i:'wv008', s:'vverb', t:'w', j:'{話|はな}します', z:'說話' },
     { i:'wv009', s:'vverb', t:'w', j:'{読|よ}みます', z:'閱讀' },
     { i:'wv010', s:'vverb', t:'w', j:'{書|か}きます', z:'寫' },
-    { i:'wv011', s:'vverb', t:'w', j:'{買|か}います', z:'買' },
+    { i:'wv011', s:'vverb', t:'w', j:'{買|か}います', z:'買', n:'買東西，最常用。同音的「飼います」是養動物' },
     { i:'wv012', s:'vverb', t:'w', j:'{売|う}ります', z:'賣' },
     { i:'wv013', s:'vverb', t:'w', j:'{作|つく}ります', z:'製作' },
     { i:'wv014', s:'vverb', t:'w', j:'{使|つか}います', z:'使用' },
     { i:'wv015', s:'vverb', t:'w', j:'します', z:'做' },
     { i:'wv016', s:'vverb', t:'w', j:'あります', z:'有（東西）' },
     { i:'wv017', s:'vverb', t:'w', j:'います', z:'有（人・動物）' },
-    { i:'wv018', s:'vverb', t:'w', j:'なります', z:'變成' },
+    { i:'wv018', s:'vverb', t:'w', j:'なります', z:'變成', n:'變成：医者になります。同音的「鳴ります」是鈴響' },
     { i:'wv019', s:'vverb', t:'w', j:'{分|わ}かります', z:'懂' },
     { i:'wv020', s:'vverb', t:'w', j:'{知|し}ります', z:'知道' },
     { i:'wv021', s:'vverb', t:'w', j:'{思|おも}います', z:'覺得' },
@@ -2217,13 +2285,13 @@ window.JPVOCAB = {
     { i:'wv026', s:'vverb', t:'w', j:'{働|はたら}きます', z:'上班工作' },
     { i:'wv027', s:'vverb', t:'w', j:'{勉強|べんきょう}します', z:'讀書' },
     { i:'wv028', s:'vverb', t:'w', j:'{寝|ね}ます', z:'睡覺' },
-    { i:'wv029', s:'vverb', t:'w', j:'{起|お}きます', z:'起床' },
+    { i:'wv029', s:'vverb', t:'w', j:'{起|お}きます', z:'起床', n:'起床、發生：7時に起きます。同音的「置きます」是把東西放下' },
     { i:'wv030', s:'vverb', t:'w', j:'{立|た}ちます', z:'站立' },
     { i:'wv031', s:'vverb', t:'w', j:'{座|すわ}ります', z:'坐下' },
     { i:'wv032', s:'vverb', t:'w', j:'{歩|ある}きます', z:'走路' },
     { i:'wv033', s:'vverb', t:'w', j:'{走|はし}ります', z:'跑' },
     { i:'wv034', s:'vverb', t:'w', j:'{乗|の}ります', z:'搭乘' },
-    { i:'wv035', s:'vverb', t:'w', j:'{降|お}ります', z:'下車' },
+    { i:'wv035', s:'vverb', t:'w', j:'{降|お}ります', z:'下車', n:'下車、下樓：次で降ります。同音的「折ります」是折東西' },
     { i:'wv036', s:'vverb', t:'w', j:'{入|はい}ります', z:'進去' },
     { i:'wv037', s:'vverb', t:'w', j:'{出|で}ます', z:'出去' },
     { i:'wv038', s:'vverb', t:'w', j:'{開|あ}けます', z:'打開（門窗）' },
@@ -2232,10 +2300,10 @@ window.JPVOCAB = {
     { i:'wv041', s:'vverb', t:'w', j:'{消|け}します', z:'關掉（電器）' },
     { i:'wv042', s:'vverb', t:'w', j:'{始|はじ}めます', z:'開始' },
     { i:'wv043', s:'vverb', t:'w', j:'{終|お}わります', z:'結束' },
-    { i:'wv044', s:'vverb', t:'w', j:'やめます', z:'停止・作罷' },
+    { i:'wv044', s:'vverb', t:'w', j:'やめます', z:'停止・作罷', n:'停止、作罷、不做了（事情）。同音的「辞めます」專指辭職、退出' },
     { i:'wv045', s:'vverb', t:'w', j:'{続|つづ}けます', z:'繼續' },
     { i:'wv046', s:'vverb', t:'w', j:'{持|も}ちます', z:'拿著' },
-    { i:'wv047', s:'vverb', t:'w', j:'{置|お}きます', z:'放置' },
+    { i:'wv047', s:'vverb', t:'w', j:'{置|お}きます', z:'放置', n:'把東西放下、擺著：ここに置きます。同音的「起きます」是起床' },
     { i:'wv048', s:'vverb', t:'w', j:'{取|と}ります', z:'拿取' },
     { i:'wv049', s:'vverb', t:'w', j:'あげます', z:'給（別人）' },
     { i:'wv050', s:'vverb', t:'w', j:'もらいます', z:'收到' },
@@ -2276,7 +2344,7 @@ window.JPVOCAB = {
     { i:'wv085', s:'vverb', t:'w', j:'{拾|ひろ}います', z:'撿起' },
     { i:'wv086', s:'vverb', t:'w', j:'{捨|す}てます', z:'丟棄' },
     { i:'wv087', s:'vverb', t:'w', j:'{片付|かたづ}けます', z:'收拾' },
-    { i:'wv088', s:'vverb', t:'w', j:'{着|き}ます', z:'穿（上半身）' },
+    { i:'wv088', s:'vverb', t:'w', j:'{着|き}ます', z:'穿（上半身）', n:'穿上半身的衣服（襯衫、外套）。褲子鞋子要用別的動詞。同音的「来ます」是來' },
     { i:'wv089', s:'vverb', t:'w', j:'{履|は}きます', z:'穿（鞋襪褲）' },
     { i:'wv090', s:'vverb', t:'w', j:'{脱|ぬ}ぎます', z:'脫下' },
     { i:'wv091', s:'vverb', t:'w', j:'かぶります', z:'戴（帽子）' },
@@ -2287,7 +2355,7 @@ window.JPVOCAB = {
     { i:'wv096', s:'vverb', t:'w', j:'{歌|うた}います', z:'唱歌' },
     { i:'wv097', s:'vverb', t:'w', j:'{遊|あそ}びます', z:'玩' },
     { i:'wv098', s:'vverb', t:'w', j:'{笑|わら}います', z:'笑' },
-    { i:'wv099', s:'vverb', t:'w', j:'{泣|な}きます', z:'哭' },
+    { i:'wv099', s:'vverb', t:'w', j:'{泣|な}きます', z:'哭', n:'人哭。同音的「鳴きます」是動物叫' },
     { i:'wv100', s:'vverb', t:'w', j:'{怒|おこ}ります', z:'生氣' },
     { i:'wv101', s:'vverb', t:'w', j:'{驚|おどろ}きます', z:'嚇一跳' },
     { i:'wv102', s:'vverb', t:'w', j:'{困|こま}ります', z:'傷腦筋' },
@@ -2326,7 +2394,7 @@ window.JPVOCAB = {
     { i:'wa011', s:'vadj', t:'w', j:'{少|すく}ない', z:'少的' },
     { i:'wa012', s:'vadj', t:'w', j:'{早|はや}い', z:'早的・快的' },
     { i:'wa013', s:'vadj', t:'w', j:'{遅|おそ}い', z:'慢的・晚的' },
-    { i:'wa014', s:'vadj', t:'w', j:'{暑|あつ}い', z:'（天氣）熱' },
+    { i:'wa014', s:'vadj', t:'w', j:'{暑|あつ}い', z:'（天氣）熱', n:'只講天氣、氣溫。「今日は暑い」。同音的「厚い」是東西的厚度，摸到燙的是「熱い」' },
     { i:'wa015', s:'vadj', t:'w', j:'{寒|さむ}い', z:'（天氣）冷' },
     { i:'wa016', s:'vadj', t:'w', j:'{冷|つめ}たい', z:'冰涼的' },
     { i:'wa017', s:'vadj', t:'w', j:'{暖|あたた}かい', z:'溫暖的' },
@@ -2498,7 +2566,7 @@ window.JPVOCAB = {
     { i:'wo013', s:'vmood', t:'w', j:'{趣味|しゅみ}', z:'興趣嗜好' },
     { i:'wo014', s:'vmood', t:'w', j:'{夢|ゆめ}', z:'夢・夢想' },
     { i:'wo015', s:'vmood', t:'w', j:'{希望|きぼう}', z:'希望' },
-    { i:'wo016', s:'vmood', t:'w', j:'{自信|じしん}', z:'自信' },
+    { i:'wo016', s:'vmood', t:'w', j:'{自信|じしん}', z:'自信', n:'自信、有把握：自信がある。同音的「地震」是地震' },
     { i:'wo017', s:'vmood', t:'w', j:'{勇気|ゆうき}', z:'勇氣' },
     { i:'wo018', s:'vmood', t:'w', j:'{我慢|がまん}', z:'忍耐' },
     { i:'wo019', s:'vmood', t:'w', j:'{努力|どりょく}', z:'努力' },
@@ -2562,7 +2630,7 @@ window.JPVOCAB = {
     { i:'wc003', s:'vcolor', t:'w', j:'{青|あお}', z:'藍色' },
     { i:'wc004', s:'vcolor', t:'w', j:'{黄色|きいろ}', z:'黃色' },
     { i:'wc005', s:'vcolor', t:'w', j:'{緑|みどり}', z:'綠色' },
-    { i:'wc006', s:'vcolor', t:'w', j:'{白|しろ}', z:'白色' },
+    { i:'wc006', s:'vcolor', t:'w', j:'{白|しろ}', z:'白色', n:'白色。同音的「城」是城堡，講景點時才會出現' },
     { i:'wc007', s:'vcolor', t:'w', j:'{黒|くろ}', z:'黑色' },
     { i:'wc008', s:'vcolor', t:'w', j:'{茶色|ちゃいろ}', z:'咖啡色' },
     { i:'wc009', s:'vcolor', t:'w', j:'{灰色|はいいろ}', z:'灰色' },
@@ -2575,11 +2643,11 @@ window.JPVOCAB = {
     { i:'wc016', s:'vcolor', t:'w', j:'{形|かたち}', z:'形狀' },
     { i:'wc017', s:'vcolor', t:'w', j:'{丸|まる}', z:'圓形' },
     { i:'wc018', s:'vcolor', t:'w', j:'{三角|さんかく}', z:'三角形' },
-    { i:'wc019', s:'vcolor', t:'w', j:'{四角|しかく}', z:'四方形' },
+    { i:'wc019', s:'vcolor', t:'w', j:'{四角|しかく}', z:'四方形', n:'四方形，形狀。同音的「資格」是證照資格' },
     { i:'wc020', s:'vcolor', t:'w', j:'{線|せん}', z:'線' },
     { i:'wc021', s:'vcolor', t:'w', j:'{点|てん}', z:'點' },
     { i:'wc022', s:'vcolor', t:'w', j:'{上|うえ}', z:'上面' },
-    { i:'wc023', s:'vcolor', t:'w', j:'{下|した}', z:'下面' },
+    { i:'wc023', s:'vcolor', t:'w', j:'{下|した}', z:'下面', n:'下面、底下，方位詞，很常用。同音的「舌」是舌頭' },
     { i:'wc024', s:'vcolor', t:'w', j:'{前|まえ}', z:'前面' },
     { i:'wc025', s:'vcolor', t:'w', j:'{後|うし}ろ', z:'後面' },
     { i:'wc026', s:'vcolor', t:'w', j:'{中|なか}', z:'裡面' },
@@ -2601,7 +2669,1067 @@ window.JPVOCAB = {
     { i:'wc042', s:'vcolor', t:'w', j:'{高|たか}さ', z:'高度' },
     { i:'wc043', s:'vcolor', t:'w', j:'{長|なが}さ', z:'長度' },
     { i:'wc044', s:'vcolor', t:'w', j:'{大|おお}きさ', z:'大小' },
-    { i:'wc045', s:'vcolor', t:'w', j:'{重|おも}さ', z:'重量' }
+    { i:'wc045', s:'vcolor', t:'w', j:'{重|おも}さ', z:'重量' },
+
+    /* ══════════════════════════════════════════════════════════
+       以下 1010 字為 N5〜N4 實用字擴充（每個分類都有）
+       ══════════════════════════════════════════════════════════ */
+
+    /* ───── 食物（+40） ───── */
+    { i:'qf01', s:'vfood', t:'w', j:'{親子丼|おやこどん}', z:'親子丼' },
+    { i:'qf02', s:'vfood', t:'w', j:'{牛丼|ぎゅうどん}', z:'牛丼' },
+    { i:'qf03', s:'vfood', t:'w', j:'{定食|ていしょく}', z:'定食套餐' },
+    { i:'qf04', s:'vfood', t:'w', j:'{焼|や}きそば', z:'炒麵' },
+    { i:'qf05', s:'vfood', t:'w', j:'{冷|ひ}やし{中華|ちゅうか}', z:'冷麵' },
+    { i:'qf06', s:'vfood', t:'w', j:'お{好|この}み{焼|や}き', z:'大阪燒' },
+    { i:'qf07', s:'vfood', t:'w', j:'{鍋|なべ}{料理|りょうり}', z:'火鍋料理' },
+    { i:'qf08', s:'vfood', t:'w', j:'しゃぶしゃぶ', z:'涮涮鍋' },
+    { i:'qf09', s:'vfood', t:'w', j:'すき{焼|や}き', z:'壽喜燒' },
+    { i:'qf10', s:'vfood', t:'w', j:'{串|くし}{揚|あ}げ', z:'炸串' },
+    { i:'qf11', s:'vfood', t:'w', j:'{刺身|さしみ}{盛|も}り{合|あ}わせ', z:'綜合生魚片' },
+    { i:'qf12', s:'vfood', t:'w', j:'{茶碗蒸|ちゃわんむ}し', z:'茶碗蒸' },
+    { i:'qf13', s:'vfood', t:'w', j:'{汁物|しるもの}', z:'湯品' },
+    { i:'qf14', s:'vfood', t:'w', j:'{煮物|にもの}', z:'滷煮料理' },
+    { i:'qf15', s:'vfood', t:'w', j:'{揚|あ}げ{物|もの}', z:'炸物' },
+    { i:'qf16', s:'vfood', t:'w', j:'{焼|や}き{魚|ざかな}', z:'烤魚' },
+    { i:'qf17', s:'vfood', t:'w', j:'{冷凍食品|れいとうしょくひん}', z:'冷凍食品' },
+    { i:'qf18', s:'vfood', t:'w', j:'{材料|ざいりょう}', z:'食材' },
+    { i:'qf19', s:'vfood', t:'w', j:'{味|あじ}', z:'味道' },
+    { i:'qf20', s:'vfood', t:'w', j:'{香|かお}り', z:'香氣' },
+    { i:'qf21', s:'vfood', t:'w', j:'{食欲|しょくよく}', z:'食慾' },
+    { i:'qf22', s:'vfood', t:'w', j:'{栄養|えいよう}', z:'營養' },
+    { i:'qf23', s:'vfood', t:'w', j:'カロリー', z:'熱量' },
+    { i:'qf24', s:'vfood', t:'w', j:'{賞味期限|しょうみきげん}', z:'賞味期限' },
+    { i:'qf25', s:'vfood', t:'w', j:'{産地|さんち}', z:'產地' },
+    { i:'qf26', s:'vfood', t:'w', j:'{旬|しゅん}', z:'當季' },
+    { i:'qf27', s:'vfood', t:'w', j:'{新鮮|しんせん}な{魚|さかな}', z:'新鮮的魚' },
+    { i:'qf28', s:'vfood', t:'w', j:'{大盛|おおも}り', z:'大碗' },
+    { i:'qf29', s:'vfood', t:'w', j:'{小盛|こも}り', z:'小碗' },
+    { i:'qf30', s:'vfood', t:'w', j:'{辛口|からくち}', z:'偏辣口味' },
+    { i:'qf31', s:'vfood', t:'w', j:'{甘口|あまくち}', z:'偏甜口味' },
+    { i:'qf32', s:'vfood', t:'w', j:'{野菜炒|やさいいた}め', z:'炒青菜' },
+    { i:'qf33', s:'vfood', t:'w', j:'{卵焼|たまごや}き', z:'玉子燒' },
+    { i:'qf34', s:'vfood', t:'w', j:'{梅干|うめぼ}し', z:'梅干' },
+    { i:'qf35', s:'vfood', t:'w', j:'わさび', z:'芥末' },
+    { i:'qf36', s:'vfood', t:'w', j:'しょうが', z:'薑' },
+    { i:'qf37', s:'vfood', t:'w', j:'にんにく', z:'蒜' },
+    { i:'qf38', s:'vfood', t:'w', j:'{粉|こな}', z:'粉' },
+    { i:'qf39', s:'vfood', t:'w', j:'{小麦粉|こむぎこ}', z:'麵粉' },
+    { i:'qf40', s:'vfood', t:'w', j:'{食材売場|しょくざいうりば}', z:'生鮮賣場' },
+
+    /* ───── 飲料・點心（+30） ───── */
+    { i:'qd01', s:'vdrink', t:'w', j:'{炭酸|たんさん}', z:'碳酸' },
+    { i:'qd02', s:'vdrink', t:'w', j:'ストレート', z:'純飲不加料' },
+    { i:'qd03', s:'vdrink', t:'w', j:'{無糖|むとう}', z:'無糖' },
+    { i:'qd04', s:'vdrink', t:'w', j:'{微糖|びとう}', z:'微糖' },
+    { i:'qd05', s:'vdrink', t:'w', j:'{果汁|かじゅう}', z:'果汁含量' },
+    { i:'qd06', s:'vdrink', t:'w', j:'ノンアルコール', z:'無酒精' },
+    { i:'qd07', s:'vdrink', t:'w', j:'{麦|むぎ}ジュース', z:'大麥飲' },
+    { i:'qd08', s:'vdrink', t:'w', j:'{羊羹|ようかん}', z:'羊羹' },
+    { i:'qd09', s:'vdrink', t:'w', j:'{餅菓子|もちがし}', z:'麻糬點心' },
+    { i:'qd10', s:'vdrink', t:'w', j:'{洋菓子|ようがし}', z:'西式甜點' },
+    { i:'qd11', s:'vdrink', t:'w', j:'{焼|や}き{菓子|がし}', z:'烘焙點心' },
+    { i:'qd12', s:'vdrink', t:'w', j:'クリーム', z:'鮮奶油' },
+    { i:'qd13', s:'vdrink', t:'w', j:'{乾杯|かんぱい}', z:'乾杯' },
+    { i:'qd14', s:'vdrink', t:'w', j:'{飲|の}み{放題|ほうだい}', z:'喝到飽' },
+    { i:'qd15', s:'vdrink', t:'w', j:'{食|た}べ{放題|ほうだい}', z:'吃到飽' },
+    { i:'qd16', s:'vdrink', t:'w', j:'おかわり', z:'再來一份' },
+    { i:'qd17', s:'vdrink', t:'w', j:'{自動販売機|じどうはんばいき}', z:'自動販賣機' },
+    { i:'qd18', s:'vdrink', t:'w', j:'{紙|かみ}ナプキン', z:'紙巾' },
+    { i:'qd19', s:'vdrink', t:'w', j:'{保冷剤|ほれいざい}', z:'保冷劑' },
+    { i:'qd20', s:'vdrink', t:'w', j:'{温|あたた}かい{飲|の}み{物|もの}', z:'熱飲' },
+    { i:'qd21', s:'vdrink', t:'w', j:'{冷|つめ}たい{飲|の}み{物|もの}', z:'冷飲' },
+    { i:'qd22', s:'vdrink', t:'w', j:'{氷|こおり}なし', z:'去冰' },
+    { i:'qd23', s:'vdrink', t:'w', j:'{持|も}ち{帰|かえ}り', z:'外帶' },
+    { i:'qd24', s:'vdrink', t:'w', j:'{店内|てんない}', z:'內用' },
+    { i:'qd25', s:'vdrink', t:'w', j:'{喫茶|きっさ}', z:'喝茶休憩' },
+    { i:'qd26', s:'vdrink', t:'w', j:'バイキング', z:'自助餐' },
+    { i:'qd27', s:'vdrink', t:'w', j:'デザート', z:'甜點' },
+    { i:'qd28', s:'vdrink', t:'w', j:'{軽食|けいしょく}', z:'輕食' },
+    { i:'qd29', s:'vdrink', t:'w', j:'{間食|かんしょく}', z:'吃零嘴' },
+    { i:'qd30', s:'vdrink', t:'w', j:'{差|さ}し{入|い}れ', z:'探班帶的吃食' },
+
+    /* ───── 身體・健康（+35） ───── */
+    { i:'qb01', s:'vbody', t:'w', j:'{額|ひたい}', z:'額頭' },
+    { i:'qb02', s:'vbody', t:'w', j:'ほお', z:'臉頰' },
+    { i:'qb03', s:'vbody', t:'w', j:'あご', z:'下巴' },
+    { i:'qb04', s:'vbody', t:'w', j:'{唇|くちびる}', z:'嘴唇' },
+    { i:'qb05', s:'vbody', t:'w', j:'ひじ', z:'手肘' },
+    { i:'qb06', s:'vbody', t:'w', j:'かかと', z:'腳後跟' },
+    { i:'qb07', s:'vbody', t:'w', j:'{筋肉|きんにく}', z:'肌肉' },
+    { i:'qb08', s:'vbody', t:'w', j:'くしゃみ', z:'噴嚏' },
+    { i:'qb09', s:'vbody', t:'w', j:'{下痢|げり}', z:'拉肚子' },
+    { i:'qb10', s:'vbody', t:'w', j:'めまい', z:'頭暈' },
+    { i:'qb11', s:'vbody', t:'w', j:'やけど', z:'燙傷' },
+    { i:'qb12', s:'vbody', t:'w', j:'{骨折|こっせつ}', z:'骨折' },
+    { i:'qb13', s:'vbody', t:'w', j:'{虫歯|むしば}', z:'蛀牙' },
+    { i:'qb14', s:'vbody', t:'w', j:'アレルギー', z:'過敏' },
+    { i:'qb15', s:'vbody', t:'w', j:'インフルエンザ', z:'流感' },
+    { i:'qb16', s:'vbody', t:'w', j:'{血圧|けつあつ}', z:'血壓' },
+    { i:'qb17', s:'vbody', t:'w', j:'{手術|しゅじゅつ}', z:'手術' },
+    { i:'qb18', s:'vbody', t:'w', j:'{入院|にゅういん}', z:'住院' },
+    { i:'qb19', s:'vbody', t:'w', j:'{退院|たいいん}', z:'出院' },
+    { i:'qb20', s:'vbody', t:'w', j:'{診察|しんさつ}', z:'看診' },
+    { i:'qb21', s:'vbody', t:'w', j:'{保険証|ほけんしょう}', z:'健保卡' },
+    { i:'qb22', s:'vbody', t:'w', j:'{処方箋|しょほうせん}', z:'處方箋' },
+    { i:'qb23', s:'vbody', t:'w', j:'{錠剤|じょうざい}', z:'藥錠' },
+    { i:'qb24', s:'vbody', t:'w', j:'{湿布|しっぷ}', z:'藥布' },
+    { i:'qb25', s:'vbody', t:'w', j:'{消毒|しょうどく}', z:'消毒' },
+    { i:'qb26', s:'vbody', t:'w', j:'{包帯|ほうたい}', z:'繃帶' },
+    { i:'qb27', s:'vbody', t:'w', j:'{体調|たいちょう}', z:'身體狀況' },
+    { i:'qb28', s:'vbody', t:'w', j:'{食中毒|しょくちゅうどく}', z:'食物中毒' },
+    { i:'qb29', s:'vbody', t:'w', j:'{予防|よぼう}', z:'預防' },
+    { i:'qb30', s:'vbody', t:'w', j:'{検診|けんしん}', z:'健康檢查' },
+    { i:'qb31', s:'vbody', t:'w', j:'{姿勢|しせい}', z:'姿勢' },
+    { i:'qb32', s:'vbody', t:'w', j:'{呼吸|こきゅう}', z:'呼吸' },
+    { i:'qb33', s:'vbody', t:'w', j:'{脈|みゃく}', z:'脈搏' },
+    { i:'qb34', s:'vbody', t:'w', j:'{神経|しんけい}', z:'神經' },
+    { i:'qb35', s:'vbody', t:'w', j:'{肌|はだ}', z:'肌膚' },
+
+    /* ───── 服裝・隨身物（+30） ───── */
+    { i:'qw01', s:'vwear', t:'w', j:'{作業着|さぎょうぎ}', z:'工作服' },
+    { i:'qw02', s:'vwear', t:'w', j:'{背広|せびろ}', z:'西裝外套' },
+    { i:'qw03', s:'vwear', t:'w', j:'ネクタイピン', z:'領帶夾' },
+    { i:'qw04', s:'vwear', t:'w', j:'{浴衣|ゆかた}', z:'浴衣' },
+    { i:'qw05', s:'vwear', t:'w', j:'{着物|きもの}', z:'和服' },
+    { i:'qw06', s:'vwear', t:'w', j:'{帯|おび}', z:'腰帶' },
+    { i:'qw07', s:'vwear', t:'w', j:'{下駄|げた}', z:'木屐' },
+    { i:'qw08', s:'vwear', t:'w', j:'イヤリング', z:'耳環' },
+    { i:'qw09', s:'vwear', t:'w', j:'ブレスレット', z:'手環' },
+    { i:'qw10', s:'vwear', t:'w', j:'{紙袋|かみぶくろ}', z:'紙袋' },
+    { i:'qw11', s:'vwear', t:'w', j:'{雨具|あまぐ}', z:'雨具' },
+    { i:'qw12', s:'vwear', t:'w', j:'{合羽|かっぱ}', z:'雨衣' },
+    { i:'qw13', s:'vwear', t:'w', j:'{長靴|ながぐつ}', z:'雨鞋' },
+    { i:'qw14', s:'vwear', t:'w', j:'パジャマ', z:'睡衣' },
+    { i:'qw15', s:'vwear', t:'w', j:'{水着|みずぎ}', z:'泳衣' },
+    { i:'qw16', s:'vwear', t:'w', j:'{香水|こうすい}', z:'香水' },
+    { i:'qw17', s:'vwear', t:'w', j:'くし', z:'梳子' },
+    { i:'qw18', s:'vwear', t:'w', j:'{柄|がら}', z:'花樣' },
+    { i:'qw19', s:'vwear', t:'w', j:'ボタン', z:'鈕扣' },
+    { i:'qw20', s:'vwear', t:'w', j:'ポケット', z:'口袋' },
+    { i:'qw21', s:'vwear', t:'w', j:'そで', z:'袖子' },
+    { i:'qw22', s:'vwear', t:'w', j:'えり', z:'衣領' },
+    { i:'qw23', s:'vwear', t:'w', j:'{裏地|うらじ}', z:'內襯' },
+    { i:'qw24', s:'vwear', t:'w', j:'{生地|きじ}', z:'布料' },
+    { i:'qw25', s:'vwear', t:'w', j:'{綿|めん}', z:'棉', n:'棉這種布料：綿のシャツ。同音的「麺」是吃的麵' },
+    { i:'qw26', s:'vwear', t:'w', j:'{革|かわ}', z:'皮革', n:'皮革材質：革の財布（皮夾）。同音的「川」是河' },
+    { i:'qw27', s:'vwear', t:'w', j:'{毛糸|けいと}', z:'毛線' },
+    { i:'qw28', s:'vwear', t:'w', j:'{上着|うわぎ}', z:'外衣' },
+    { i:'qw29', s:'vwear', t:'w', j:'{着替|きが}え{用|よう}', z:'替換用的' },
+    { i:'qw30', s:'vwear', t:'w', j:'{洗|あら}い{替|が}え', z:'換洗用' },
+
+    /* ───── 家・家具家電（+40） ───── */
+    { i:'qh01', s:'vhome', t:'w', j:'{二階|にかい}', z:'二樓' },
+    { i:'qh02', s:'vhome', t:'w', j:'{一階|いっかい}', z:'一樓' },
+    { i:'qh03', s:'vhome', t:'w', j:'{地下室|ちかしつ}', z:'地下室' },
+    { i:'qh04', s:'vhome', t:'w', j:'{物置|ものおき}', z:'儲藏室' },
+    { i:'qh05', s:'vhome', t:'w', j:'{押|お}し{入|い}れ', z:'壁櫥' },
+    { i:'qh06', s:'vhome', t:'w', j:'{畳|たたみ}', z:'榻榻米' },
+    { i:'qh07', s:'vhome', t:'w', j:'ふすま', z:'紙拉門' },
+    { i:'qh08', s:'vhome', t:'w', j:'{障子|しょうじ}', z:'和式紙窗' },
+    { i:'qh09', s:'vhome', t:'w', j:'{縁側|えんがわ}', z:'簷廊' },
+    { i:'qh10', s:'vhome', t:'w', j:'{門|もん}', z:'大門' },
+    { i:'qh11', s:'vhome', t:'w', j:'{塀|へい}', z:'圍牆' },
+    { i:'qh12', s:'vhome', t:'w', j:'{屋外|おくがい}', z:'戶外' },
+    { i:'qh13', s:'vhome', t:'w', j:'{室内|しつない}', z:'室內' },
+    { i:'qh14', s:'vhome', t:'w', j:'{換気|かんき}', z:'通風' },
+    { i:'qh15', s:'vhome', t:'w', j:'{加湿器|かしつき}', z:'加濕器' },
+    { i:'qh16', s:'vhome', t:'w', j:'{空気清浄機|くうきせいじょうき}', z:'空氣清淨機' },
+    { i:'qh17', s:'vhome', t:'w', j:'{湯沸|ゆわ}かし{器|き}', z:'熱水器' },
+    { i:'qh18', s:'vhome', t:'w', j:'{食器洗|しょっきあら}い{機|き}', z:'洗碗機' },
+    { i:'qh19', s:'vhome', t:'w', j:'アイロン', z:'熨斗' },
+    { i:'qh20', s:'vhome', t:'w', j:'{時計台|とけいだい}', z:'鐘樓' },
+    { i:'qh21', s:'vhome', t:'w', j:'{照明|しょうめい}', z:'照明' },
+    { i:'qh22', s:'vhome', t:'w', j:'スイッチ', z:'開關' },
+    { i:'qh23', s:'vhome', t:'w', j:'{延長|えんちょう}コード', z:'延長線' },
+    { i:'qh24', s:'vhome', t:'w', j:'{水道|すいどう}', z:'自來水' },
+    { i:'qh25', s:'vhome', t:'w', j:'{蛇口|じゃぐち}', z:'水龍頭' },
+    { i:'qh26', s:'vhome', t:'w', j:'{排水口|はいすいこう}', z:'排水孔' },
+    { i:'qh27', s:'vhome', t:'w', j:'{浴槽|よくそう}', z:'浴缸' },
+    { i:'qh28', s:'vhome', t:'w', j:'{便座|べんざ}', z:'馬桶座' },
+    { i:'qh29', s:'vhome', t:'w', j:'{物干|ものほ}し', z:'曬衣架' },
+    { i:'qh30', s:'vhome', t:'w', j:'ハンガー', z:'衣架' },
+    { i:'qh31', s:'vhome', t:'w', j:'{箒|ほうき}', z:'掃把' },
+    { i:'qh32', s:'vhome', t:'w', j:'ちりとり', z:'畚箕' },
+    { i:'qh33', s:'vhome', t:'w', j:'{雑巾|ぞうきん}', z:'抹布' },
+    { i:'qh34', s:'vhome', t:'w', j:'バケツ', z:'水桶' },
+    { i:'qh35', s:'vhome', t:'w', j:'{段|だん}ボール', z:'紙箱' },
+    { i:'qh36', s:'vhome', t:'w', j:'{布団|ふとん}カバー', z:'被套' },
+    { i:'qh37', s:'vhome', t:'w', j:'シーツ', z:'床單' },
+    { i:'qh38', s:'vhome', t:'w', j:'{座布団|ざぶとん}', z:'坐墊' },
+    { i:'qh39', s:'vhome', t:'w', j:'{絨毯|じゅうたん}', z:'地毯' },
+    { i:'qh40', s:'vhome', t:'w', j:'{花瓶|かびん}', z:'花瓶' },
+
+    /* ───── 街道・場所（+40） ───── */
+    { i:'qt01', s:'vtown', t:'w', j:'{車道|しゃどう}', z:'車道' },
+    { i:'qt02', s:'vtown', t:'w', j:'{地下道|ちかどう}', z:'地下道' },
+    { i:'qt03', s:'vtown', t:'w', j:'{街灯|がいとう}', z:'路燈' },
+    { i:'qt04', s:'vtown', t:'w', j:'{坂|さか}', z:'坡道' },
+    { i:'qt05', s:'vtown', t:'w', j:'ポスト', z:'郵筒' },
+    { i:'qt06', s:'vtown', t:'w', j:'{電柱|でんちゅう}', z:'電線桿' },
+    { i:'qt07', s:'vtown', t:'w', j:'{看板|かんばん}', z:'招牌' },
+    { i:'qt08', s:'vtown', t:'w', j:'{標識|ひょうしき}', z:'路標' },
+    { i:'qt09', s:'vtown', t:'w', j:'{噴水|ふんすい}', z:'噴水池' },
+    { i:'qt10', s:'vtown', t:'w', j:'ベンチ', z:'長椅' },
+    { i:'qt11', s:'vtown', t:'w', j:'{花壇|かだん}', z:'花圃' },
+    { i:'qt12', s:'vtown', t:'w', j:'{歩行者天国|ほこうしゃてんごく}', z:'行人徒步區' },
+    { i:'qt13', s:'vtown', t:'w', j:'{路地|ろじ}', z:'小巷' },
+    { i:'qt14', s:'vtown', t:'w', j:'{大通|おおどお}り', z:'大馬路' },
+    { i:'qt15', s:'vtown', t:'w', j:'{郊外|こうがい}', z:'郊區' },
+    { i:'qt16', s:'vtown', t:'w', j:'{団地|だんち}', z:'國宅社區' },
+    { i:'qt17', s:'vtown', t:'w', j:'{寮|りょう}', z:'宿舍' },
+    { i:'qt18', s:'vtown', t:'w', j:'{空|あ}き{地|ち}', z:'空地' },
+    { i:'qt19', s:'vtown', t:'w', j:'{工事|こうじ}', z:'施工' },
+    { i:'qt20', s:'vtown', t:'w', j:'{改装|かいそう}', z:'整修' },
+    { i:'qt21', s:'vtown', t:'w', j:'{開店|かいてん}', z:'開幕' },
+    { i:'qt22', s:'vtown', t:'w', j:'{閉店|へいてん}', z:'打烊' },
+    { i:'qt23', s:'vtown', t:'w', j:'{営業時間|えいぎょうじかん}', z:'營業時間' },
+    { i:'qt24', s:'vtown', t:'w', j:'{定休日|ていきゅうび}', z:'公休日' },
+    { i:'qt25', s:'vtown', t:'w', j:'{屋根付|やねつ}き{駐輪場|ちゅうりんじょう}', z:'有屋頂的停車棚' },
+    { i:'qt26', s:'vtown', t:'w', j:'{美容院|びよういん}', z:'美髮院' },
+    { i:'qt27', s:'vtown', t:'w', j:'クリーニング{店|てん}', z:'洗衣店' },
+    { i:'qt28', s:'vtown', t:'w', j:'{文房具屋|ぶんぼうぐや}', z:'文具店' },
+    { i:'qt29', s:'vtown', t:'w', j:'{眼鏡屋|めがねや}', z:'眼鏡行' },
+    { i:'qt30', s:'vtown', t:'w', j:'{靴屋|くつや}', z:'鞋店' },
+    { i:'qt31', s:'vtown', t:'w', j:'{果物屋|くだものや}', z:'水果店' },
+    { i:'qt32', s:'vtown', t:'w', j:'{酒屋|さかや}', z:'酒舖' },
+    { i:'qt33', s:'vtown', t:'w', j:'{弁当屋|べんとうや}', z:'便當店' },
+    { i:'qt34', s:'vtown', t:'w', j:'{牛丼屋|ぎゅうどんや}', z:'牛丼店' },
+    { i:'qt35', s:'vtown', t:'w', j:'{回転寿司|かいてんずし}', z:'迴轉壽司' },
+    { i:'qt36', s:'vtown', t:'w', j:'{立|た}ち{食|ぐ}い', z:'站著吃的小店' },
+    { i:'qt37', s:'vtown', t:'w', j:'{商業施設|しょうぎょうしせつ}', z:'商業設施' },
+    { i:'qt38', s:'vtown', t:'w', j:'{地下街|ちかがい}', z:'地下街' },
+    { i:'qt39', s:'vtown', t:'w', j:'{展示場|てんじじょう}', z:'展場' },
+    { i:'qt40', s:'vtown', t:'w', j:'{公衆|こうしゅう}トイレ', z:'公共廁所' },
+
+    /* ───── 交通工具（+30） ───── */
+    { i:'qr01', s:'vride', t:'w', j:'{快速|かいそく}', z:'快速列車' },
+    { i:'qr02', s:'vride', t:'w', j:'{準急|じゅんきゅう}', z:'準急列車' },
+    { i:'qr03', s:'vride', t:'w', j:'{上|のぼ}り', z:'上行' },
+    { i:'qr04', s:'vride', t:'w', j:'{下|くだ}り', z:'下行' },
+    { i:'qr05', s:'vride', t:'w', j:'{次|つぎ}の{駅|えき}', z:'下一站' },
+    { i:'qr06', s:'vride', t:'w', j:'{乗車|じょうしゃ}', z:'乘車' },
+    { i:'qr07', s:'vride', t:'w', j:'{降車|こうしゃ}ボタン', z:'下車鈴' },
+    { i:'qr08', s:'vride', t:'w', j:'{優先席|ゆうせんせき}', z:'博愛座' },
+    { i:'qr09', s:'vride', t:'w', j:'{女性専用車|じょせいせんようしゃ}', z:'女性專用車廂' },
+    { i:'qr10', s:'vride', t:'w', j:'{車両|しゃりょう}', z:'車廂' },
+    { i:'qr11', s:'vride', t:'w', j:'{号車|ごうしゃ}', z:'幾號車廂' },
+    { i:'qr12', s:'vride', t:'w', j:'{運行|うんこう}', z:'行駛' },
+    { i:'qr13', s:'vride', t:'w', j:'{運休|うんきゅう}', z:'停駛' },
+    { i:'qr14', s:'vride', t:'w', j:'{振替輸送|ふりかえゆそう}', z:'轉乘接駁' },
+    { i:'qr15', s:'vride', t:'w', j:'{回数券|かいすうけん}', z:'回數票' },
+    { i:'qr16', s:'vride', t:'w', j:'{一日乗車券|いちにちじょうしゃけん}', z:'一日券' },
+    { i:'qr17', s:'vride', t:'w', j:'{精算機|せいさんき}', z:'補票機' },
+    { i:'qr18', s:'vride', t:'w', j:'{券売機|けんばいき}', z:'售票機' },
+    { i:'qr19', s:'vride', t:'w', j:'{改札|かいさつ}を{出|で}ます', z:'出站' },
+    { i:'qr20', s:'vride', t:'w', j:'{乗|の}り{過|す}ごし', z:'坐過站' },
+    { i:'qr21', s:'vride', t:'w', j:'{終電|しゅうでん}', z:'末班電車' },
+    { i:'qr22', s:'vride', t:'w', j:'{始発駅|しはつえき}', z:'起站' },
+    { i:'qr23', s:'vride', t:'w', j:'{所要時間|しょようじかん}', z:'所需時間' },
+    { i:'qr24', s:'vride', t:'w', j:'{徒歩圏内|とほけんない}', z:'步行可達' },
+    { i:'qr25', s:'vride', t:'w', j:'{送迎|そうげい}バス', z:'接駁車' },
+    { i:'qr26', s:'vride', t:'w', j:'{観光|かんこう}バス', z:'遊覽車' },
+    { i:'qr27', s:'vride', t:'w', j:'レンタカー', z:'租車' },
+    { i:'qr28', s:'vride', t:'w', j:'{駐車券|ちゅうしゃけん}', z:'停車券' },
+    { i:'qr29', s:'vride', t:'w', j:'シートベルト', z:'安全帶' },
+    { i:'qr30', s:'vride', t:'w', j:'ヘルメット', z:'安全帽' },
+
+    /* ───── 天氣・自然（+30） ───── */
+    { i:'qs01', s:'vsky', t:'w', j:'{快晴|かいせい}', z:'萬里無雲' },
+    { i:'qs02', s:'vsky', t:'w', j:'{小雨|こさめ}', z:'小雨' },
+    { i:'qs03', s:'vsky', t:'w', j:'{大雨|おおあめ}', z:'大雨' },
+    { i:'qs04', s:'vsky', t:'w', j:'{大雪|おおゆき}', z:'大雪' },
+    { i:'qs05', s:'vsky', t:'w', j:'{吹雪|ふぶき}', z:'暴風雪' },
+    { i:'qs06', s:'vsky', t:'w', j:'{強風|きょうふう}', z:'強風' },
+    { i:'qs07', s:'vsky', t:'w', j:'{日照|にっしょう}', z:'日照' },
+    { i:'qs08', s:'vsky', t:'w', j:'{猛暑|もうしょ}', z:'酷暑' },
+    { i:'qs09', s:'vsky', t:'w', j:'{厳寒|げんかん}', z:'嚴寒', n:'嚴寒、極冷，氣象報導用語。同音的「玄関」是家門口，日常講 げんかん 多半是這個' },
+    { i:'qs10', s:'vsky', t:'w', j:'{花冷|はなび}え', z:'春寒' },
+    { i:'qs11', s:'vsky', t:'w', j:'{洪水|こうずい}', z:'洪水' },
+    { i:'qs12', s:'vsky', t:'w', j:'{土砂崩|どしゃくず}れ', z:'土石流' },
+    { i:'qs13', s:'vsky', t:'w', j:'{火山|かざん}', z:'火山' },
+    { i:'qs14', s:'vsky', t:'w', j:'{噴火|ふんか}', z:'火山爆發' },
+    { i:'qs15', s:'vsky', t:'w', j:'{海岸|かいがん}', z:'海岸' },
+    { i:'qs16', s:'vsky', t:'w', j:'{砂浜|すなはま}', z:'沙灘' },
+    { i:'qs17', s:'vsky', t:'w', j:'{波|なみ}', z:'波浪' },
+    { i:'qs18', s:'vsky', t:'w', j:'{潮|しお}', z:'潮水', n:'海水的潮：潮が満ちる（漲潮）。同音的「塩」是吃的鹽' },
+    { i:'qs19', s:'vsky', t:'w', j:'{滝|たき}', z:'瀑布' },
+    { i:'qs20', s:'vsky', t:'w', j:'{谷|たに}', z:'山谷' },
+    { i:'qs21', s:'vsky', t:'w', j:'{岩|いわ}', z:'岩石' },
+    { i:'qs22', s:'vsky', t:'w', j:'{砂|すな}', z:'沙' },
+    { i:'qs23', s:'vsky', t:'w', j:'{土|つち}', z:'泥土' },
+    { i:'qs24', s:'vsky', t:'w', j:'{地面|じめん}', z:'地面' },
+    { i:'qs25', s:'vsky', t:'w', j:'{景色|けしき}', z:'景色' },
+    { i:'qs26', s:'vsky', t:'w', j:'{風景|ふうけい}', z:'風景' },
+    { i:'qs27', s:'vsky', t:'w', j:'{夕焼|ゆうや}け', z:'晚霞' },
+    { i:'qs28', s:'vsky', t:'w', j:'{朝日|あさひ}', z:'朝陽' },
+    { i:'qs29', s:'vsky', t:'w', j:'{満月|まんげつ}', z:'滿月' },
+    { i:'qs30', s:'vsky', t:'w', j:'{星空|ほしぞら}', z:'星空' },
+
+    /* ───── 人・家族（+40） ───── */
+    { i:'pp01', s:'vppl', t:'w', j:'{兄弟|きょうだい}', z:'兄弟姊妹' },
+    { i:'pp02', s:'vppl', t:'w', j:'{姉妹|しまい}', z:'姊妹' },
+    { i:'pp03', s:'vppl', t:'w', j:'いとこ', z:'堂表兄弟姊妹' },
+    { i:'pp04', s:'vppl', t:'w', j:'{孫|まご}', z:'孫子' },
+    { i:'pp05', s:'vppl', t:'w', j:'{夫婦|ふうふ}', z:'夫妻' },
+    { i:'pp06', s:'vppl', t:'w', j:'{独身|どくしん}', z:'單身' },
+    { i:'pp07', s:'vppl', t:'w', j:'{結婚|けっこん}', z:'結婚' },
+    { i:'pp08', s:'vppl', t:'w', j:'{離婚|りこん}', z:'離婚' },
+    { i:'pp09', s:'vppl', t:'w', j:'{恋愛|れんあい}', z:'戀愛' },
+    { i:'pp10', s:'vppl', t:'w', j:'{知|し}り{合|あ}い', z:'熟人' },
+    { i:'pp11', s:'vppl', t:'w', j:'{仲間|なかま}', z:'夥伴' },
+    { i:'pp12', s:'vppl', t:'w', j:'{住民|じゅうみん}', z:'居民' },
+    { i:'pp13', s:'vppl', t:'w', j:'{通行人|つうこうにん}', z:'路人' },
+    { i:'pp14', s:'vppl', t:'w', j:'{観光客|かんこうきゃく}', z:'遊客' },
+    { i:'pp15', s:'vppl', t:'w', j:'{常連|じょうれん}', z:'常客' },
+    { i:'pp16', s:'vppl', t:'w', j:'{職人|しょくにん}', z:'老師傅' },
+    { i:'pp17', s:'vppl', t:'w', j:'{駅員|えきいん}', z:'站務員' },
+    { i:'pp18', s:'vppl', t:'w', j:'{店長|てんちょう}', z:'店長' },
+    { i:'pp19', s:'vppl', t:'w', j:'{社員|しゃいん}', z:'公司員工' },
+    { i:'pp20', s:'vppl', t:'w', j:'{公務員|こうむいん}', z:'公務員' },
+    { i:'pp21', s:'vppl', t:'w', j:'{警察官|けいさつかん}', z:'警察' },
+    { i:'pp22', s:'vppl', t:'w', j:'{消防士|しょうぼうし}', z:'消防員' },
+    { i:'pp23', s:'vppl', t:'w', j:'{教師|きょうし}', z:'教師' },
+    { i:'pp24', s:'vppl', t:'w', j:'{保育士|ほいくし}', z:'保育員' },
+    { i:'pp25', s:'vppl', t:'w', j:'{美容師|びようし}', z:'美髮師' },
+    { i:'pp26', s:'vppl', t:'w', j:'{料理人|りょうりにん}', z:'廚師' },
+    { i:'pp27', s:'vppl', t:'w', j:'{作家|さっか}', z:'作家' },
+    { i:'pp28', s:'vppl', t:'w', j:'{歌手|かしゅ}', z:'歌手' },
+    { i:'pp29', s:'vppl', t:'w', j:'{俳優|はいゆう}', z:'演員' },
+    { i:'pp30', s:'vppl', t:'w', j:'{性格|せいかく}', z:'個性' },
+    { i:'pp31', s:'vppl', t:'w', j:'{年上|としうえ}', z:'年長的' },
+    { i:'pp32', s:'vppl', t:'w', j:'{年下|としした}', z:'年幼的' },
+    { i:'pp33', s:'vppl', t:'w', j:'{同級生|どうきゅうせい}', z:'同班同學' },
+    { i:'pp34', s:'vppl', t:'w', j:'{新婚|しんこん}', z:'新婚' },
+    { i:'pp35', s:'vppl', t:'w', j:'{親子|おやこ}', z:'親子' },
+    { i:'pp36', s:'vppl', t:'w', j:'{他人|たにん}', z:'外人' },
+    { i:'pp37', s:'vppl', t:'w', j:'{相手|あいて}', z:'對方' },
+    { i:'pp38', s:'vppl', t:'w', j:'{全員|ぜんいん}', z:'全體人員' },
+    { i:'pp39', s:'vppl', t:'w', j:'{一人暮|ひとりぐ}らし', z:'獨居' },
+    { i:'pp40', s:'vppl', t:'w', j:'{世代|せだい}', z:'世代' },
+
+    /* ───── 時間・日期（+40） ───── */
+    { i:'pt01', s:'vtime', t:'w', j:'{午前中|ごぜんちゅう}', z:'上午這段時間' },
+    { i:'pt02', s:'vtime', t:'w', j:'{夕暮|ゆうぐ}れ', z:'黃昏' },
+    { i:'pt03', s:'vtime', t:'w', j:'{正午|しょうご}', z:'正午' },
+    { i:'pt04', s:'vtime', t:'w', j:'{真夜中|まよなか}', z:'半夜' },
+    { i:'pt05', s:'vtime', t:'w', j:'{明|あ}け{方|がた}', z:'清晨' },
+    { i:'pt06', s:'vtime', t:'w', j:'{日中|にっちゅう}', z:'白天' },
+    { i:'pt07', s:'vtime', t:'w', j:'{一日中|いちにちじゅう}', z:'一整天' },
+    { i:'pt08', s:'vtime', t:'w', j:'{半日|はんにち}', z:'半天' },
+    { i:'pt09', s:'vtime', t:'w', j:'{数日|すうじつ}', z:'好幾天' },
+    { i:'pt10', s:'vtime', t:'w', j:'{毎朝|まいあさ}', z:'每天早上' },
+    { i:'pt11', s:'vtime', t:'w', j:'{毎晩|まいばん}', z:'每天晚上' },
+    { i:'pt12', s:'vtime', t:'w', j:'{翌日|よくじつ}', z:'隔天' },
+    { i:'pt13', s:'vtime', t:'w', j:'{前日|ぜんじつ}', z:'前一天' },
+    { i:'pt14', s:'vtime', t:'w', j:'{当日|とうじつ}', z:'當天' },
+    { i:'pt15', s:'vtime', t:'w', j:'{期間|きかん}', z:'期間' },
+    { i:'pt16', s:'vtime', t:'w', j:'{期限|きげん}', z:'期限' },
+    { i:'pt17', s:'vtime', t:'w', j:'{時期|じき}', z:'時期' },
+    { i:'pt18', s:'vtime', t:'w', j:'{年度|ねんど}', z:'年度' },
+    { i:'pt19', s:'vtime', t:'w', j:'{世紀|せいき}', z:'世紀' },
+    { i:'pt20', s:'vtime', t:'w', j:'{現在|げんざい}', z:'目前此刻' },
+    { i:'pt21', s:'vtime', t:'w', j:'{過去|かこ}', z:'過去' },
+    { i:'pt22', s:'vtime', t:'w', j:'{未来|みらい}', z:'未來' },
+    { i:'pt23', s:'vtime', t:'w', j:'{今後|こんご}', z:'今後' },
+    { i:'pt24', s:'vtime', t:'w', j:'{当時|とうじ}', z:'當時' },
+    { i:'pt25', s:'vtime', t:'w', j:'{途中|とちゅう}', z:'途中' },
+    { i:'pt26', s:'vtime', t:'w', j:'{同時|どうじ}', z:'同時' },
+    { i:'pt27', s:'vtime', t:'w', j:'{時刻|じこく}', z:'時刻' },
+    { i:'pt28', s:'vtime', t:'w', j:'{秒|びょう}', z:'秒' },
+    { i:'pt29', s:'vtime', t:'w', j:'{今夜|こんや}', z:'今晚' },
+    { i:'pt30', s:'vtime', t:'w', j:'{昨夜|ゆうべ}', z:'昨晚' },
+    { i:'pt31', s:'vtime', t:'w', j:'{年末|ねんまつ}', z:'年底' },
+    { i:'pt32', s:'vtime', t:'w', j:'{年始|ねんし}', z:'年初' },
+    { i:'pt33', s:'vtime', t:'w', j:'{月末|げつまつ}', z:'月底' },
+    { i:'pt34', s:'vtime', t:'w', j:'{上旬|じょうじゅん}', z:'上旬' },
+    { i:'pt35', s:'vtime', t:'w', j:'{中旬|ちゅうじゅん}', z:'中旬' },
+    { i:'pt36', s:'vtime', t:'w', j:'{下旬|げじゅん}', z:'下旬' },
+    { i:'pt37', s:'vtime', t:'w', j:'{定時|ていじ}', z:'準時' },
+    { i:'pt38', s:'vtime', t:'w', j:'{延期|えんき}', z:'延期' },
+    { i:'pt39', s:'vtime', t:'w', j:'{中止|ちゅうし}', z:'取消' },
+    { i:'pt40', s:'vtime', t:'w', j:'{変更|へんこう}', z:'變更' },
+
+    /* ───── 常用動詞（+104） ───── */
+    { i:'nb3a', s:'vverb', t:'w', j:'{伝|つた}えます', z:'傳達' },
+    { i:'nb3b', s:'vverb', t:'w', j:'{調|しら}べます', z:'查詢' },
+    { i:'nb3c', s:'vverb', t:'w', j:'{比|くら}べます', z:'比較' },
+    { i:'nb3d', s:'vverb', t:'w', j:'{集|あつ}めます', z:'收集' },
+    { i:'nb3e', s:'vverb', t:'w', j:'{建|た}てます', z:'建造' },
+    { i:'nb3f', s:'vverb', t:'w', j:'{植|う}えます', z:'種植' },
+    { i:'nb3g', s:'vverb', t:'w', j:'{届|とど}けます', z:'投遞送到' },
+    { i:'nb3h', s:'vverb', t:'w', j:'{進|すす}みます', z:'前進' },
+    { i:'nb3i', s:'vverb', t:'w', j:'{戻|もど}ります', z:'返回' },
+    { i:'nb3j', s:'vverb', t:'w', j:'{通|かよ}います', z:'往返通勤' },
+    { i:'nb3k', s:'vverb', t:'w', j:'{迎|むか}えます', z:'迎接' },
+    { i:'nb3l', s:'vverb', t:'w', j:'{見送|みおく}ります', z:'送行' },
+    { i:'nb3m', s:'vverb', t:'w', j:'{祝|いわ}います', z:'慶祝' },
+    { i:'nb3n', s:'vverb', t:'w', j:'{謝|あやま}ります', z:'道歉' },
+    { i:'nb3o', s:'vverb', t:'w', j:'ほめます', z:'稱讚' },
+    { i:'nb3p', s:'vverb', t:'w', j:'{叱|しか}ります', z:'責罵' },
+    { i:'nb3q', s:'vverb', t:'w', j:'{頼|たの}みます', z:'拜託' },
+    { i:'nb3r', s:'vverb', t:'w', j:'{断|ことわ}ります', z:'婉拒' },
+    { i:'nb3s', s:'vverb', t:'w', j:'{許|ゆる}します', z:'原諒' },
+    { i:'nb3t', s:'vverb', t:'w', j:'{信|しん}じます', z:'相信' },
+    { i:'nb3u', s:'vverb', t:'w', j:'{疑|うたが}います', z:'懷疑' },
+    { i:'nb3v', s:'vverb', t:'w', j:'{悩|なや}みます', z:'煩惱' },
+    { i:'nb3w', s:'vverb', t:'w', j:'{迷|まよ}います', z:'猶豫不決' },
+    { i:'nb3x', s:'vverb', t:'w', j:'{慣|な}れます', z:'習慣了' },
+    { i:'nb3y', s:'vverb', t:'w', j:'あきらめます', z:'放棄' },
+    { i:'nb3z', s:'vverb', t:'w', j:'{守|まも}ります', z:'遵守' },
+    { i:'nc3a', s:'vverb', t:'w', j:'{助|たす}けます', z:'搭救' },
+    { i:'nc3b', s:'vverb', t:'w', j:'{招待|しょうたい}します', z:'邀請' },
+    { i:'nc3c', s:'vverb', t:'w', j:'{出席|しゅっせき}します', z:'出席' },
+    { i:'nc3d', s:'vverb', t:'w', j:'{欠席|けっせき}します', z:'缺席' },
+    { i:'nc3e', s:'vverb', t:'w', j:'{参加|さんか}します', z:'參加' },
+    { i:'nc3f', s:'vverb', t:'w', j:'{申|もう}し{込|こ}みます', z:'報名' },
+    { i:'nc3g', s:'vverb', t:'w', j:'{治|なお}ります', z:'痊癒' },
+    { i:'nc3h', s:'vverb', t:'w', j:'{太|ふと}ります', z:'變胖' },
+    { i:'nc3i', s:'vverb', t:'w', j:'やせます', z:'變瘦' },
+    { i:'nc3j', s:'vverb', t:'w', j:'{生|う}まれます', z:'出生' },
+    { i:'nc3k', s:'vverb', t:'w', j:'{育|そだ}ちます', z:'長大' },
+    { i:'nc3l', s:'vverb', t:'w', j:'{亡|な}くなります', z:'過世' },
+    { i:'nc3m', s:'vverb', t:'w', j:'{住|す}みます', z:'居住' },
+    { i:'nc3n', s:'vverb', t:'w', j:'{勤|つと}めます', z:'任職' },
+    { i:'nc3o', s:'vverb', t:'w', j:'{辞|や}めます', z:'辭職', n:'辭職、退學：会社を辞めます。一般的停止用「やめます」' },
+    { i:'nc3p', s:'vverb', t:'w', j:'{遅刻|ちこく}します', z:'上班遲到' },
+    { i:'nc3q', s:'vverb', t:'w', j:'{出発|しゅっぱつ}します', z:'動身出發' },
+    { i:'nc3r', s:'vverb', t:'w', j:'{到着|とうちゃく}します', z:'到站' },
+    { i:'nc3s', s:'vverb', t:'w', j:'{案内|あんない}します', z:'帶路' },
+    { i:'nc3t', s:'vverb', t:'w', j:'{利用|りよう}します', z:'利用' },
+    { i:'nc3u', s:'vverb', t:'w', j:'{用意|ようい}します', z:'備妥' },
+    { i:'nc3v', s:'vverb', t:'w', j:'{注意|ちゅうい}します', z:'當心' },
+    { i:'nc3w', s:'vverb', t:'w', j:'{記録|きろく}します', z:'記錄下來' },
+    { i:'nc3x', s:'vverb', t:'w', j:'{報告|ほうこく}します', z:'回報' },
+    { i:'nc3y', s:'vverb', t:'w', j:'{訪問|ほうもん}します', z:'拜訪' },
+    { i:'nc3z', s:'vverb', t:'w', j:'{遠慮|えんりょ}します', z:'客氣推辭' },
+    { i:'nd3a', s:'vverb', t:'w', j:'{成長|せいちょう}します', z:'成長' },
+    { i:'nd3b', s:'vverb', t:'w', j:'{卒業式|そつぎょうしき}に{出|で}ます', z:'出席畢業典禮' },
+    { i:'nd3c', s:'vverb', t:'w', j:'{貯金|ちょきん}します', z:'存錢' },
+    { i:'nd3d', s:'vverb', t:'w', j:'{計算|けいさん}します', z:'計算' },
+    { i:'nd3e', s:'vverb', t:'w', j:'{翻訳|ほんやく}します', z:'翻譯' },
+    { i:'nd3f', s:'vverb', t:'w', j:'{発音|はつおん}します', z:'發音' },
+    { i:'nd3g', s:'vverb', t:'w', j:'{暗記|あんき}します', z:'背誦' },
+    { i:'nd3h', s:'vverb', t:'w', j:'{復習|ふくしゅう}します', z:'複習' },
+    { i:'nd3i', s:'vverb', t:'w', j:'{予習|よしゅう}します', z:'預習' },
+    { i:'nd3j', s:'vverb', t:'w', j:'{合格|ごうかく}します', z:'考上' },
+    { i:'nd3k', s:'vverb', t:'w', j:'{失敗|しっぱい}します', z:'搞砸' },
+    { i:'nd3l', s:'vverb', t:'w', j:'{成功|せいこう}します', z:'做成功' },
+    { i:'nd3m', s:'vverb', t:'w', j:'{比較|ひかく}します', z:'對照' },
+    { i:'nd3n', s:'vverb', t:'w', j:'{検査|けんさ}します', z:'檢查' },
+    { i:'nd3o', s:'vverb', t:'w', j:'{修理|しゅうり}します', z:'修理' },
+    { i:'nd3p', s:'vverb', t:'w', j:'{交換|こうかん}します', z:'更換' },
+    { i:'nd3q', s:'vverb', t:'w', j:'{返事|へんじ}します', z:'回覆' },
+    { i:'nd3r', s:'vverb', t:'w', j:'{挨拶|あいさつ}します', z:'寒暄問候' },
+    { i:'nd3s', s:'vverb', t:'w', j:'{努力|どりょく}します', z:'下功夫' },
+    { i:'nd3t', s:'vverb', t:'w', j:'{我慢|がまん}します', z:'忍住' },
+    { i:'nd3u', s:'vverb', t:'w', j:'{期待|きたい}します', z:'抱著期待' },
+    { i:'nd3v', s:'vverb', t:'w', j:'{並|なら}べます', z:'排列' },
+    { i:'nd3w', s:'vverb', t:'w', j:'{包|つつ}みます', z:'包起來' },
+    { i:'nd3x', s:'vverb', t:'w', j:'{結|むす}びます', z:'綁' },
+    { i:'nd3y', s:'vverb', t:'w', j:'{折|お}ります', z:'折', n:'折彎、折斷：紙を折ります。同音的「降ります」是下車' },
+    { i:'nd3z', s:'vverb', t:'w', j:'{破|やぶ}れます', z:'破掉' },
+    { i:'ne3a', s:'vverb', t:'w', j:'{汚|よご}れます', z:'弄髒' },
+    { i:'ne3b', s:'vverb', t:'w', j:'{濡|ぬ}れます', z:'淋濕' },
+    { i:'ne3c', s:'vverb', t:'w', j:'{乾|かわ}きます', z:'變乾' },
+    { i:'ne3d', s:'vverb', t:'w', j:'{冷|さ}めます', z:'變涼' },
+    { i:'ne3e', s:'vverb', t:'w', j:'{沸|わ}きます', z:'煮沸' },
+    { i:'ne3f', s:'vverb', t:'w', j:'{凍|こお}ります', z:'結冰' },
+    { i:'ne3g', s:'vverb', t:'w', j:'{溶|と}けます', z:'融化' },
+    { i:'ne3h', s:'vverb', t:'w', j:'{燃|も}えます', z:'燃燒' },
+    { i:'ne3i', s:'vverb', t:'w', j:'{光|ひか}ります', z:'發光' },
+    { i:'ne3j', s:'vverb', t:'w', j:'{鳴|な}ります', z:'響', n:'鈴響、發出聲音：電話が鳴ります。同音的「なります」是變成' },
+    { i:'ne3k', s:'vverb', t:'w', j:'{揺|ゆ}れます', z:'搖晃' },
+    { i:'ne3l', s:'vverb', t:'w', j:'{倒|たお}れます', z:'倒下' },
+    { i:'ne3m', s:'vverb', t:'w', j:'{滑|すべ}ります', z:'滑倒' },
+    { i:'ne3n', s:'vverb', t:'w', j:'ぶつかります', z:'撞到' },
+    { i:'ne3o', s:'vverb', t:'w', j:'{逃|に}げます', z:'逃走' },
+    { i:'ne3p', s:'vverb', t:'w', j:'{追|お}いかけます', z:'追趕' },
+    { i:'ne3q', s:'vverb', t:'w', j:'{隠|かく}れます', z:'躲起來' },
+    { i:'ne3r', s:'vverb', t:'w', j:'{探|さが}し{回|まわ}ります', z:'到處找' },
+    { i:'ne3s', s:'vverb', t:'w', j:'{眺|なが}めます', z:'眺望' },
+    { i:'ne3t', s:'vverb', t:'w', j:'{気|き}づきます', z:'察覺' },
+    { i:'ne3u', s:'vverb', t:'w', j:'{感|かん}じます', z:'感覺到' },
+    { i:'ne3v', s:'vverb', t:'w', j:'{考|かんが}えます', z:'思考' },
+    { i:'ne3w', s:'vverb', t:'w', j:'{決|き}まります', z:'定下來' },
+    { i:'ne3x', s:'vverb', t:'w', j:'{通|つう}じます', z:'溝通得通' },
+    { i:'ne3y', s:'vverb', t:'w', j:'{役|やく}に{立|た}ちます', z:'派上用場' },
+    { i:'ne3z', s:'vverb', t:'w', j:'{気|き}をつけます', z:'小心留意' },
+
+    /* ───── 常用形容詞（+66） ───── */
+    { i:'nf3a', s:'vadj', t:'w', j:'{恥|は}ずかしい', z:'害羞' },
+    { i:'nf3b', s:'vadj', t:'w', j:'うらやましい', z:'羨慕' },
+    { i:'nf3c', s:'vadj', t:'w', j:'{珍|めずら}しい', z:'稀奇' },
+    { i:'nf3d', s:'vadj', t:'w', j:'{恐|おそ}ろしい', z:'恐怖' },
+    { i:'nf3e', s:'vadj', t:'w', j:'{激|はげ}しい', z:'激烈' },
+    { i:'nf3f', s:'vadj', t:'w', j:'{詳|くわ}しい', z:'詳細' },
+    { i:'nf3g', s:'vadj', t:'w', j:'{親|した}しい', z:'親近' },
+    { i:'nf3h', s:'vadj', t:'w', j:'{懐|なつ}かしい', z:'懷念' },
+    { i:'nf3i', s:'vadj', t:'w', j:'まぶしい', z:'刺眼' },
+    { i:'nf3j', s:'vadj', t:'w', j:'おとなしい', z:'乖巧' },
+    { i:'nf3k', s:'vadj', t:'w', j:'{賢|かしこ}い', z:'聰明' },
+    { i:'nf3l', s:'vadj', t:'w', j:'ずるい', z:'狡猾' },
+    { i:'nf3m', s:'vadj', t:'w', j:'きつい', z:'吃力' },
+    { i:'nf3n', s:'vadj', t:'w', j:'ゆるい', z:'鬆' },
+    { i:'nf3o', s:'vadj', t:'w', j:'{濃|こ}い', z:'濃' },
+    { i:'nf3p', s:'vadj', t:'w', j:'{鋭|するど}い', z:'銳利' },
+    { i:'nf3q', s:'vadj', t:'w', j:'まじめ', z:'認真' },
+    { i:'nf3r', s:'vadj', t:'w', j:'{親切|しんせつ}', z:'親切' },
+    { i:'nf3s', s:'vadj', t:'w', j:'{丁寧|ていねい}', z:'有禮貌' },
+    { i:'nf3t', s:'vadj', t:'w', j:'{失礼|しつれい}', z:'沒禮貌' },
+    { i:'nf3u', s:'vadj', t:'w', j:'{残念|ざんねん}', z:'可惜' },
+    { i:'nf3v', s:'vadj', t:'w', j:'{複雑|ふくざつ}', z:'複雜' },
+    { i:'nf3w', s:'vadj', t:'w', j:'{適当|てきとう}', z:'隨便敷衍' },
+    { i:'nf3x', s:'vadj', t:'w', j:'{特別|とくべつ}', z:'特別' },
+    { i:'nf3y', s:'vadj', t:'w', j:'{普通|ふつう}', z:'普通' },
+    { i:'nf3z', s:'vadj', t:'w', j:'{必要|ひつよう}', z:'必要' },
+    { i:'ng3a', s:'vadj', t:'w', j:'{十分|じゅうぶん}', z:'足夠' },
+    { i:'ng3b', s:'vadj', t:'w', j:'{立派|りっぱ}', z:'氣派' },
+    { i:'ng3c', s:'vadj', t:'w', j:'{豊|ゆた}か', z:'豐富' },
+    { i:'ng3d', s:'vadj', t:'w', j:'{豪華|ごうか}', z:'豪華' },
+    { i:'ng3e', s:'vadj', t:'w', j:'{派手|はで}', z:'花俏' },
+    { i:'ng3f', s:'vadj', t:'w', j:'{地味|じみ}', z:'樸素' },
+    { i:'ng3g', s:'vadj', t:'w', j:'{得意|とくい}', z:'拿手' },
+    { i:'ng3h', s:'vadj', t:'w', j:'{苦手|にがて}', z:'不拿手' },
+    { i:'ng3i', s:'vadj', t:'w', j:'{無理|むり}', z:'辦不到' },
+    { i:'ng3j', s:'vadj', t:'w', j:'{無駄|むだ}', z:'浪費' },
+    { i:'ng3k', s:'vadj', t:'w', j:'{楽|らく}', z:'輕鬆' },
+    { i:'ng3l', s:'vadj', t:'w', j:'{幸運|こううん}', z:'幸運' },
+    { i:'ng3m', s:'vadj', t:'w', j:'{不思議|ふしぎ}', z:'不可思議' },
+    { i:'ng3n', s:'vadj', t:'w', j:'{真面目|まじめ}な{人|ひと}', z:'認真的人' },
+    { i:'ng3o', s:'vadj', t:'w', j:'{冷静|れいせい}', z:'冷靜' },
+    { i:'ng3p', s:'vadj', t:'w', j:'{正直|しょうじき}', z:'老實' },
+    { i:'ng3q', s:'vadj', t:'w', j:'{素直|すなお}', z:'坦率' },
+    { i:'ng3r', s:'vadj', t:'w', j:'{熱心|ねっしん}', z:'熱心' },
+    { i:'ng3s', s:'vadj', t:'w', j:'{上品|じょうひん}', z:'高雅' },
+    { i:'ng3t', s:'vadj', t:'w', j:'{下品|げひん}', z:'粗俗' },
+    { i:'ng3u', s:'vadj', t:'w', j:'{清潔|せいけつ}', z:'清潔' },
+    { i:'ng3v', s:'vadj', t:'w', j:'{快適|かいてき}', z:'舒適' },
+    { i:'ng3w', s:'vadj', t:'w', j:'{退屈|たいくつ}な{話|はなし}', z:'無聊的話題' },
+    { i:'ng3x', s:'vadj', t:'w', j:'{最高|さいこう}', z:'最棒' },
+    { i:'ng3y', s:'vadj', t:'w', j:'{最悪|さいあく}', z:'最糟' },
+    { i:'ng3z', s:'vadj', t:'w', j:'{真|ま}っ{白|しろ}', z:'雪白' },
+    { i:'nh3a', s:'vadj', t:'w', j:'{真|ま}っ{黒|くろ}', z:'漆黑' },
+    { i:'nh3b', s:'vadj', t:'w', j:'{真|ま}っ{赤|か}', z:'通紅' },
+    { i:'nh3c', s:'vadj', t:'w', j:'{真|ま}っ{青|さお}', z:'蒼白' },
+    { i:'nh3d', s:'vadj', t:'w', j:'{細|こま}かい', z:'細小' },
+    { i:'nh3e', s:'vadj', t:'w', j:'{鈍|にぶ}い', z:'遲鈍' },
+    { i:'nh3f', s:'vadj', t:'w', j:'{騒|さわ}がしい', z:'嘈雜' },
+    { i:'nh3g', s:'vadj', t:'w', j:'{大人|おとな}っぽい', z:'成熟' },
+    { i:'nh3h', s:'vadj', t:'w', j:'{子供|こども}っぽい', z:'孩子氣' },
+    { i:'nh3i', s:'vadj', t:'w', j:'{厚|あつ}い', z:'厚', n:'東西的厚度：厚い本（厚的書）。同音的「暑い」只用在天氣' },
+    { i:'nh3j', s:'vadj', t:'w', j:'{緩|ゆる}やか', z:'平緩' },
+    { i:'nh3k', s:'vadj', t:'w', j:'{急|きゅう}', z:'陡急' },
+    { i:'nh3l', s:'vadj', t:'w', j:'{静|しず}かな{場所|ばしょ}', z:'安靜的地方' },
+    { i:'nh3m', s:'vadj', t:'w', j:'{贅沢|ぜいたく}', z:'奢侈' },
+    { i:'nh3n', s:'vadj', t:'w', j:'{残|のこ}り{少|すく}ない', z:'所剩無幾' },
+
+    /* ───── 購物・金錢（+25） ───── */
+    { i:'qm01', s:'vmoney', t:'w', j:'{現金払|げんきんばら}い', z:'付現' },
+    { i:'qm02', s:'vmoney', t:'w', j:'{分割払|ぶんかつばら}い', z:'分期付款' },
+    { i:'qm03', s:'vmoney', t:'w', j:'{電子|でんし}マネー', z:'電子支付' },
+    { i:'qm04', s:'vmoney', t:'w', j:'{残高|ざんだか}', z:'餘額' },
+    { i:'qm05', s:'vmoney', t:'w', j:'{入金|にゅうきん}', z:'存入' },
+    { i:'qm06', s:'vmoney', t:'w', j:'{振替|ふりかえ}', z:'轉帳' },
+    { i:'qm07', s:'vmoney', t:'w', j:'{振込|ふりこみ}', z:'匯款' },
+    { i:'qm08', s:'vmoney', t:'w', j:'{口座|こうざ}', z:'帳戶' },
+    { i:'qm09', s:'vmoney', t:'w', j:'{通帳|つうちょう}', z:'存摺' },
+    { i:'qm10', s:'vmoney', t:'w', j:'{暗証番号|あんしょうばんごう}', z:'密碼號碼' },
+    { i:'qm11', s:'vmoney', t:'w', j:'{手数料|てすうりょう}', z:'手續費' },
+    { i:'qm12', s:'vmoney', t:'w', j:'{会員証|かいいんしょう}', z:'會員卡' },
+    { i:'qm13', s:'vmoney', t:'w', j:'{値上|ねあ}げ', z:'漲價' },
+    { i:'qm14', s:'vmoney', t:'w', j:'{福袋|ふくぶくろ}', z:'福袋' },
+    { i:'qm15', s:'vmoney', t:'w', j:'{抽選|ちゅうせん}', z:'抽獎' },
+    { i:'qm16', s:'vmoney', t:'w', j:'{景品|けいひん}', z:'贈品' },
+    { i:'qm17', s:'vmoney', t:'w', j:'{限定|げんてい}', z:'限定' },
+    { i:'qm18', s:'vmoney', t:'w', j:'{品切|しなぎ}れ', z:'缺貨' },
+    { i:'qm19', s:'vmoney', t:'w', j:'{入荷|にゅうか}', z:'進貨' },
+    { i:'qm20', s:'vmoney', t:'w', j:'{値札|ねふだ}', z:'價格標籤' },
+    { i:'qm21', s:'vmoney', t:'w', j:'{包装|ほうそう}', z:'包裝' },
+    { i:'qm22', s:'vmoney', t:'w', j:'{熨斗|のし}', z:'禮品包裝紙' },
+    { i:'qm23', s:'vmoney', t:'w', j:'{配送|はいそう}', z:'配送' },
+    { i:'qm24', s:'vmoney', t:'w', j:'{代引|だいび}き', z:'貨到付款' },
+    { i:'qm25', s:'vmoney', t:'w', j:'{通販|つうはん}', z:'網購' },
+
+    /* ───── 學校・工作（+50） ───── */
+    { i:'pw01', s:'vwork', t:'w', j:'{就職|しゅうしょく}', z:'就業' },
+    { i:'pw02', s:'vwork', t:'w', j:'{退職|たいしょく}', z:'離職' },
+    { i:'pw03', s:'vwork', t:'w', j:'{転職|てんしょく}', z:'跳槽' },
+    { i:'pw04', s:'vwork', t:'w', j:'{給料|きゅうりょう}', z:'薪水' },
+    { i:'pw05', s:'vwork', t:'w', j:'ボーナス', z:'獎金' },
+    { i:'pw06', s:'vwork', t:'w', j:'{昇進|しょうしん}', z:'升遷' },
+    { i:'pw07', s:'vwork', t:'w', j:'{部長|ぶちょう}', z:'部長' },
+    { i:'pw08', s:'vwork', t:'w', j:'{課長|かちょう}', z:'課長' },
+    { i:'pw09', s:'vwork', t:'w', j:'{社長|しゃちょう}', z:'社長' },
+    { i:'pw10', s:'vwork', t:'w', j:'{職場|しょくば}', z:'職場' },
+    { i:'pw11', s:'vwork', t:'w', j:'アルバイト', z:'打工' },
+    { i:'pw12', s:'vwork', t:'w', j:'{正社員|せいしゃいん}', z:'正職員工' },
+    { i:'pw13', s:'vwork', t:'w', j:'{求人|きゅうじん}', z:'徵人' },
+    { i:'pw14', s:'vwork', t:'w', j:'{採用|さいよう}', z:'錄取' },
+    { i:'pw15', s:'vwork', t:'w', j:'{契約|けいやく}', z:'合約' },
+    { i:'pw16', s:'vwork', t:'w', j:'{営業|えいぎょう}', z:'業務' },
+    { i:'pw17', s:'vwork', t:'w', j:'{取引先|とりひきさき}', z:'客戶廠商' },
+    { i:'pw18', s:'vwork', t:'w', j:'{担当|たんとう}', z:'負責' },
+    { i:'pw19', s:'vwork', t:'w', j:'{責任|せきにん}', z:'責任' },
+    { i:'pw20', s:'vwork', t:'w', j:'{能力|のうりょく}', z:'能力' },
+    { i:'pw21', s:'vwork', t:'w', j:'{経験|けいけん}', z:'經驗' },
+    { i:'pw22', s:'vwork', t:'w', j:'{資格|しかく}', z:'證照', n:'證照、資格：資格を取る。同音的「四角」是形狀' },
+    { i:'pw23', s:'vwork', t:'w', j:'{免許|めんきょ}', z:'執照' },
+    { i:'pw24', s:'vwork', t:'w', j:'{出勤|しゅっきん}', z:'上班' },
+    { i:'pw25', s:'vwork', t:'w', j:'{退勤|たいきん}', z:'下班' },
+    { i:'pw26', s:'vwork', t:'w', j:'{勤務|きんむ}', z:'勤務' },
+    { i:'pw27', s:'vwork', t:'w', j:'シフト', z:'班表' },
+    { i:'pw28', s:'vwork', t:'w', j:'{夜勤|やきん}', z:'夜班' },
+    { i:'pw29', s:'vwork', t:'w', j:'{有給|ゆうきゅう}', z:'特休' },
+    { i:'pw30', s:'vwork', t:'w', j:'{新人|しんじん}', z:'新人' },
+    { i:'pw31', s:'vwork', t:'w', j:'{研修|けんしゅう}', z:'職前訓練' },
+    { i:'pw32', s:'vwork', t:'w', j:'{職業|しょくぎょう}', z:'職業' },
+    { i:'pw33', s:'vwork', t:'w', j:'{専門|せんもん}', z:'專業領域' },
+    { i:'pw34', s:'vwork', t:'w', j:'{大学院|だいがくいん}', z:'研究所' },
+    { i:'pw35', s:'vwork', t:'w', j:'{留学|りゅうがく}', z:'留學' },
+    { i:'pw36', s:'vwork', t:'w', j:'{奨学金|しょうがくきん}', z:'獎學金' },
+    { i:'pw37', s:'vwork', t:'w', j:'{論文|ろんぶん}', z:'論文' },
+    { i:'pw38', s:'vwork', t:'w', j:'レポート', z:'報告書' },
+    { i:'pw39', s:'vwork', t:'w', j:'{提出|ていしゅつ}', z:'繳交' },
+    { i:'pw40', s:'vwork', t:'w', j:'{出席率|しゅっせきりつ}', z:'出席率' },
+    { i:'pw41', s:'vwork', t:'w', j:'{図書室|としょしつ}', z:'圖書室' },
+    { i:'pw42', s:'vwork', t:'w', j:'{職員室|しょくいんしつ}', z:'教職員室' },
+    { i:'pw43', s:'vwork', t:'w', j:'{校長|こうちょう}', z:'校長' },
+    { i:'pw44', s:'vwork', t:'w', j:'{部活|ぶかつ}', z:'社團活動' },
+    { i:'pw45', s:'vwork', t:'w', j:'{文化祭|ぶんかさい}', z:'校慶園遊會' },
+    { i:'pw46', s:'vwork', t:'w', j:'{遠足|えんそく}', z:'校外教學' },
+    { i:'pw47', s:'vwork', t:'w', j:'{修学旅行|しゅうがくりょこう}', z:'畢業旅行' },
+    { i:'pw48', s:'vwork', t:'w', j:'{時間割|じかんわり}', z:'課表' },
+    { i:'pw49', s:'vwork', t:'w', j:'{単位|たんい}', z:'學分' },
+    { i:'pw50', s:'vwork', t:'w', j:'{講義|こうぎ}', z:'課程講座' },
+
+    /* ───── 心情・狀態（+45） ───── */
+    { i:'pm01', s:'vmood', t:'w', j:'{感情|かんじょう}', z:'情緒' },
+    { i:'pm02', s:'vmood', t:'w', j:'やる{気|き}', z:'幹勁' },
+    { i:'pm03', s:'vmood', t:'w', j:'{集中|しゅうちゅう}', z:'專注' },
+    { i:'pm04', s:'vmood', t:'w', j:'{油断|ゆだん}', z:'大意輕忽' },
+    { i:'pm05', s:'vmood', t:'w', j:'{後悔|こうかい}', z:'後悔' },
+    { i:'pm06', s:'vmood', t:'w', j:'{反省|はんせい}', z:'反省' },
+    { i:'pm07', s:'vmood', t:'w', j:'{同情|どうじょう}', z:'同情' },
+    { i:'pm08', s:'vmood', t:'w', j:'{尊敬|そんけい}', z:'尊敬' },
+    { i:'pm09', s:'vmood', t:'w', j:'{憧|あこが}れ', z:'憧憬' },
+    { i:'pm10', s:'vmood', t:'w', j:'{孤独|こどく}', z:'孤獨' },
+    { i:'pm11', s:'vmood', t:'w', j:'{恐怖|きょうふ}', z:'恐懼' },
+    { i:'pm12', s:'vmood', t:'w', j:'{混乱|こんらん}', z:'混亂' },
+    { i:'pm13', s:'vmood', t:'w', j:'{衝撃|しょうげき}', z:'衝擊' },
+    { i:'pm14', s:'vmood', t:'w', j:'ほっと', z:'鬆一口氣' },
+    { i:'pm15', s:'vmood', t:'w', j:'いらいら', z:'焦躁' },
+    { i:'pm16', s:'vmood', t:'w', j:'そわそわ', z:'坐立難安' },
+    { i:'pm17', s:'vmood', t:'w', j:'うきうき', z:'雀躍' },
+    { i:'pm18', s:'vmood', t:'w', j:'にこにこ', z:'笑咪咪' },
+    { i:'pm19', s:'vmood', t:'w', j:'ぼんやり', z:'發呆' },
+    { i:'pm20', s:'vmood', t:'w', j:'うとうと', z:'打瞌睡' },
+    { i:'pm21', s:'vmood', t:'w', j:'くよくよ', z:'鑽牛角尖' },
+    { i:'pm22', s:'vmood', t:'w', j:'すっきり', z:'舒暢' },
+    { i:'pm23', s:'vmood', t:'w', j:'もやもや', z:'悶悶的' },
+    { i:'pm24', s:'vmood', t:'w', j:'がっかり', z:'失望' },
+    { i:'pm25', s:'vmood', t:'w', j:'どきっと', z:'心頭一驚' },
+    { i:'pm26', s:'vmood', t:'w', j:'{心細|こころぼそ}い', z:'心裡不踏實' },
+    { i:'pm27', s:'vmood', t:'w', j:'{気楽|きらく}', z:'無拘無束' },
+    { i:'pm28', s:'vmood', t:'w', j:'{気分転換|きぶんてんかん}', z:'轉換心情' },
+    { i:'pm29', s:'vmood', t:'w', j:'{態度|たいど}', z:'態度' },
+    { i:'pm30', s:'vmood', t:'w', j:'{印象|いんしょう}', z:'印象' },
+    { i:'pm31', s:'vmood', t:'w', j:'{記憶|きおく}', z:'記憶' },
+    { i:'pm32', s:'vmood', t:'w', j:'{想像|そうぞう}', z:'想像' },
+    { i:'pm33', s:'vmood', t:'w', j:'{意識|いしき}', z:'意識' },
+    { i:'pm34', s:'vmood', t:'w', j:'{判断|はんだん}', z:'判斷' },
+    { i:'pm35', s:'vmood', t:'w', j:'{決心|けっしん}', z:'決心' },
+    { i:'pm36', s:'vmood', t:'w', j:'{目標|もくひょう}', z:'目標' },
+    { i:'pm37', s:'vmood', t:'w', j:'{目的|もくてき}', z:'目的' },
+    { i:'pm38', s:'vmood', t:'w', j:'{価値|かち}', z:'價值' },
+    { i:'pm39', s:'vmood', t:'w', j:'{違|ちが}い', z:'差異' },
+    { i:'pm40', s:'vmood', t:'w', j:'{状況|じょうきょう}', z:'狀況' },
+    { i:'pm41', s:'vmood', t:'w', j:'{原因|げんいん}', z:'原因' },
+    { i:'pm42', s:'vmood', t:'w', j:'{影響|えいきょう}', z:'影響' },
+    { i:'pm43', s:'vmood', t:'w', j:'{関係|かんけい}', z:'關係' },
+    { i:'pm44', s:'vmood', t:'w', j:'{場合|ばあい}', z:'情況下' },
+    { i:'pm45', s:'vmood', t:'w', j:'{都合|つごう}', z:'方便與否' },
+
+    /* ───── 日常生活（+45） ───── */
+    { i:'pl01', s:'vlife', t:'w', j:'{寝坊|ねぼう}', z:'睡過頭' },
+    { i:'pl02', s:'vlife', t:'w', j:'{早起|はやお}き', z:'早起' },
+    { i:'pl03', s:'vlife', t:'w', j:'{夜更|よふ}かし', z:'熬夜' },
+    { i:'pl04', s:'vlife', t:'w', j:'{昼寝|ひるね}', z:'午睡' },
+    { i:'pl05', s:'vlife', t:'w', j:'{家事|かじ}', z:'家務' },
+    { i:'pl06', s:'vlife', t:'w', j:'{洗濯物|せんたくもの}', z:'待洗衣物' },
+    { i:'pl07', s:'vlife', t:'w', j:'{干|ほ}します', z:'晾曬' },
+    { i:'pl08', s:'vlife', t:'w', j:'{畳|たた}みます', z:'摺疊' },
+    { i:'pl09', s:'vlife', t:'w', j:'{整理|せいり}', z:'整理' },
+    { i:'pl10', s:'vlife', t:'w', j:'{節約|せつやく}', z:'節約' },
+    { i:'pl11', s:'vlife', t:'w', j:'{無駄遣|むだづか}い', z:'亂花錢' },
+    { i:'pl12', s:'vlife', t:'w', j:'{家賃|やちん}', z:'房租' },
+    { i:'pl13', s:'vlife', t:'w', j:'{光熱費|こうねつひ}', z:'水電費' },
+    { i:'pl14', s:'vlife', t:'w', j:'{更新|こうしん}', z:'續約更新' },
+    { i:'pl15', s:'vlife', t:'w', j:'{分別|ぶんべつ}', z:'垃圾分類' },
+    { i:'pl16', s:'vlife', t:'w', j:'{回収|かいしゅう}', z:'回收' },
+    { i:'pl17', s:'vlife', t:'w', j:'{防災|ぼうさい}', z:'防災' },
+    { i:'pl18', s:'vlife', t:'w', j:'{避難|ひなん}', z:'避難' },
+    { i:'pl19', s:'vlife', t:'w', j:'{非常食|ひじょうしょく}', z:'緊急糧食' },
+    { i:'pl20', s:'vlife', t:'w', j:'{救急車|きゅうきゅうしゃ}', z:'救護車' },
+    { i:'pl21', s:'vlife', t:'w', j:'{消防車|しょうぼうしゃ}', z:'消防車' },
+    { i:'pl22', s:'vlife', t:'w', j:'{保険|ほけん}', z:'保險' },
+    { i:'pl23', s:'vlife', t:'w', j:'{年金|ねんきん}', z:'年金' },
+    { i:'pl24', s:'vlife', t:'w', j:'{税金|ぜいきん}', z:'稅金' },
+    { i:'pl25', s:'vlife', t:'w', j:'{手続|てつづ}き', z:'手續' },
+    { i:'pl26', s:'vlife', t:'w', j:'{印鑑|いんかん}', z:'印章' },
+    { i:'pl27', s:'vlife', t:'w', j:'{身分証|みぶんしょう}', z:'身分證件' },
+    { i:'pl28', s:'vlife', t:'w', j:'{申請|しんせい}', z:'申請' },
+    { i:'pl29', s:'vlife', t:'w', j:'{窓口|まどぐち}', z:'櫃檯窗口' },
+    { i:'pl30', s:'vlife', t:'w', j:'{記入|きにゅう}', z:'填寫' },
+    { i:'pl31', s:'vlife', t:'w', j:'{署名|しょめい}', z:'簽名' },
+    { i:'pl32', s:'vlife', t:'w', j:'{確認事項|かくにんじこう}', z:'確認事項' },
+    { i:'pl33', s:'vlife', t:'w', j:'{用紙|ようし}', z:'表格紙' },
+    { i:'pl34', s:'vlife', t:'w', j:'{支度|したく}', z:'準備打點' },
+    { i:'pl35', s:'vlife', t:'w', j:'{洗面|せんめん}', z:'盥洗' },
+    { i:'pl36', s:'vlife', t:'w', j:'{髭|ひげ}そり', z:'刮鬍子' },
+    { i:'pl37', s:'vlife', t:'w', j:'{爪切|つめき}り', z:'指甲剪' },
+    { i:'pl38', s:'vlife', t:'w', j:'{耳|みみ}かき', z:'掏耳棒' },
+    { i:'pl39', s:'vlife', t:'w', j:'{日用品|にちようひん}', z:'日用品' },
+    { i:'pl40', s:'vlife', t:'w', j:'{在宅|ざいたく}', z:'在家' },
+    { i:'pl41', s:'vlife', t:'w', j:'{訪問者|ほうもんしゃ}', z:'訪客' },
+    { i:'pl42', s:'vlife', t:'w', j:'{回覧板|かいらんばん}', z:'社區傳閱板' },
+    { i:'pl43', s:'vlife', t:'w', j:'{騒音|そうおん}', z:'噪音' },
+    { i:'pl44', s:'vlife', t:'w', j:'{修繕|しゅうぜん}', z:'修繕' },
+    { i:'pl45', s:'vlife', t:'w', j:'{点検|てんけん}', z:'檢修' },
+
+    /* ───── 顏色・形狀・方位（+25） ───── */
+    { i:'qc01', s:'vcolor', t:'w', j:'{紺|こん}', z:'深藍' },
+    { i:'qc02', s:'vcolor', t:'w', j:'{黄緑|きみどり}', z:'黃綠' },
+    { i:'qc03', s:'vcolor', t:'w', j:'ベージュ', z:'米色' },
+    { i:'qc04', s:'vcolor', t:'w', j:'{無地|むじ}', z:'素面' },
+    { i:'qc05', s:'vcolor', t:'w', j:'しま{模様|もよう}', z:'條紋' },
+    { i:'qc06', s:'vcolor', t:'w', j:'{水玉|みずたま}', z:'圓點' },
+    { i:'qc07', s:'vcolor', t:'w', j:'{縞|しま}', z:'直紋' },
+    { i:'qc08', s:'vcolor', t:'w', j:'{楕円|だえん}', z:'橢圓' },
+    { i:'qc09', s:'vcolor', t:'w', j:'{星形|ほしがた}', z:'星形' },
+    { i:'qc10', s:'vcolor', t:'w', j:'{立体|りったい}', z:'立體' },
+    { i:'qc11', s:'vcolor', t:'w', j:'{平|たい}ら', z:'平坦' },
+    { i:'qc12', s:'vcolor', t:'w', j:'{斜|なな}め', z:'斜的' },
+    { i:'qc13', s:'vcolor', t:'w', j:'{裏|うら}', z:'背面' },
+    { i:'qc14', s:'vcolor', t:'w', j:'{表|おもて}', z:'正面' },
+    { i:'qc15', s:'vcolor', t:'w', j:'{右側|みぎがわ}', z:'右側' },
+    { i:'qc16', s:'vcolor', t:'w', j:'{左側|ひだりがわ}', z:'左側' },
+    { i:'qc17', s:'vcolor', t:'w', j:'{両側|りょうがわ}', z:'兩側' },
+    { i:'qc18', s:'vcolor', t:'w', j:'{前方|ぜんぽう}', z:'前方' },
+    { i:'qc19', s:'vcolor', t:'w', j:'{両端|りょうはし}', z:'兩端' },
+    { i:'qc20', s:'vcolor', t:'w', j:'{周|まわ}り', z:'周圍' },
+    { i:'qc21', s:'vcolor', t:'w', j:'{内側|うちがわ}', z:'內側' },
+    { i:'qc22', s:'vcolor', t:'w', j:'{外側|そとがわ}', z:'外側' },
+    { i:'qc23', s:'vcolor', t:'w', j:'{底|そこ}', z:'底部' },
+    { i:'qc24', s:'vcolor', t:'w', j:'{先端|せんたん}', z:'前端' },
+    { i:'qc25', s:'vcolor', t:'w', j:'{範囲|はんい}', z:'範圍' },
+
+    /* ───── 動物・植物（+50） ───── */
+    { i:'na01', s:'vanim', t:'w', j:'ライオン', z:'獅子' },
+    { i:'na02', s:'vanim', t:'w', j:'{象|ぞう}', z:'大象' },
+    { i:'na03', s:'vanim', t:'w', j:'キリン', z:'長頸鹿' },
+    { i:'na04', s:'vanim', t:'w', j:'{羊|ひつじ}', z:'綿羊' },
+    { i:'na05', s:'vanim', t:'w', j:'やぎ', z:'山羊' },
+    { i:'na06', s:'vanim', t:'w', j:'にわとり', z:'雞' },
+    { i:'na07', s:'vanim', t:'w', j:'あひる', z:'鴨子' },
+    { i:'na08', s:'vanim', t:'w', j:'かえる', z:'青蛙' },
+    { i:'na09', s:'vanim', t:'w', j:'へび', z:'蛇' },
+    { i:'na10', s:'vanim', t:'w', j:'かめ', z:'烏龜' },
+    { i:'na11', s:'vanim', t:'w', j:'きつね', z:'狐狸' },
+    { i:'na12', s:'vanim', t:'w', j:'たぬき', z:'狸貓' },
+    { i:'na13', s:'vanim', t:'w', j:'{狼|おおかみ}', z:'狼' },
+    { i:'na14', s:'vanim', t:'w', j:'{虎|とら}', z:'老虎' },
+    { i:'na15', s:'vanim', t:'w', j:'パンダ', z:'貓熊' },
+    { i:'na16', s:'vanim', t:'w', j:'ペンギン', z:'企鵝' },
+    { i:'na17', s:'vanim', t:'w', j:'イルカ', z:'海豚' },
+    { i:'na18', s:'vanim', t:'w', j:'くじら', z:'鯨魚' },
+    { i:'na19', s:'vanim', t:'w', j:'さめ', z:'鯊魚' },
+    { i:'na20', s:'vanim', t:'w', j:'{金魚|きんぎょ}', z:'金魚' },
+    { i:'na21', s:'vanim', t:'w', j:'あり', z:'螞蟻' },
+    { i:'na22', s:'vanim', t:'w', j:'はち', z:'蜜蜂' },
+    { i:'na23', s:'vanim', t:'w', j:'くも', z:'蜘蛛', n:'蜘蛛。同音的「雲」是天上的雲，講天氣時多半是雲' },
+    { i:'na24', s:'vanim', t:'w', j:'せみ', z:'蟬' },
+    { i:'na25', s:'vanim', t:'w', j:'とんぼ', z:'蜻蜓' },
+    { i:'na26', s:'vanim', t:'w', j:'ほたる', z:'螢火蟲' },
+    { i:'na27', s:'vanim', t:'w', j:'{卵|たまご}を{産|う}みます', z:'產卵' },
+    { i:'na28', s:'vanim', t:'w', j:'{鳴|な}きます', z:'（動物）叫', n:'動物叫（鳥、貓、狗）。人哭要用「泣きます」' },
+    { i:'na29', s:'vanim', t:'w', j:'{飼|か}います', z:'飼養', n:'養寵物、養動物：犬を飼います。買東西要用「買います」' },
+    { i:'na30', s:'vanim', t:'w', j:'ペット', z:'寵物' },
+    { i:'na31', s:'vanim', t:'w', j:'{餌|えさ}', z:'飼料' },
+    { i:'na32', s:'vanim', t:'w', j:'{尻尾|しっぽ}', z:'尾巴' },
+    { i:'na33', s:'vanim', t:'w', j:'{羽|はね}', z:'翅膀' },
+    { i:'na34', s:'vanim', t:'w', j:'くちばし', z:'鳥喙' },
+    { i:'na35', s:'vanim', t:'w', j:'{毛|け}', z:'毛' },
+    { i:'na36', s:'vanim', t:'w', j:'{松|まつ}', z:'松樹' },
+    { i:'na37', s:'vanim', t:'w', j:'{竹|たけ}', z:'竹子' },
+    { i:'na38', s:'vanim', t:'w', j:'{梅|うめ}', z:'梅花' },
+    { i:'na39', s:'vanim', t:'w', j:'ひまわり', z:'向日葵' },
+    { i:'na40', s:'vanim', t:'w', j:'チューリップ', z:'鬱金香' },
+    { i:'na41', s:'vanim', t:'w', j:'バラ', z:'玫瑰' },
+    { i:'na42', s:'vanim', t:'w', j:'たんぽぽ', z:'蒲公英' },
+    { i:'na43', s:'vanim', t:'w', j:'{芝生|しばふ}', z:'草坪' },
+    { i:'na44', s:'vanim', t:'w', j:'{種|たね}', z:'種子' },
+    { i:'na45', s:'vanim', t:'w', j:'{根|ね}', z:'根' },
+    { i:'na46', s:'vanim', t:'w', j:'{枝|えだ}', z:'樹枝' },
+    { i:'na47', s:'vanim', t:'w', j:'{実|み}', z:'果實' },
+    { i:'na48', s:'vanim', t:'w', j:'{植物|しょくぶつ}', z:'植物' },
+    { i:'na49', s:'vanim', t:'w', j:'{育|そだ}てます', z:'培育' },
+    { i:'na50', s:'vanim', t:'w', j:'{咲|さ}きます', z:'開花' },
+
+    /* ───── 運動・興趣（+50） ───── */
+    { i:'nq01', s:'vfun', t:'w', j:'{野球|やきゅう}', z:'棒球' },
+    { i:'nq02', s:'vfun', t:'w', j:'サッカー', z:'足球' },
+    { i:'nq03', s:'vfun', t:'w', j:'テニス', z:'網球' },
+    { i:'nq04', s:'vfun', t:'w', j:'バスケットボール', z:'籃球' },
+    { i:'nq05', s:'vfun', t:'w', j:'バレーボール', z:'排球' },
+    { i:'nq06', s:'vfun', t:'w', j:'{卓球|たっきゅう}', z:'桌球' },
+    { i:'nq07', s:'vfun', t:'w', j:'{水泳|すいえい}', z:'游泳運動' },
+    { i:'nq08', s:'vfun', t:'w', j:'スキー', z:'滑雪' },
+    { i:'nq09', s:'vfun', t:'w', j:'スケート', z:'溜冰' },
+    { i:'nq10', s:'vfun', t:'w', j:'{柔道|じゅうどう}', z:'柔道' },
+    { i:'nq11', s:'vfun', t:'w', j:'{剣道|けんどう}', z:'劍道' },
+    { i:'nq12', s:'vfun', t:'w', j:'{相撲|すもう}', z:'相撲' },
+    { i:'nq13', s:'vfun', t:'w', j:'マラソン', z:'馬拉松' },
+    { i:'nq14', s:'vfun', t:'w', j:'ジョギング', z:'慢跑' },
+    { i:'nq15', s:'vfun', t:'w', j:'{試合|しあい}', z:'比賽' },
+    { i:'nq16', s:'vfun', t:'w', j:'{選手|せんしゅ}', z:'選手' },
+    { i:'nq17', s:'vfun', t:'w', j:'{監督|かんとく}', z:'教練' },
+    { i:'nq18', s:'vfun', t:'w', j:'チーム', z:'隊伍' },
+    { i:'nq19', s:'vfun', t:'w', j:'{優勝|ゆうしょう}', z:'冠軍' },
+    { i:'nq20', s:'vfun', t:'w', j:'{応援|おうえん}', z:'加油' },
+    { i:'nq21', s:'vfun', t:'w', j:'{勝|か}ちます', z:'獲勝' },
+    { i:'nq22', s:'vfun', t:'w', j:'{負|ま}けます', z:'輸掉' },
+    { i:'nq23', s:'vfun', t:'w', j:'{読書|どくしょ}', z:'看書' },
+    { i:'nq24', s:'vfun', t:'w', j:'{映画|えいが}', z:'電影' },
+    { i:'nq25', s:'vfun', t:'w', j:'{音楽|おんがく}', z:'音樂' },
+    { i:'nq26', s:'vfun', t:'w', j:'ギター', z:'吉他' },
+    { i:'nq27', s:'vfun', t:'w', j:'ピアノ', z:'鋼琴' },
+    { i:'nq28', s:'vfun', t:'w', j:'{絵|え}', z:'畫' },
+    { i:'nq29', s:'vfun', t:'w', j:'{写真|しゃしん}', z:'照片' },
+    { i:'nq30', s:'vfun', t:'w', j:'{釣|つ}り', z:'釣魚' },
+    { i:'nq31', s:'vfun', t:'w', j:'{登山|とざん}', z:'登山' },
+    { i:'nq32', s:'vfun', t:'w', j:'キャンプ', z:'露營' },
+    { i:'nq33', s:'vfun', t:'w', j:'ゲーム', z:'電玩' },
+    { i:'nq34', s:'vfun', t:'w', j:'{漫画|まんが}', z:'漫畫' },
+    { i:'nq35', s:'vfun', t:'w', j:'アニメ', z:'動畫' },
+    { i:'nq36', s:'vfun', t:'w', j:'カラオケ', z:'卡拉OK' },
+    { i:'nq37', s:'vfun', t:'w', j:'ダンス', z:'舞蹈' },
+    { i:'nq38', s:'vfun', t:'w', j:'{園芸|えんげい}', z:'園藝' },
+    { i:'nq39', s:'vfun', t:'w', j:'{料理教室|りょうりきょうしつ}', z:'烹飪課' },
+    { i:'nq40', s:'vfun', t:'w', j:'コンサート', z:'演唱會' },
+    { i:'nq41', s:'vfun', t:'w', j:'{祭|まつ}り', z:'祭典' },
+    { i:'nq42', s:'vfun', t:'w', j:'{花見|はなみ}', z:'賞花' },
+    { i:'nq43', s:'vfun', t:'w', j:'{紅葉狩|もみじが}り', z:'賞楓' },
+    { i:'nq44', s:'vfun', t:'w', j:'{趣味|しゅみ}の{時間|じかん}', z:'興趣時光' },
+    { i:'nq45', s:'vfun', t:'w', j:'ボール', z:'球' },
+    { i:'nq46', s:'vfun', t:'w', j:'ラケット', z:'球拍' },
+    { i:'nq47', s:'vfun', t:'w', j:'{運動場|うんどうじょう}', z:'運動場' },
+    { i:'nq48', s:'vfun', t:'w', j:'{練習試合|れんしゅうじあい}', z:'練習賽' },
+    { i:'nq49', s:'vfun', t:'w', j:'{記録|きろく}', z:'紀錄' },
+    { i:'nq50', s:'vfun', t:'w', j:'{休憩時間|きゅうけいじかん}', z:'中場休息' },
+
+    /* ───── 電話・網路（+35） ───── */
+    { i:'nn01', s:'vnet', t:'w', j:'インターネット', z:'網際網路' },
+    { i:'nn02', s:'vnet', t:'w', j:'サイト', z:'網站' },
+    { i:'nn03', s:'vnet', t:'w', j:'アプリ', z:'應用程式' },
+    { i:'nn04', s:'vnet', t:'w', j:'パスワード', z:'密碼' },
+    { i:'nn05', s:'vnet', t:'w', j:'アカウント', z:'帳號' },
+    { i:'nn06', s:'vnet', t:'w', j:'ログイン', z:'登入' },
+    { i:'nn07', s:'vnet', t:'w', j:'{画面|がめん}', z:'螢幕畫面' },
+    { i:'nn08', s:'vnet', t:'w', j:'ダウンロード', z:'下載' },
+    { i:'nn09', s:'vnet', t:'w', j:'データ', z:'資料數據' },
+    { i:'nn10', s:'vnet', t:'w', j:'ファイル', z:'檔案' },
+    { i:'nn11', s:'vnet', t:'w', j:'フォルダ', z:'資料夾' },
+    { i:'nn12', s:'vnet', t:'w', j:'キーボード', z:'鍵盤' },
+    { i:'nn13', s:'vnet', t:'w', j:'マウス', z:'滑鼠' },
+    { i:'nn14', s:'vnet', t:'w', j:'プリンター', z:'印表機' },
+    { i:'nn15', s:'vnet', t:'w', j:'{充電|じゅうでん}', z:'充電' },
+    { i:'nn16', s:'vnet', t:'w', j:'{電池|でんち}', z:'電池' },
+    { i:'nn17', s:'vnet', t:'w', j:'{電源|でんげん}', z:'電源' },
+    { i:'nn18', s:'vnet', t:'w', j:'メッセージ', z:'訊息' },
+    { i:'nn19', s:'vnet', t:'w', j:'{着信|ちゃくしん}', z:'來電' },
+    { i:'nn20', s:'vnet', t:'w', j:'{留守番電話|るすばんでんわ}', z:'語音信箱' },
+    { i:'nn21', s:'vnet', t:'w', j:'{通話|つうわ}', z:'通話' },
+    { i:'nn22', s:'vnet', t:'w', j:'{電波|でんぱ}', z:'訊號' },
+    { i:'nn23', s:'vnet', t:'w', j:'{圏外|けんがい}', z:'收不到訊號' },
+    { i:'nn24', s:'vnet', t:'w', j:'{機内|きない}モード', z:'飛航模式' },
+    { i:'nn25', s:'vnet', t:'w', j:'フリーWi-Fi', z:'免費無線網路', r:'フリーワイファイ' },
+    { i:'nn26', s:'vnet', t:'w', j:'{接続|せつぞく}', z:'連線' },
+    { i:'nn27', s:'vnet', t:'w', j:'{検索|けんさく}', z:'搜尋' },
+    { i:'nn28', s:'vnet', t:'w', j:'{送信|そうしん}', z:'傳送' },
+    { i:'nn29', s:'vnet', t:'w', j:'{受信|じゅしん}', z:'接收' },
+    { i:'nn30', s:'vnet', t:'w', j:'{添付|てんぷ}', z:'附加檔案' },
+    { i:'nn31', s:'vnet', t:'w', j:'{写真|しゃしん}フォルダ', z:'相簿' },
+    { i:'nn32', s:'vnet', t:'w', j:'{動画|どうが}', z:'影片' },
+    { i:'nn33', s:'vnet', t:'w', j:'{配信|はいしん}', z:'線上播送' },
+    { i:'nn34', s:'vnet', t:'w', j:'{翻訳|ほんやく}アプリ', z:'翻譯軟體' },
+    { i:'nn35', s:'vnet', t:'w', j:'{地図|ちず}アプリ', z:'地圖軟體' },
+
+    /* ───── 數量・單位（+50） ───── */
+    { i:'nu01', s:'vnum', t:'w', j:'{何個|なんこ}', z:'幾個' },
+    { i:'nu02', s:'vnum', t:'w', j:'{何人|なんにん}', z:'幾個人' },
+    { i:'nu03', s:'vnum', t:'w', j:'{何回|なんかい}', z:'幾次' },
+    { i:'nu04', s:'vnum', t:'w', j:'{何枚|なんまい}', z:'幾張' },
+    { i:'nu05', s:'vnum', t:'w', j:'{金額|きんがく}', z:'金額' },
+    { i:'nu06', s:'vnum', t:'w', j:'{人数|にんずう}', z:'人數' },
+    { i:'nu07', s:'vnum', t:'w', j:'{個数|こすう}', z:'個數' },
+    { i:'nu08', s:'vnum', t:'w', j:'{距離|きょり}', z:'距離' },
+    { i:'nu09', s:'vnum', t:'w', j:'{速度|そくど}', z:'速度' },
+    { i:'nu10', s:'vnum', t:'w', j:'{一冊|いっさつ}', z:'一本書' },
+    { i:'nu11', s:'vnum', t:'w', j:'{一台|いちだい}', z:'一台' },
+    { i:'nu12', s:'vnum', t:'w', j:'{一匹|いっぴき}', z:'一隻' },
+    { i:'nu13', s:'vnum', t:'w', j:'{割合|わりあい}', z:'比例' },
+    { i:'nu14', s:'vnum', t:'w', j:'{平均|へいきん}', z:'平均' },
+    { i:'nu15', s:'vnum', t:'w', j:'{面積|めんせき}', z:'面積' },
+    { i:'nu16', s:'vnum', t:'w', j:'{最大|さいだい}', z:'最大限度' },
+    { i:'nu17', s:'vnum', t:'w', j:'{体積|たいせき}', z:'體積' },
+    { i:'nu18', s:'vnum', t:'w', j:'{容量|ようりょう}', z:'容量' },
+    { i:'nu19', s:'vnum', t:'w', j:'{三分|さんぶん}の{一|いち}', z:'三分之一' },
+    { i:'nu20', s:'vnum', t:'w', j:'{倍|ばい}', z:'加倍' },
+    { i:'nu21', s:'vnum', t:'w', j:'{全部|ぜんぶ}', z:'全部' },
+    { i:'nu22', s:'vnum', t:'w', j:'{両方|りょうほう}', z:'兩邊都' },
+    { i:'nu23', s:'vnum', t:'w', j:'{片方|かたほう}', z:'其中一邊' },
+    { i:'nu24', s:'vnum', t:'w', j:'{以上|いじょう}', z:'以上' },
+    { i:'nu25', s:'vnum', t:'w', j:'{以下|いか}', z:'以下', n:'數字、金額的「以下」：千円以下。同音的「いか」是花枝，菜單上看到多半是那個' },
+    { i:'nu26', s:'vnum', t:'w', j:'{以内|いない}', z:'以內' },
+    { i:'nu27', s:'vnum', t:'w', j:'{約|やく}', z:'大約' },
+    { i:'nu28', s:'vnum', t:'w', j:'メートル', z:'公尺' },
+    { i:'nu29', s:'vnum', t:'w', j:'キロ', z:'公斤' },
+    { i:'nu30', s:'vnum', t:'w', j:'グラム', z:'公克' },
+    { i:'nu31', s:'vnum', t:'w', j:'リットル', z:'公升' },
+    { i:'nu32', s:'vnum', t:'w', j:'センチ', z:'公分' },
+    { i:'nu33', s:'vnum', t:'w', j:'パーセント', z:'百分比' },
+    { i:'nu34', s:'vnum', t:'w', j:'{数|かず}', z:'數目' },
+    { i:'nu35', s:'vnum', t:'w', j:'{合計|ごうけい}', z:'合計' },
+    { i:'nu36', s:'vnum', t:'w', j:'{最初|さいしょ}', z:'最初' },
+    { i:'nu37', s:'vnum', t:'w', j:'{最後|さいご}', z:'最後' },
+    { i:'nu38', s:'vnum', t:'w', j:'{次|つぎ}', z:'下一個' },
+    { i:'nu39', s:'vnum', t:'w', j:'{他|ほか}', z:'其他' },
+    { i:'nu40', s:'vnum', t:'w', j:'{一番|いちばん}', z:'最～' },
+    { i:'nu41', s:'vnum', t:'w', j:'{割引率|わりびきりつ}', z:'折扣率' },
+    { i:'nu42', s:'vnum', t:'w', j:'{一部|いちぶ}', z:'一部分' },
+    { i:'nu43', s:'vnum', t:'w', j:'{大半|たいはん}', z:'大半' },
+    { i:'nu44', s:'vnum', t:'w', j:'{少々|しょうしょう}', z:'稍微一點' },
+    { i:'nu45', s:'vnum', t:'w', j:'{余|あま}り{物|もの}', z:'剩下的東西' },
+    { i:'nu46', s:'vnum', t:'w', j:'{不足|ふそく}', z:'不足' },
+    { i:'nu47', s:'vnum', t:'w', j:'{満員|まんいん}の{数|かず}', z:'滿員人數' },
+    { i:'nu48', s:'vnum', t:'w', j:'{番号|ばんごう}', z:'號碼' },
+    { i:'nu49', s:'vnum', t:'w', j:'{順番|じゅんばん}', z:'順序' },
+    { i:'nu50', s:'vnum', t:'w', j:'{回数|かいすう}', z:'次數' },
+
+    /* ───── 副詞・接續（+60） ───── */
+    { i:'nv01', s:'vadv', t:'w', j:'とても', z:'非常' },
+    { i:'nv02', s:'vadv', t:'w', j:'かなり', z:'相當' },
+    { i:'nv03', s:'vadv', t:'w', j:'もっと', z:'更加' },
+    { i:'nv04', s:'vadv', t:'w', j:'まだ', z:'還沒' },
+    { i:'nv05', s:'vadv', t:'w', j:'もう', z:'已經' },
+    { i:'nv06', s:'vadv', t:'w', j:'きっと', z:'一定會' },
+    { i:'nv07', s:'vadv', t:'w', j:'たぶん', z:'大概' },
+    { i:'nv08', s:'vadv', t:'w', j:'{必|かなら}ず', z:'務必' },
+    { i:'nv09', s:'vadv', t:'w', j:'{絶対|ぜったい}', z:'絕對' },
+    { i:'nv10', s:'vadv', t:'w', j:'{全然|ぜんぜん}', z:'完全不' },
+    { i:'nv11', s:'vadv', t:'w', j:'あまり', z:'不太' },
+    { i:'nv12', s:'vadv', t:'w', j:'やっぱり', z:'果然' },
+    { i:'nv13', s:'vadv', t:'w', j:'だいたい', z:'大致上' },
+    { i:'nv14', s:'vadv', t:'w', j:'ほとんど', z:'幾乎' },
+    { i:'nv15', s:'vadv', t:'w', j:'ちょうど', z:'剛好' },
+    { i:'nv16', s:'vadv', t:'w', j:'やっと', z:'終於' },
+    { i:'nv17', s:'vadv', t:'w', j:'{急|きゅう}に', z:'突然' },
+    { i:'nv18', s:'vadv', t:'w', j:'だんだん', z:'漸漸' },
+    { i:'nv19', s:'vadv', t:'w', j:'どんどん', z:'不斷地' },
+    { i:'nv20', s:'vadv', t:'w', j:'しっかり', z:'確實地' },
+    { i:'nv21', s:'vadv', t:'w', j:'はっきり', z:'清楚地' },
+    { i:'nv22', s:'vadv', t:'w', j:'そっと', z:'輕輕地' },
+    { i:'nv23', s:'vadv', t:'w', j:'わざわざ', z:'特地' },
+    { i:'nv24', s:'vadv', t:'w', j:'うっかり', z:'不小心' },
+    { i:'nv25', s:'vadv', t:'w', j:'そろそろ', z:'差不多該' },
+    { i:'nv26', s:'vadv', t:'w', j:'しばらく', z:'暫時' },
+    { i:'nv27', s:'vadv', t:'w', j:'{再|ふたた}び', z:'再度' },
+    { i:'nv28', s:'vadv', t:'w', j:'{特|とく}に', z:'特別是' },
+    { i:'nv29', s:'vadv', t:'w', j:'{実|じつ}は', z:'其實' },
+    { i:'nv30', s:'vadv', t:'w', j:'もちろん', z:'當然' },
+    { i:'nv31', s:'vadv', t:'w', j:'{確|たし}か', z:'記得好像' },
+    { i:'nv32', s:'vadv', t:'w', j:'そして', z:'然後' },
+    { i:'nv33', s:'vadv', t:'w', j:'しかし', z:'可是' },
+    { i:'nv34', s:'vadv', t:'w', j:'だから', z:'所以' },
+    { i:'nv35', s:'vadv', t:'w', j:'それから', z:'接著' },
+    { i:'nv36', s:'vadv', t:'w', j:'それで', z:'因此' },
+    { i:'nv37', s:'vadv', t:'w', j:'でも', z:'不過' },
+    { i:'nv38', s:'vadv', t:'w', j:'また', z:'又' },
+    { i:'nv39', s:'vadv', t:'w', j:'まず', z:'首先' },
+    { i:'nv40', s:'vadv', t:'w', j:'{例|たと}えば', z:'舉例來說' },
+    { i:'nv41', s:'vadv', t:'w', j:'つまり', z:'也就是說' },
+    { i:'nv42', s:'vadv', t:'w', j:'それに', z:'而且' },
+    { i:'nv43', s:'vadv', t:'w', j:'けれども', z:'雖然' },
+    { i:'nv44', s:'vadv', t:'w', j:'ところで', z:'話說回來' },
+    { i:'nv45', s:'vadv', t:'w', j:'そのうえ', z:'再加上' },
+    { i:'nv46', s:'vadv', t:'w', j:'そのため', z:'為此' },
+    { i:'nv47', s:'vadv', t:'w', j:'{一方|いっぽう}', z:'另一方面' },
+    { i:'nv48', s:'vadv', t:'w', j:'{最|もっと}も', z:'最為' },
+    { i:'nv49', s:'vadv', t:'w', j:'なるべく', z:'盡量' },
+    { i:'nv50', s:'vadv', t:'w', j:'せっかく', z:'難得' },
+    { i:'nv51', s:'vadv', t:'w', j:'すっかり', z:'完全地' },
+    { i:'nv52', s:'vadv', t:'w', j:'ぜひ', z:'務必要' },
+    { i:'nv53', s:'vadv', t:'w', j:'{別|べつ}に', z:'並不特別' },
+    { i:'nv54', s:'vadv', t:'w', j:'なかなか', z:'不容易' },
+    { i:'nv55', s:'vadv', t:'w', j:'ますます', z:'越來越' },
+    { i:'nv56', s:'vadv', t:'w', j:'いちいち', z:'一一地' },
+    { i:'nv57', s:'vadv', t:'w', j:'とうとう', z:'到頭來' },
+    { i:'nv58', s:'vadv', t:'w', j:'{次第|しだい}に', z:'逐漸地' },
+    { i:'nv59', s:'vadv', t:'w', j:'{直|す}ぐに', z:'立刻' },
+    { i:'nv60', s:'vadv', t:'w', j:'{今度|こんど}', z:'下次' },
+
+    /* ───── 旅行・觀光（+50） ───── */
+    { i:'nt01', s:'vtrip', t:'w', j:'{観光|かんこう}', z:'觀光' },
+    { i:'nt02', s:'vtrip', t:'w', j:'{名所|めいしょ}', z:'名勝' },
+    { i:'nt03', s:'vtrip', t:'w', j:'{見物|けんぶつ}', z:'參觀遊覽' },
+    { i:'nt04', s:'vtrip', t:'w', j:'ガイド', z:'導遊' },
+    { i:'nt05', s:'vtrip', t:'w', j:'ツアー', z:'旅行團' },
+    { i:'nt06', s:'vtrip', t:'w', j:'{入場券|にゅうじょうけん}', z:'入場券' },
+    { i:'nt07', s:'vtrip', t:'w', j:'チェックイン', z:'辦理入住' },
+    { i:'nt08', s:'vtrip', t:'w', j:'チェックアウト', z:'辦理退房' },
+    { i:'nt09', s:'vtrip', t:'w', j:'フロント', z:'櫃檯' },
+    { i:'nt10', s:'vtrip', t:'w', j:'{客室|きゃくしつ}', z:'客房' },
+    { i:'nt11', s:'vtrip', t:'w', j:'{和室|わしつ}', z:'和式房' },
+    { i:'nt12', s:'vtrip', t:'w', j:'{洋室|ようしつ}', z:'西式房' },
+    { i:'nt13', s:'vtrip', t:'w', j:'{露天風呂|ろてんぶろ}', z:'露天溫泉' },
+    { i:'nt14', s:'vtrip', t:'w', j:'{大浴場|だいよくじょう}', z:'大浴場' },
+    { i:'nt15', s:'vtrip', t:'w', j:'{売店|ばいてん}', z:'販賣部' },
+    { i:'nt16', s:'vtrip', t:'w', j:'{展望台|てんぼうだい}', z:'觀景台' },
+    { i:'nt17', s:'vtrip', t:'w', j:'{記念|きねん}', z:'紀念' },
+    { i:'nt18', s:'vtrip', t:'w', j:'{行列|ぎょうれつ}', z:'排隊人龍' },
+    { i:'nt19', s:'vtrip', t:'w', j:'{混雑|こんざつ}', z:'擁擠' },
+    { i:'nt20', s:'vtrip', t:'w', j:'{案内所|あんないじょ}', z:'服務中心' },
+    { i:'nt21', s:'vtrip', t:'w', j:'{受付|うけつけ}', z:'接待處' },
+    { i:'nt22', s:'vtrip', t:'w', j:'{予約番号|よやくばんごう}', z:'訂位編號' },
+    { i:'nt23', s:'vtrip', t:'w', j:'{宿泊|しゅくはく}', z:'住宿' },
+    { i:'nt24', s:'vtrip', t:'w', j:'{一泊|いっぱく}', z:'住一晚' },
+    { i:'nt25', s:'vtrip', t:'w', j:'{朝食付|ちょうしょくつ}き', z:'附早餐' },
+    { i:'nt26', s:'vtrip', t:'w', j:'{禁煙|きんえん}', z:'禁菸' },
+    { i:'nt27', s:'vtrip', t:'w', j:'{喫煙|きつえん}', z:'吸菸' },
+    { i:'nt28', s:'vtrip', t:'w', j:'{非常口|ひじょうぐち}', z:'逃生出口' },
+    { i:'nt29', s:'vtrip', t:'w', j:'{貴重品|きちょうひん}', z:'貴重物品' },
+    { i:'nt30', s:'vtrip', t:'w', j:'{金庫|きんこ}', z:'保險箱' },
+    { i:'nt31', s:'vtrip', t:'w', j:'{両替所|りょうがえじょ}', z:'外幣兌換處' },
+    { i:'nt32', s:'vtrip', t:'w', j:'{手荷物|てにもつ}', z:'手提行李' },
+    { i:'nt33', s:'vtrip', t:'w', j:'{搭乗|とうじょう}', z:'登機' },
+    { i:'nt34', s:'vtrip', t:'w', j:'{税関|ぜいかん}', z:'海關' },
+    { i:'nt35', s:'vtrip', t:'w', j:'{入国|にゅうこく}', z:'入境' },
+    { i:'nt36', s:'vtrip', t:'w', j:'{出国|しゅっこく}', z:'出境' },
+    { i:'nt37', s:'vtrip', t:'w', j:'{時差|じさ}', z:'時差' },
+    { i:'nt38', s:'vtrip', t:'w', j:'{現地|げんち}', z:'當地' },
+    { i:'nt39', s:'vtrip', t:'w', j:'{日程|にってい}', z:'行程' },
+    { i:'nt40', s:'vtrip', t:'w', j:'{出迎|でむか}え', z:'接機' },
+    { i:'nt41', s:'vtrip', t:'w', j:'{温泉街|おんせんがい}', z:'溫泉街' },
+    { i:'nt42', s:'vtrip', t:'w', j:'{参拝|さんぱい}', z:'參拜' },
+    { i:'nt43', s:'vtrip', t:'w', j:'おみくじ', z:'神籤' },
+    { i:'nt44', s:'vtrip', t:'w', j:'{御守|おまも}り', z:'護身符' },
+    { i:'nt45', s:'vtrip', t:'w', j:'{絵馬|えま}', z:'繪馬' },
+    { i:'nt46', s:'vtrip', t:'w', j:'{屋台|やたい}', z:'路邊攤' },
+    { i:'nt47', s:'vtrip', t:'w', j:'{名物|めいぶつ}', z:'名產' },
+    { i:'nt48', s:'vtrip', t:'w', j:'{地元|じもと}', z:'在地' },
+    { i:'nt49', s:'vtrip', t:'w', j:'{周辺|しゅうへん}', z:'周邊一帶' },
+    { i:'nt50', s:'vtrip', t:'w', j:'{徒歩|とほ}', z:'步行' }
   ]
 };
 
@@ -3740,7 +4868,7 @@ D.scenes.forEach(function(s){ TALK_IDS[s.id]=1; });
 VB.scenes.forEach(function(s){ WORD_IDS[s.id]=1; });
 var GROUPS = [
   { id:'talk', t:'會話句型', d:'去日本當場要講出來的句子', ids:TALK_IDS },
-  { id:'word', t:'生活單字', d:'一千個日常名詞、動詞、形容詞', ids:WORD_IDS }
+  { id:'word', t:'生活單字', d:'兩千個日常名詞、動詞、形容詞，分 23 類', ids:WORD_IDS }
 ];
 var SC = {}; SCENES.forEach(function(s){ SC[s.id] = s; });
 var BY_ID = {}; ITEMS.forEach(function(x){ BY_ID[x.i] = x; });
@@ -3897,7 +5025,7 @@ function dailyXP(){
   ST.dxp.n += give; return give;
 }
 var runXP = 0, runLvUp = [];
-function startRun(){ runXP = 0; runLvUp = []; }
+function startRun(){ runXP = 0; runLvUp = []; questRun = 0; }
 function addXP(n){
   if(!n) return 0;
   var was = levelOf(ST.xp||0);
@@ -4200,6 +5328,21 @@ function mergeSave(remote){
   ST.xp    = Math.max(ST.xp||0,    rs.xp||0);
   ST.bk    = Math.max(ST.bk||0,    rs.bk||0);
   if(rs.xpSeed) ST.xpSeed = 1;               /* 別在另一台又補發一次 */
+  /* 每日任務：同一天就取兩邊較大的進度，領過的就是領過了（XP 已經在 xp 裡，不會重複加）。
+     不同天的就不管它 —— 昨天的任務蓋回來只會讓人今天拿不到獎勵。*/
+  if(rs.q && rs.q.d === dayKey()){
+    if(!ST.q || ST.q.d !== rs.q.d) ST.q = rs.q;
+    else {
+      (rs.q.l||[]).forEach(function(rt, ix){
+        var lt = ST.q.l[ix];
+        if(lt && rt && lt.k === rt.k){
+          lt.n = Math.max(lt.n||0, rt.n||0);
+          lt.c = Math.max(lt.c||0, rt.c||0);
+        }
+      });
+      ST.q.b = Math.max(ST.q.b||0, rs.q.b||0);
+    }
+  }
   var rset = remote.set || {};
   SYNC_SET.forEach(function(k){ if(k in rset) S[k] = rset[k]; });
   saveProg(); saveStats(); saveSet();
@@ -4213,7 +5356,7 @@ async function fbPush(){
     var m = await fbLoad();
     var body = { v:1, at:Date.now(), prog:packProg(),
       stats:{ days:ST.days||{}, shield:ST.shield||{}, cards:ST.cards||0,
-              xp:ST.xp||0, bk:ST.bk||0, xpSeed:ST.xpSeed||0 },
+              xp:ST.xp||0, bk:ST.bk||0, xpSeed:ST.xpSeed||0, q:ST.q||null },
       set:{} };
     SYNC_SET.forEach(function(k){ body.set[k] = S[k]; });
     await m.fs.setDoc(cloudDoc(m), body);
@@ -4543,8 +5686,10 @@ function countDay(){
   saveStats();
 }
 /* 答錯只退一級，不歸零——一次失誤不該抹掉之前累積的進度 */
-function mark(id,good){
+function mark(id,good,mode){
   var r=rec(id), before=r.box;
+  /* 複習任務要看的是「本來答錯過、還沒學會」的那種題，所以要在 box 變動前先記下來 */
+  var wasReview = (r.wrong||0) > 0 && before < 3;
   r.seen++;
   if(good){ r.right=(r.right||0)+1; r.box=Math.min(5,r.box+1); }
   else { r.wrong++; r.box=Math.max(0,r.box-1); }
@@ -4557,6 +5702,11 @@ function mark(id,good){
     else if(r.box === 5 && before === 5)  xp += 1;    /* 已精通的複習，灌不動 */
   }
   addXP(xp);
+  /* 每日任務。連對題數在這裡數，所有模式都會經過 mark()，不用一個個去改呼叫點。*/
+  questRun = good ? questRun + 1 : 0;
+  var it = BY_ID[id];
+  questTick({ good:good, box:r.box, was:before, mode:mode, review:wasReview,
+              src: it ? (/^v/.test(it.s) ? 'word' : 'talk') : 'n5' });
   countDay(); saveProg(); saveStats();
   return { before:before, after:r.box, levelUp:(r.box>=3 && before<3), xp:xp };
 }
@@ -4601,6 +5751,216 @@ function miniBar(t, cls){
   return '<span class="'+cls+'">'+segs(t,'mseg')+'</span>';
 }
 function todayCount(){ return ST.days[dayKey()]||0; }
+
+/* ══════════ 每日任務 ══════════
+   每天三個小目標，過了換日時間自動換一批。
+   挑哪三個是用「日期」算出來的，不是隨機 —— 同一天重開、換手機看到的都一樣，
+   不然重整幾次就能洗出最好拿的那三個，任務就沒意義了。
+   獎勵走 addXP，不經過每日上限：任務一天就三個，本來就刷不了。*/
+var QUESTS = [
+  { k:'ans',    ic:'✓',  xp:25, g:[15,20,25], t:function(n){ return '答對 '+n+' 題'; } },
+  { k:'new',    ic:'新', xp:35, g:[3,4,5],    t:function(n){ return '學會 '+n+' 個新的'; } },
+  { k:'master', ic:'極', xp:40, g:[2,3,4],    t:function(n){ return '把 '+n+' 個練到已精通'; } },
+  { k:'combo',  ic:'連', xp:30, g:[8,10,12],  t:function(n){ return '一次連續答對 '+n+' 題'; } },
+  { k:'listen', ic:'聴', xp:25, g:[10,12,15], t:function(n){ return '用聽力題答對 '+n+' 題'; } },
+  { k:'review', ic:'復', xp:30, g:[5,6,8],    t:function(n){ return '複習掉 '+n+' 題錯題'; } },
+  { k:'word',   ic:'単', xp:25, g:[12,15,18], t:function(n){ return '生活單字答對 '+n+' 題'; } },
+  { k:'n5',     ic:'試', xp:30, g:[10,12,15], t:function(n){ return 'N5 題庫答對 '+n+' 題'; } },
+  { k:'full',   ic:'満', xp:35, g:[1,1,1],    t:function(){ return '完成一輪全對'; } }
+];
+var QUEST_BONUS = 50;
+var QBY = {}; QUESTS.forEach(function(q){ QBY[q.k] = q; });
+
+/* 把日期字串變成一個固定的數字，當作當天的亂數種子 */
+function questSeed(key){
+  var h = 2166136261;
+  for(var i=0;i<key.length;i++){ h ^= key.charCodeAt(i); h = (h*16777619)>>>0; }
+  return h;
+}
+function questPick(key){
+  var lv = levelOf(ST.xp||0);
+  var gi = lv>=15 ? 2 : lv>=7 ? 1 : 0;        /* 等級越高，門檻才拉高 */
+  var due = dueList().length, ready = checkList().length;
+  /* 先把今天根本做不到的任務拿掉 —— 給一個無解的任務比不給還糟 */
+  var pool = QUESTS.filter(function(q){
+    var goal = q.g[Math.min(gi, q.g.length-1)];
+    if(q.k==='review') return due >= goal;
+    if(q.k==='master') return ready >= goal;
+    if(S.n5only && (q.k==='word' || q.k==='listen' || q.k==='combo')) return false;
+    return true;
+  });
+  if(pool.length < 3) pool = QUESTS.filter(function(q){
+    return q.k==='ans' || q.k==='new' || q.k==='n5' || q.k==='full';
+  });
+  /* 用種子洗牌：同一天永遠洗出同一個順序 */
+  var seed = questSeed(key), a = pool.slice();
+  for(var i=a.length-1;i>0;i--){
+    seed = (seed*1103515245 + 12345)>>>0;
+    var j = seed % (i+1), tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a.slice(0,3).map(function(q){
+    return { k:q.k, g:q.g[Math.min(gi, q.g.length-1)], n:0, c:0 };
+  });
+}
+function questToday(){
+  var key = dayKey();
+  if(!ST.q || ST.q.d !== key){ ST.q = { d:key, l:questPick(key), b:0 }; saveStats(); }
+  if(!ST.q.l || ST.q.l.length !== 3){ ST.q.l = questPick(key); saveStats(); }
+  return ST.q;
+}
+function questText(t){ var q = QBY[t.k]; return q ? q.t(t.g) : t.k; }
+
+/* 連對幾題：由 mark() 自己數，這樣每個模式都算得到，不用一個個去改。
+   答錯就歸零；開新的一輪也歸零（startRun 會呼叫）。*/
+var questRun = 0;
+function questResetRun(){ questRun = 0; }
+/* 任務剛完成的那一下要馬上看得到 —— 人還在答題畫面，不該等回首頁才發現。
+   同時只留一個，連續完成兩個也不會疊成一團。*/
+var qToastEl = null, qToastT = 0;
+function questToast(text){
+  try{
+    if(qToastEl && qToastEl.parentNode) qToastEl.parentNode.removeChild(qToastEl);
+    var el = document.createElement('div');
+    el.className = 'qtoast';
+    el.innerHTML = '<span class="qtic">✓</span><span><b>任務完成</b><em>'+esc(text)+'</em></span>';
+    document.body.appendChild(el);
+    qToastEl = el;
+    buzz('good');
+    clearTimeout(qToastT);
+    qToastT = setTimeout(function(){
+      el.classList.add('out');
+      setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 320);
+    }, 2100);
+  }catch(e){}
+}
+/* ev 可能帶：good 答對、box 升級後的箱號、was 升級前、src 來源、mode 模式、full 整輪全對 */
+function questTick(ev){
+  var q = questToday(), hit = 0, finished = [];
+  q.l.forEach(function(t){
+    if(t.n >= t.g) return;                     /* 已經做完的就不用再加 */
+    var add = 0;
+    if(t.k==='ans'    && ev.good) add = 1;
+    if(t.k==='new'    && ev.good && ev.box>=3 && ev.was<3) add = 1;
+    if(t.k==='master' && ev.good && ev.box>=5 && ev.was<5) add = 1;
+    if(t.k==='review' && ev.good && ev.review) add = 1;
+    if(t.k==='listen' && ev.good && ev.mode==='listen') add = 1;
+    if(t.k==='word'   && ev.good && ev.src==='word') add = 1;
+    if(t.k==='n5'     && ev.good && ev.src==='n5') add = 1;
+    if(t.k==='full'   && ev.full) add = 1;
+    if(t.k==='combo'){
+      if(questRun > t.n){ t.n = Math.min(t.g, questRun); hit = 1;
+        if(t.n >= t.g) finished.push(t); }
+      return;
+    }
+    if(add){ t.n = Math.min(t.g, t.n + add); hit = 1;
+      if(t.n >= t.g) finished.push(t); }
+  });
+  if(hit) saveStats();
+  if(finished.length) questToast(questText(finished[0]));
+  return hit;
+}
+function questClaim(ix){
+  var q = questToday(), t = q.l[ix];
+  if(!t || t.c || t.n < t.g) return 0;
+  t.c = 1; saveStats();
+  return addXP(QBY[t.k] ? QBY[t.k].xp : 20);
+}
+function questClaimBonus(){
+  var q = questToday();
+  if(q.b || q.l.filter(function(t){ return t.c; }).length < 3) return 0;
+  q.b = 1; saveStats();
+  return addXP(QUEST_BONUS);
+}
+function questDoneCount(){ return questToday().l.filter(function(t){ return t.c; }).length; }
+/* 有沒有「做完了但還沒領」的，首頁要用這個決定要不要跳提示 */
+function questReady(){
+  return questToday().l.filter(function(t){ return !t.c && t.n >= t.g; }).length;
+}
+
+/* 任務卡。獎勵做成要自己按「領取」，不自動入帳 ——
+   按下去才有動作、才有 プク 的反應，這一下就是整個任務系統的爽點。*/
+function questCard(){
+  var q = questToday(), doneN = questDoneCount();
+  var h = '<div class="card quests" id="qcard">'+
+    '<div class="qhead"><span class="eyebrow">今日任務</span>'+
+      '<span class="qcnt'+(doneN===3?' all':'')+'">'+doneN+' / 3</span></div>';
+  q.l.forEach(function(t,ix){
+    var def = QBY[t.k] || { ic:'・', xp:20 };
+    var pct = Math.min(100, Math.round(t.n / t.g * 100));
+    var full = t.n >= t.g;
+    h += '<div class="qrow'+(t.c ? ' got' : (full ? ' full' : ''))+'">'+
+      '<span class="qic jp" lang="ja">'+esc(def.ic)+'</span>'+
+      '<span class="qmid"><b>'+esc(questText(t))+'</b>'+
+        '<span class="qtrack"><i style="width:'+pct+'%"></i></span></span>'+
+      (t.c  ? '<span class="qok">✓</span>'
+       : full ? '<button class="qget" data-q="'+ix+'">領取<small>+'+def.xp+'</small></button>'
+              : '<span class="qn">'+Math.min(t.n,t.g)+'<small>/'+t.g+'</small></span>')+
+      '</div>';
+  });
+  if(doneN === 3){
+    h += q.b ? '<div class="qbn got">三個都領完了，明天再來一批</div>'
+             : '<button class="qbn" id="qbonus">三個都完成了　領 +'+QUEST_BONUS+' XP</button>';
+  } else if(!questReady()){
+    h += '<div class="qfoot">過了凌晨 '+DAY_CUT+' 點換一批新的</div>';
+  }
+  return h + '</div>';
+}
+/* 領獎的動作。只重畫任務卡和經驗條，不整頁重畫 ——
+   整頁重畫會把畫面捲回最上面，按個按鈕畫面就跳走很煩。*/
+function questBind(d){
+  function cheer(mood){
+    buzz('good');
+    var g = d.querySelector('.guide');
+    if(g){
+      var all = ['idle'];
+      for(var mk in MOODCLS) all.push(MOODCLS[mk]);
+      all.forEach(function(c){ if(c) g.classList.remove(c); });
+      void g.offsetWidth;                       /* 強制重啟動畫 */
+      g.classList.add(MOODCLS[mood]);
+      g.innerHTML = guideSVG(mood, wornGear());
+    }
+  }
+  function refresh(){
+    var old = d.querySelector('#qcard');
+    if(!old) return;
+    var tmp = document.createElement('div');
+    tmp.innerHTML = questCard();
+    old.parentNode.replaceChild(tmp.firstChild, old);
+    var xw = d.querySelector('.xphome');
+    if(xw) xw.innerHTML = xpBarHTML(ST.xp||0, { big:true });
+    bind();
+  }
+  function bind(){
+    /* 領獎可能剛好把人推上去一級，那就接著放升等動畫。
+       用領獎前後的等級自己算，不能借用 runLvUp —— 那是練習那一輪在用的，
+       在首頁按按鈕時裡面可能還留著上一輪的舊資料。*/
+    function ups(fn){
+      var was = levelOf(ST.xp||0);
+      if(!fn()) return null;
+      var now = levelOf(ST.xp||0), a = [];
+      for(var L=was+1; L<=now; L++) a.push(L);
+      return a;
+    }
+    d.querySelectorAll('.qget').forEach(function(b){
+      b.onclick = function(){
+        var a = ups(function(){ return questClaim(+b.dataset.q); });
+        if(!a) return;
+        sfxGood(); cheer('dance');
+        refresh();
+        if(a.length) playLevelUps(a);
+      };
+    });
+    var bn = d.querySelector('#qbonus');
+    if(bn) bn.onclick = function(){
+      var a = ups(questClaimBonus);
+      if(!a) return;
+      sfxCele(); cheer('cele');
+      refresh();
+      if(a.length) playLevelUps(a);
+    };
+  }
+  bind();
+}
 function dueList(){
   var a=[]; ITEMS.forEach(function(x){ var r=P[x.i];
     if(r && r.seen && r.box<3 && r.wrong>0) a.push(x); });
@@ -5648,6 +7008,7 @@ function homeScreen(){
       '<div class="stat"><b style="color:'+(due?'var(--warn)':'var(--muted)')+'">'+due+'</b><span>待複習</span></div>'+
     '</div>';
 
+  h += questCard();
   h += n5Notices(stk, cards);
   if(t.known===0 && t.started===0){
     h += '<div class="note zh">從「聽力選擇題」開始最輕鬆。每答對一次，那句話的熟練度就往上一級，'+
@@ -5684,6 +7045,7 @@ function homeScreen(){
   else if(!S.voiceOK) h += '<div class="banner" id="vbanner"><span class="ic">♪</span>'+
     '<div>覺得日文念起來像機器人？<b>按這裡調整語音</b>，大部分手機都能換成接近真人的版本。</div></div>';
   var d = screen(h);
+  questBind(d);
   d.querySelectorAll('.mode').forEach(function(b){
     b.onclick = function(){ prime(); openMode(b.dataset.m); };
   });
@@ -5769,6 +7131,7 @@ function n5HomeScreen(isHome){
       '<div class="stat"><b style="color:'+(t.started-t.known?'var(--warn)':'var(--muted)')+'">'+
         (t.started-t.known)+'</b><span>學習中</span></div>'+
       '</div>';
+    h += questCard();
     h += n5Notices(stk, jelly);
   }
   h += '<div class="eyebrow" style="margin-top:4px">三個考試科目</div><div class="modes">';
@@ -5802,6 +7165,7 @@ function n5HomeScreen(isHome){
     : '<button class="btn ghost" id="bk">回首頁</button>';
 
   var d = screen(h);
+  questBind(d);
   d.querySelectorAll('[data-n5s]').forEach(function(b){
     b.onclick=function(){ prime(); var id=b.dataset.n5s;
       go(function(){ return n5SectionScreen(id); }, N5S[id].label, N5S[id].color); };
@@ -5967,7 +7331,7 @@ function n5Quiz(pool, title, color, ctx){
         if(done) return; done=true;
         picked = +b.dataset.k;
         var good = picked===ans;
-        var res = mark(o.i, good);
+        var res = mark(o.i, good, 'n5');
         if(good){ right++; run++; } else { wrong.push(o); run=0; }
         good ? (run>=4 ? sfxStreak() : sfxGood()) : sfxBad();
 
@@ -6309,6 +7673,9 @@ function n5MockRun(paper){
        不然整天只考模擬測驗的那天會被當成沒練，連續天數就斷了。*/
     countDay();
     var r = n5Score(paper, ans);
+    /* 模擬測驗答對的題也算進每日任務。一次結算，不是一題一題加。*/
+    var mokRight = paper.filter(function(o,k){ return ans[k] === n5Ans(o); }).length;
+    for(var mi=0; mi<mokRight; mi++) questTick({ good:true, src:'n5' });
     replace(function(){ return n5MockResult(paper, ans, r); }, '模擬測驗結果', '#B8860B');
   }
 
@@ -6437,12 +7804,12 @@ function openMode(m){
 
 /* ══════════ 情境選擇 ══════════ */
 var pickSel = {};
-/* 哪一區是展開的。兩區都預設收起來：27 個分類攤開要滑很久，
+/* 哪一區是展開的。兩區都預設收起來：33 個分類攤開要滑很久，
    而且第一眼就要讓人看到「生活單字」這一區的存在。*/
 var openGrp = { talk:false, word:false };
 function scenePickScreen(mode){
   if(!Object.keys(pickSel).length) SCENES.forEach(function(s){ pickSel[s.id]=true; });
-  /* 27 個分類排成一排太長，分成「會話句型」和「生活單字」兩區，各自可收合 */
+  /* 33 個分類排成一排太長，分成「會話句型」和「生活單字」兩區，各自可收合 */
   var h = '<div class="eyebrow">選要練的情境</div>';
   GROUPS.forEach(function(g){
     var list = SCENES.filter(function(s){ return g.ids[s.id]; });
@@ -6605,7 +7972,7 @@ function startQuiz(pool, mode, title, color, ctx){
       b.onclick=function(){
         if(answered) return; answered=true;
         var good = b.dataset.i===item.i;
-        var mv = mark(item.i, good);
+        var mv = mark(item.i, good, kind);
         if(mv.levelUp) gained++;
         if(good){ right++; run++; } else { wrong.push(item); run=0; }
         /* 連對：踩到分級點就放對應的動作、給獎勵 XP、振一下 */
@@ -6989,6 +8356,9 @@ function startDialog(dg){
         b.onclick=function(){
           var o=t.opts[+b.dataset.n], good=!!o.ok;
           if(good) right++;
+          /* 情境模擬不動熟練度，但答對一樣要算進每日任務和連對 */
+          questRun = good ? questRun + 1 : 0;
+          questTick({ good:good, src:'talk' });
           countDay();
           sfxFor(good?'good':'bad');
           area.querySelectorAll('.opt').forEach(function(x){
@@ -7121,6 +8491,8 @@ function countUp(el, to, dur){
 }
 function showResult(right,total,wrong,title,color,gained,ctx){
   ctx = ctx || {}; gained = gained || 0;
+  /* 「一輪全對」任務。題數太少不算，不然三題一輪就能交差 */
+  if(total >= 5 && right === total) questTick({ full:true });
   replace(function(){
     var pct = total? Math.round(right/total*100):0;
     var t = tally();
@@ -7587,6 +8959,15 @@ draw();
 /* 之前登入過就自動恢復，並把雲端拉下來合併。
    這行一定要在 IIFE 裡面 —— 外面抓不到 fbOn / fbResume。*/
 if(fbOn()) fbResume();
+
+/* ── 離線快取：註冊 service worker ──
+   這段以前漏掉了：repo 裡有 sw.js，但從來沒有人去註冊它，所以離線其實一直沒生效。
+   不綁 window load 事件 —— 字型是跨網域的，網路差的時候 load 會被拖很久，
+   綁上去就等於「網路爛的人最需要離線、卻最晚裝好」。
+   file:// 直接開不支援 service worker，所以先確認是 http(s)。*/
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  navigator.serviceWorker.register('./sw.js').catch(function(){ /* 沒有 sw.js 就算了 */ });
+}
 })();
 </script>
 
